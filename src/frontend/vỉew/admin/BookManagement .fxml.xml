@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BookManagementController">
+    <left>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Book Name" />
+            <TextField fx:id="bookNameField" promptText="Book Name" />
+            <Label text="Author Name" />
+            <TextField fx:id="authorNameField" promptText="Author Name" />
+            <Label text="Price of Book" />
+            <TextField fx:id="priceField" promptText="Price" />
+            <Label text="Number of Books in Stock" />
+            <TextField fx:id="quantityField" promptText="Quantity" />
+            <Label text="Category" />
+            <ComboBox fx:id="categoryComboBox" promptText="Select Category">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Toy" />
+                        <String fx:value="Book" />
+                        <String fx:value="Stationery" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </VBox>
+    </left>
+    <center>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <HBox spacing="10" alignment="CENTER">
+                <TextField fx:id="searchField" promptText="Enter Book Name to Search" style="-fx-pref-width: 300;" />
+                <Button text="SEARCH" onAction="#handleSearch" />
+            </HBox>
+            <TableView fx:id="bookTable" style="-fx-pref-height: 200;">
+                <columns>
+                    <TableColumn text="Name" prefWidth="100" />
+                    <TableColumn text="Author" prefWidth="100" />
+                    <TableColumn text="Price" prefWidth="75" />
+                    <TableColumn text="Quantity" prefWidth="75" />
+                    <TableColumn text="TotalPrice" prefWidth="100" />
+                </columns>
+            </TableView>
+            <Label fx:id="tableMessage" text="No content in table" style="-fx-font-style: italic;" />
+        </VBox>
+    </center>
+    <bottom>
+        <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+            <Button text="ADD" onAction="#handleAdd" />
+            <Button text="DELETE" onAction="#handleDelete" />
+            <Button text="EDIT" onAction="#handleEdit" />
+            <Button text="DISPLAY" onAction="#handleDisplay" />
+        </HBox>
+    </bottom>
+</BorderPane>
