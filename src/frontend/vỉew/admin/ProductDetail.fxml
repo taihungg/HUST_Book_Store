@@ -119,11 +119,7 @@
             <children>
             <AnchorPane>
                <children>
-                      <Button fx:id="exitButton" minHeight="35.0" minWidth="90.0" onAction="#handleExitButtonAction" text="Exit">
-                          <font>
-                              <Font size="14.0" />
-                          </font>
-                      </Button>
+                      <Button fx:id="exitButton" layoutX="31.0" layoutY="10.0" minHeight="25.0" minWidth="59.0" onAction="#handleExitButtonAction" prefHeight="25.0" prefWidth="59.0" text="EXIT" />
                </children>
             </AnchorPane>
             </children>

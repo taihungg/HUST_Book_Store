@@ -10,10 +10,11 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="603.0" prefWidth="804.0" style="-fx-background-color: #e0e0e0;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BookManagementController">
     <left>
-        <VBox spacing="10" style="-fx-padding: 10;">
+        <VBox prefHeight="510.0" prefWidth="181.0" spacing="10" style="-fx-padding: 10;">
             <Label text="Product Name" />
             <TextField fx:id="bookNameField" promptText="Book Name" />
             <Label text="Author Name">
@@ -36,6 +37,14 @@
                <Insets top="10.0" />
             </VBox.margin></Label>
          <ComboBox prefWidth="150.0" promptText="--Select" />
+         <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="125.0" prefWidth="188.0" text="HUST BOOK STORE" textAlignment="CENTER">
+            <font>
+               <Font name="System Bold Italic" size="16.0" />
+            </font>
+            <VBox.margin>
+               <Insets left="5.0" top="100.0" />
+            </VBox.margin>
+         </Label>
         </VBox>
     </left>
     <center>
