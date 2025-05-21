@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.BookStoreController">
+   <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+         <top>
+            <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
+               <padding>
+                  <Insets bottom="10.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <children>
+                  <TextField fx:id="searchField" promptText="Enter Book Name to Search" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearchAction" prefWidth="80.0" text="SEARCH" />
+               </children>
+            </HBox>
+         </top>
+         <center>
+            <TableView fx:id="bookTableView" BorderPane.alignment="CENTER">
+              <columns>
+                <TableColumn fx:id="nameCol" prefWidth="212.51775360107422" text="Name" />
+                <TableColumn fx:id="authorCol" prefWidth="204.4822540283203" text="Author" />
+                <TableColumn fx:id="priceCol" prefWidth="112.30377197265625" text="Price" />
+                <TableColumn fx:id="quantityCol" prefWidth="68.38137817382812" text="Quantity" />
+                <TableColumn fx:id="totalPriceCol" prefWidth="120.99444580078125" text="TotalPrice" />
+                <TableColumn fx:id="categoryCol" prefWidth="257.00555419921875" text="Category" />
+              </columns>
+               <placeholder>
+                  <Label text="No content in table" />
+               </placeholder>
+               <BorderPane.margin>
+                  <Insets left="15.0" right="15.0" />
+               </BorderPane.margin>
+            </TableView>
+         </center>
+         <bottom>
+            <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <children>
+                  <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddAction" prefWidth="70.0" text="ADD" />
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteAction" prefWidth="70.0" style="-fx-background-color: #FF6347;" text="DELETE" textFill="WHITE" />
+                  <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEditAction" prefWidth="70.0" text="EDIT" />
+                  <Button fx:id="displayButton" mnemonicParsing="false" onAction="#handleDisplayAction" prefWidth="70.0" text="DISPLAY" />
+                  <Button fx:id="viewButton" mnemonicParsing="false" onAction="#handleViewAction" prefWidth="70.0" text="VIEW" />
+                  <Button fx:id="exitButton" mnemonicParsing="false" onAction="#handleExitAction" prefWidth="70.0" text="EXIT" />
+               </children>
+            </HBox>
+         </bottom>
+      </BorderPane>
+   </center>
+</BorderPane>
