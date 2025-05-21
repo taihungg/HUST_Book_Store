@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <VBox spacing="10">
+            <children>
+                <HBox alignment="CENTER_LEFT">
+                    <children>
+                        <Label style="-fx-text-fill: RED;" text="HustBookStore" textFill="RED">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                        <Pane HBox.hgrow="ALWAYS" />
+                        <Button fx:id="loginButton" text="Login" />
+                        <Button fx:id="logoutButton" text="Logout" visible="false" />
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                    </padding>
+                </HBox>
+                <MenuBar>
+                    <menus>
+                        <Menu text="Account">
+                            <items>
+                                <MenuItem fx:id="personalInfoMenuItem" text="See Personal Information" />
+                                <MenuItem fx:id="orderHistoryMenuItem" text="See Order History" />
+                                <MenuItem fx:id="logoutMenuItem" text="Logout" />
+                            </items>
+                        </Menu>
+                        <Menu text="Store">
+                            <items>
+                                <MenuItem fx:id="browseProductsMenuItem" text="Browse Products" />
+                                <MenuItem fx:id="cartMenuItem" text="See Cart" />
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+            </children>
+        </VBox>
+    </top>
+
+    <center>
+        <StackPane fx:id="contentArea">
+            <fx:include source="BrowseProducts.fxml" />
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER">
+            <children>
+                <Label text="© 2024.2 OOP HustBookStore. Made by Trịnh Thành Trung (PhD).">
+                    <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                    </padding>
+                </Label>
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>
