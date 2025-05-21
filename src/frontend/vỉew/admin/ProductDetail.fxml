@@ -18,10 +18,13 @@
                 <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
             </padding>
             <children>
-                <Label text="Hust Book Store">
+                <Label text="Product name">
                     <font>
                         <Font name="Arial Bold" size="28.0" />
                     </font>
+               <HBox.margin>
+                  <Insets left="80.0" />
+               </HBox.margin>
                 </Label>
             </children>
         </HBox>
@@ -50,19 +53,6 @@
 
                 <VBox spacing="15.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text="Tên sản phẩm:">
-                            <font>
-                                <Font name="Arial Bold" size="16.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="productNameLabel" text="[Chưa có thông tin]" wrapText="true">
-                            <font>
-                                <Font size="15.0" />
-                            </font>
-                            <padding>
-                                <Insets left="5.0" />
-                            </padding>
-                        </Label>
 
                         <Label text="Giá:">
                             <font>
