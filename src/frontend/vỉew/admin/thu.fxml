@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:controller="your.package.VGrowController" prefHeight="400.0" prefWidth="300.0" spacing="10.0" alignment="TOP_CENTER" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21">
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+   <children>
+      <Label text="HEADER" style="-fx-background-color: #ADD8E6; -fx-padding: 10; -fx-alignment: center;" prefWidth="Infinity">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+
+      <TextArea fx:id="middleTextArea" promptText="Nội dung ở đây. Tôi sẽ mở rộng theo chiều dọc!"
+                VBox.vgrow="ALWAYS"
+                prefRowCount="5"
+                style="-fx-background-color: #90EE90;" />
+                <Label text="Đây là Label không có VGrow.ALWAYS" style="-fx-background-color: #FFB6C1; -fx-padding: 10; -fx-alignment: center;" prefWidth="Infinity">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+
+      <Label text="FOOTER" style="-fx-background-color: #ADD8E6; -fx-padding: 10; -fx-alignment: center;" prefWidth="Infinity">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+   </children>
+</VBox>
