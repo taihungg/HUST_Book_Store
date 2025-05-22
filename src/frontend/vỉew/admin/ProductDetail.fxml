@@ -18,12 +18,12 @@
                 <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
             </padding>
             <children>
-                <Label text="Product name">
+                <Label text="Stationery/Toy name">
                     <font>
                         <Font name="Arial Bold" size="28.0" />
                     </font>
                <HBox.margin>
-                  <Insets left="80.0" />
+                  <Insets left="40.0" />
                </HBox.margin>
                 </Label>
             </children>
