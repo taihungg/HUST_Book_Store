@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="750.0" maxWidth="800.0" minHeight="500.0" minWidth="800.0" spacing="15" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
+   
+   <HBox alignment="CENTER_LEFT" spacing="10">
+      <Button fx:id="backButton" text="&lt; Back to Products" />
+      <Label styleClass="section-header" text="Product Details">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+   </HBox>
+   
+   <HBox spacing="20">
+      <VBox alignment="TOP_CENTER" prefWidth="300" spacing="15">
+         <padding>
+            <Insets top="10" />
+         </padding>
+         <Label alignment="CENTER" prefHeight="300" prefWidth="200" style="-fx-border-color: #cccccc; -fx-border-width: 1;" text="[Book Cover]" />
+         <HBox alignment="CENTER" spacing="10">
+            <Button fx:id="playDemoButton" text="Play Demo" />
+            <Button fx:id="rateButton" text="Rate" />
+         </HBox>
+      </VBox>
+      
+      <VBox spacing="10" HBox.hgrow="ALWAYS">
+         <Label fx:id="titleLabel" styleClass="product-title" text="Book Title">
+            <font>
+               <Font name="System Bold" size="24.0" />
+            </font>
+         </Label>
+         
+         <HBox alignment="CENTER_LEFT" spacing="5">
+            <Label text="Author:" />
+            <Label fx:id="authorLabel" text="Author Name" />
+         </HBox>
+         
+         <HBox alignment="CENTER_LEFT" spacing="5">
+            <Label text="Category:" />
+            <Label fx:id="categoryLabel" text="Fiction" />
+         </HBox>
+         
+         <HBox alignment="CENTER_LEFT" spacing="5">
+            <Label text="Rating:" />
+            <Label fx:id="ratingLabel" text="4.5/5.0" />
+         </HBox>
+         
+         <HBox alignment="CENTER_LEFT" spacing="5">
+            <Label styleClass="product-price" text="Price:">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="priceLabel" styleClass="product-price" text="19.99">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Label>
+         </HBox>
+         
+         <Separator />
+         
+         <Label text="Description:" />
+         <ScrollPane fitToWidth="true" prefHeight="150" VBox.vgrow="ALWAYS">
+            <TextArea fx:id="descriptionArea" editable="false" prefRowCount="5" wrapText="true">
+               <text>This is a detailed description of the book. It contains information about the plot, themes, and other relevant details about the book. This text would typically be much longer and provide a comprehensive overview of what the reader can expect.</text>
+            </TextArea>
+         </ScrollPane>
+         
+         <Separator />
+         
+         <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="Quantity:" />
+            <Spinner fx:id="quantitySpinner" initialValue="1" max="99" min="1" prefWidth="70" />
+            <Button fx:id="addToCartButton" defaultButton="true" text="Add to Cart" />
+            <Button fx:id="notifyButton" text="Notify When Available" visible="false" />
+         </HBox>
+      </VBox>
+   </HBox>
+   
+   <TitledPane expanded="false" text="Customer Reviews">
+      <VBox spacing="10">
+         <Label text="Average Rating: 4.5/5.0 (42 reviews)" />
+         <TextField />
+      </VBox>
+   </TitledPane>
+   
+   <TitledPane expanded="false" text="Similar Products">
+      <GridPane hgap="10" vgap="10">
+         <columnConstraints>
+            <ColumnConstraints percentWidth="33.33" />
+            <ColumnConstraints percentWidth="33.33" />
+            <ColumnConstraints percentWidth="33.33" />
+         </columnConstraints>
+         
+         <VBox styleClass="similar-product" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label styleClass="product-title" text="Similar Book 1" />
+            <Label styleClass="product-price" text="14.99" />
+            <Button text="View" />
+         </VBox>
+         
+         <VBox styleClass="similar-product" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <Label styleClass="product-title" text="Similar Book 2" />
+            <Label styleClass="product-price" text="21.99" />
+            <Button text="View" />
+         </VBox>
+         
+         <VBox styleClass="similar-product" GridPane.columnIndex="2" GridPane.rowIndex="0">
+            <Label styleClass="product-title" text="Similar Book 3" />
+            <Label styleClass="product-price" text="16.99" />
+            <Button text="View" />
+         </VBox>
+         <rowConstraints>
+            <RowConstraints />
+         </rowConstraints>
+      </GridPane>
+   </TitledPane>
+</VBox>
