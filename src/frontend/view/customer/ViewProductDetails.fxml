@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <content>
-      <VBox spacing="15">
+      <VBox maxWidth="2000.0" spacing="15" HBox.hgrow="ALWAYS">
          <padding>
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
          </padding>
@@ -30,9 +30,9 @@
                   </Label>
                </children>
             </HBox>
-            <HBox spacing="20">
+            <HBox spacing="20" HBox.hgrow="ALWAYS">
                <children>
-                  <VBox alignment="TOP_CENTER" prefWidth="300" spacing="15">
+                  <VBox alignment="TOP_CENTER" maxWidth="400" minWidth="300" spacing="15">
                      <padding>
                         <Insets top="10" />
                      </padding>
@@ -48,7 +48,7 @@
                   </VBox>
                   <VBox spacing="10" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label fx:id="titleLabel" styleClass="product-title" text="Book Title">
+                        <Label fx:id="titleLabel" styleClass="product-title" text="Book Title" wrapText="true">
                            <font>
                               <Font name="System Bold" size="24.0" />
                            </font>
@@ -105,12 +105,12 @@
                   </VBox>
                </children>
             </HBox>
-            <TitledPane expanded="false" text="Customer Reviews">
+            <TitledPane expanded="false" text="Customer Reviews" HBox.hgrow="ALWAYS">
                <content>
                   <VBox spacing="10">
                      <children>
                         <Label text="Average Rating: 4.5/5.0 (42 reviews)" />
-                        <TextField />
+                        <TextField HBox.hgrow="ALWAYS" />
                      </children>
                   </VBox>
                </content>

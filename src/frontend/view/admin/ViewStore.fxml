@@ -47,7 +47,6 @@
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </padding>
                <children>
-                  <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddAction" prefWidth="70.0" text="ADD" />
                   <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteAction" prefWidth="70.0" style="-fx-background-color: #FF6347;" text="DELETE" textFill="WHITE" />
                   <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEditAction" prefWidth="70.0" text="EDIT" />
                   <Button fx:id="displayButton" mnemonicParsing="false" onAction="#handleDisplayAction" prefWidth="70.0" text="DISPLAY" />
