@@ -9,14 +9,11 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <content>
       <VBox spacing="15">
          <padding>
@@ -116,43 +113,6 @@
                         <TextField />
                      </children>
                   </VBox>
-               </content>
-            </TitledPane>
-            <TitledPane expanded="false" text="Similar Products">
-               <content>
-                  <GridPane hgap="10" vgap="10">
-                     <columnConstraints>
-                        <ColumnConstraints percentWidth="33.33" />
-                        <ColumnConstraints percentWidth="33.33" />
-                        <ColumnConstraints percentWidth="33.33" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints />
-                     </rowConstraints>
-                     <children>
-                        <VBox styleClass="similar-product" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                           <children>
-                              <Label styleClass="product-title" text="Similar Book 1" />
-                              <Label styleClass="product-price" text="14.99" />
-                              <Button text="View" />
-                           </children>
-                        </VBox>
-                        <VBox styleClass="similar-product" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                           <children>
-                              <Label styleClass="product-title" text="Similar Book 2" />
-                              <Label styleClass="product-price" text="21.99" />
-                              <Button text="View" />
-                           </children>
-                        </VBox>
-                        <VBox styleClass="similar-product" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                           <children>
-                              <Label styleClass="product-title" text="Similar Book 3" />
-                              <Label styleClass="product-price" text="16.99" />
-                              <Button text="View" />
-                           </children>
-                        </VBox>
-                     </children>
-                  </GridPane>
                </content>
             </TitledPane>
          </children>
