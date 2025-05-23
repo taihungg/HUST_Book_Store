@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.OrderDetailsController">
    <children>
       <Label layoutX="250.0" layoutY="4.0" text="ORDER DETAILS">
          <font>
@@ -30,7 +30,7 @@
         </columns>
       </TableView>
       <ScrollBar layoutX="572.0" layoutY="120.0" orientation="VERTICAL" />
-      <Button layoutX="349.0" layoutY="353.0" mnemonicParsing="false" text="EXIT" />
+      <Button fx:id="ExitButton" layoutX="349.0" layoutY="353.0" mnemonicParsing="false" onAction="#handleExit" text="EXIT" />
       <Button layoutX="190.0" layoutY="48.0" mnemonicParsing="false" text="SEARCH" />
       <TextField layoutX="35.0" layoutY="48.0" />
       <TextField layoutX="49.0" layoutY="312.0" />

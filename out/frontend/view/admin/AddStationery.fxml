@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<GridPane hgap="10" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="500.0" vgap="15" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.view.admin.StationeryController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="120.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="380.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" /> <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <children>
+      <Label text="Add New Stationery Product" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+
+      <Label text="Title (Product Name):" GridPane.rowIndex="1" />
+      <TextField fx:id="titleField" promptText="Enter product title" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+      <Label text="Description:" GridPane.rowIndex="2" GridPane.valignment="TOP">
+          <GridPane.margin>
+              <Insets top="5.0" />
+          </GridPane.margin>
+      </Label>
+      <TextArea fx:id="descriptionArea" prefHeight="70.0" promptText="Enter product description" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+      <Label text="Gallery URL:" GridPane.rowIndex="3" />
+      <TextField fx:id="galleryUrlField" promptText="Enter image URL (e.g., http://...)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+      <Label text="Price:" GridPane.rowIndex="4" />
+      <TextField fx:id="priceField" promptText="Enter price (e.g., 150000.00)" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+      <Label text="Status:" GridPane.rowIndex="5" />
+      <ComboBox fx:id="statusComboBox" prefWidth="150.0" promptText="-- Select Status --" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <Label text="Type (Category):" GridPane.rowIndex="6" />
+      <TextField fx:id="typeField" promptText="Enter product type (e.g., Pen, Notebook)" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      <Label text="Color:" GridPane.rowIndex="7" />
+      <TextField fx:id="colorField" promptText="Enter color (e.g., Blue, Red)" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+      <Label text="Manufacturer:" GridPane.rowIndex="8" />
+      <TextField fx:id="manufacturerField" promptText="Enter manufacturer name" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+
+      <Label text="Material:" GridPane.rowIndex="9" />
+      <TextField fx:id="materialField" promptText="Enter material (e.g., Plastic, Paper)" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+
+      <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="10">
+         <children>
+            <Button fx:id="addProductButton" mnemonicParsing="false" onAction="#handleAddProduct" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Add Product" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
+         </children>
+      </HBox>
+   </children>
+</GridPane>
