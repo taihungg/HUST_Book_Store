@@ -15,3 +15,5 @@ src/module-info.java
 .vscode/settings.json
 .classpath
 *.sh
+src/module-info.java
+out/module-info.class
