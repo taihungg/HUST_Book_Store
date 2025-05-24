@@ -33,7 +33,7 @@
                      <HBox.margin>
                         <Insets bottom="40.0" />
                      </HBox.margin></Button>
-                  <Button alignment="TOP_RIGHT" mnemonicParsing="false" text="DISPLAY ALL">
+                  <Button alignment="TOP_RIGHT" mnemonicParsing="false" prefHeight="26.0" prefWidth="96.0" text="DISPLAY ALL">
                      <HBox.margin>
                         <Insets bottom="40.0" left="245.0" />
                      </HBox.margin></Button>

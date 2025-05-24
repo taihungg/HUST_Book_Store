@@ -52,16 +52,7 @@ public class HomePageAdminController {
 
     @FXML
     private void handleSeeOrders() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/view/admin/OrderDetails.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Order Details");
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+       
     }
 
     @FXML
