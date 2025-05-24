@@ -69,7 +69,7 @@
                         </DropShadow>
                     </effect>
                 </Button>
-                <Button fx:id="manageButton" mnemonicParsing="false" prefHeight="55.0" prefWidth="250.0" text="Quản Lý(Manage)">
+                <Button fx:id="manageButton" mnemonicParsing="false" onAction="#handleManage" prefHeight="55.0" prefWidth="250.0" text="Quản Lý(Manage)">
                     <style>
                         -fx-background-color: #2196F3;
                         -fx-text-fill: white;

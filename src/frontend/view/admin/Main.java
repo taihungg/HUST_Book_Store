@@ -1,4 +1,4 @@
-package frontend;
+package frontend.view.admin;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +11,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             // Load the HomePageAdmin.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/admin/HomePageAdmin.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("HomePageAdmin.fxml"));
             Parent root = loader.load();
             
             // Set up the primary stage

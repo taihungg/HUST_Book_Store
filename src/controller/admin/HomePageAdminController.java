@@ -29,7 +29,7 @@ public class HomePageAdminController {
     private void handleReportButton() {
         try {
             // Load the RevenueReportView.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/view/admin/RevenueReportView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/view/admin/Report/RevenueReportView.fxml"));
             Parent root = loader.load();
             
             // Create a new stage for the revenue report
@@ -57,6 +57,20 @@ public class HomePageAdminController {
 
     @FXML
     private void handleManage() {
-        // Implement manage functionality
+        try {
+            // Load the ManagePageView.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/view/admin/Manage/ManagePageView.fxml"));
+            Parent root = loader.load();
+            
+            // Create a new stage for the manage page
+            Stage stage = new Stage();
+            stage.setTitle("Manage Page");
+            stage.setScene(new Scene(root));
+            
+            // Show the manage page window
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 } 

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="your.package.BookController">
+<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.BookController">
     <content>
         <VBox prefWidth="650" spacing="20.0">
             <padding>
@@ -175,7 +175,7 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="10.0">
                     <children>
-                        <Button fx:id="addProductButton" mnemonicParsing="false" onAction="#handleAddProduct" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Add Product" />
+                        <Button fx:id="addProductButton" mnemonicParsing="false" onAction="#handleAddBook" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Add Book" />
                         <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
                     </children>
                 </HBox>
