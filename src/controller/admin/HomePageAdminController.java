@@ -46,7 +46,8 @@ public class HomePageAdminController {
 
     @FXML
     private void handleLogout() {
-        // Implement logout functionality
+        Stage stage = (Stage) logoutButton.getScene().getWindow();
+        stage.close();
     }
 
     @FXML

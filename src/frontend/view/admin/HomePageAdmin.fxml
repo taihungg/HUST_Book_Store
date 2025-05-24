@@ -29,7 +29,7 @@
                 </Label>
                 <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
                     <children>
-                        <Button fx:id="logoutButton" mnemonicParsing="false" text="Logout">
+                        <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" text="Logout">
                             <style>
                                 -fx-background-color: #FFCDD2;
                                 -fx-text-fill: #B71C1C;
