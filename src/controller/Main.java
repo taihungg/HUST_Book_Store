@@ -1,5 +1,6 @@
 package controller;
 
+import controller.admin.HomePageAdminController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,8 +11,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Load the HomePageAdmin.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("HomePageAdmin.fxml"));
+        	final String ADMIN_FXML_FILE_PATH = "/view/admin/HomePageAdmin.fxml";
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ADMIN_FXML_FILE_PATH));
+            HomePageAdminController controller = new HomePageAdminController();
+            loader.setController(controller);
             Parent root = loader.load();
             
             // Set up the primary stage
