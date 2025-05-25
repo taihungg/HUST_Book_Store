@@ -61,23 +61,8 @@ public class StoreController {
 
     @FXML
     public void initialize() {
-        productList = FXCollections.observableArrayList(
+        productList = FXCollections.observableArrayList();
             // Sử dụng constructor của Product
-            new Stationery(
-                "Harry Potter và Hòn Đá Phù Thủy",    // title
-                "Câu chuyện đầu tiên về cậu bé phù thủy.", // description
-                "url_hinh_anh_1.jpg",                 // galleryURL
-                150000.0,                             // price
-                "Còn hàng"                            // status
-            ),
-            new Toy(
-                "Đắc Nhân Tâm",                       // title
-                "Nghệ thuật ứng xử và thu phục lòng người.",// description
-                "url_hinh_anh_2.jpg",                 // galleryURL
-                120000.0,                             // price
-                "Hết hàng"                            // status
-            )
-        );
 
         // Cho phép TableView có thể chỉnh sửa
         productTableView.setEditable(true);
@@ -102,7 +87,7 @@ public class StoreController {
         priceCol.setOnEditCommit((CellEditEvent<Product, Double> event) -> {
             Product product = event.getRowValue();
             if (event.getNewValue() != null) {
-                product.setPrice(event.getNewValue()); // Product cần có setPrice()
+                product.setSellingPrice(event.getNewValue()); // Product cần có setPrice()
             }
         });
 

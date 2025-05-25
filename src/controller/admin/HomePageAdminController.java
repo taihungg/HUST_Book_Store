@@ -118,8 +118,16 @@ public class HomePageAdminController {
             
             // Show the see orders window
             stage.show();
-        } catch (Exception e) {
+
+            StoreController storeController = loader.getController();
+            if (storeController != null) {
+                System.out.println("HomePageAdminController: Đã lấy được activeStoreController.");
+            } 
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    
+}
+
 }

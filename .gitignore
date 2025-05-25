@@ -9,3 +9,5 @@ src/module-info.java
 .DS_Store
 .vscode/settings.json
 >>>>>>> Stashed changes
+/out
+src/controller/Main2.java

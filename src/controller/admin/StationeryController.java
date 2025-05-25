@@ -85,7 +85,6 @@ public class StationeryController {
             
             
 
-        Stationery stationery = new Stationery(title, description, galleryUrl, price, status, type, color, manufacturer, material);
         closeWindow();
       
         
