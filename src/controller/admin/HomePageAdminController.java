@@ -29,7 +29,11 @@ public class HomePageAdminController {
     private void handleReportButton() {
         try {
             // Load the RevenueReportView.fxml
+<<<<<<< Updated upstream
             FXMLLoader loader = new FXMLLoader(getClass().getResource("view/admin/Report/RevenueReportView.fxml"));
+=======
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Report/RevenueReportView.fxml"));
+>>>>>>> Stashed changes
             Parent root = loader.load();
             
             // Create a new stage for the revenue report
@@ -52,14 +56,32 @@ public class HomePageAdminController {
 
     @FXML
     private void handleSeeOrders() {
-       
+        try {
+            // Load the SeeOrdersView.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/SeeOrders/SeeOrdersView.fxml"));
+            Parent root = loader.load();
+            
+            // Create a new stage for the see orders page
+            Stage stage = new Stage();
+            stage.setTitle("Xem Đơn Hàng");
+            stage.setScene(new Scene(root));
+            
+            // Show the see orders window
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void handleManage() {
         try {
             // Load the ManagePageView.fxml
+<<<<<<< Updated upstream
             FXMLLoader loader = new FXMLLoader(getClass().getResource("view/admin/Manage/ManagePageView.fxml"));
+=======
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/ManagePageView.fxml"));
+>>>>>>> Stashed changes
             Parent root = loader.load();
             
             // Create a new stage for the manage page

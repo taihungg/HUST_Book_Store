@@ -25,7 +25,7 @@ public class ProductTypeSelectionController {
     @FXML
     private void handleAddToy() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/view/admin/Manage/Update Inventory/AddToy.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/Update Inventory/AddToy.fxml"));
             Parent root = loader.load();
             
             Stage stage = new Stage();
