@@ -1,21 +1,14 @@
 package controller.admin;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.stage.Stage;
+import javafx.scene.control.Label;
 
-public class OrderDetailsController {
-    @FXML
-    private Button ExitButton;
+public class OrderDetailController {
 
     @FXML
-    public void initialize() {
-        // Initialize any necessary setup
+    private Label orderIdLabel; // Đây là label dùng để hiển thị ID truyền từ giao diện trước
+
+    public void setOrderId(String orderId) {
+        orderIdLabel.setText(orderId);
     }
-
-    @FXML
-    private void handleExit() {
-        Stage stage = (Stage) ExitButton.getScene().getWindow();
-        stage.close();
-    }
-} 
+}
