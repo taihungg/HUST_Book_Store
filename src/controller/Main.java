@@ -11,16 +11,14 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-<<<<<<< Updated upstream
         	final String ADMIN_FXML_FILE_PATH = "/view/admin/HomePageAdmin.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ADMIN_FXML_FILE_PATH));
             HomePageAdminController controller = new HomePageAdminController();
             loader.setController(controller);
-=======
+
             // Load the HomePageAdmin.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("view/admin/HomePageAdmin.fxml"));
->>>>>>> Stashed changes
-            Parent root = loader.load();
+            FXMLLoader loader1 = new FXMLLoader(getClass().getClassLoader().getResource("view/admin/HomePageAdmin.fxml"));
+            Parent root = loader1.load();
             
             // Set up the primary stage
             primaryStage.setTitle("HUST Book Store - Admin Panel");

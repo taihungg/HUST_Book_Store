@@ -29,12 +29,10 @@ public class HomePageAdminController {
     private void handleReportButton() {
         try {
             // Load the RevenueReportView.fxml
-<<<<<<< Updated upstream
             FXMLLoader loader = new FXMLLoader(getClass().getResource("view/admin/Report/RevenueReportView.fxml"));
-=======
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Report/RevenueReportView.fxml"));
->>>>>>> Stashed changes
-            Parent root = loader.load();
+
+            FXMLLoader loader1 = new FXMLLoader(getClass().getResource("/view/admin/Report/RevenueReportView.fxml"));
+            Parent root = loader1.load();
             
             // Create a new stage for the revenue report
             Stage stage = new Stage();
@@ -77,11 +75,10 @@ public class HomePageAdminController {
     private void handleManage() {
         try {
             // Load the ManagePageView.fxml
-<<<<<<< Updated upstream
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("view/admin/Manage/ManagePageView.fxml"));
-=======
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/ManagePageView.fxml"));
->>>>>>> Stashed changes
+
+
             Parent root = loader.load();
             
             // Create a new stage for the manage page
