@@ -6,6 +6,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.product.Stationery;
 
 public class StationeryController {
     @FXML
@@ -31,6 +32,9 @@ public class StationeryController {
     
     @FXML
     private TextField typeField;
+
+    @FXML
+    private TextField colorField;
     
     @FXML
     private Button addStationeryButton;
@@ -38,22 +42,58 @@ public class StationeryController {
     @FXML
     private Button cancelButton;
 
+    @FXML 
+    private TextField manufacturerField;
+
     @FXML
     public void initialize() {
-        // Khởi tạo các thành phần nếu cần
+        
         statusComboBox.getItems().addAll("Available", "Out of Stock", "Discontinued");
+       
+
     }
 
     @FXML
     private void handleAddStationery() {
-        // Xử lý thêm văn phòng phẩm mới
-        // TODO: Thêm logic lưu dữ liệu
+        String title = titleField.getText();
+        String description = descriptionArea.getText();
+        String galleryUrl = galleryUrlField.getText();
+        String material = materialField.getText();
+        String type = typeField.getText();
+        String color = colorField.getText();
+        String manufacturer = manufacturerField.getText();
+        String status = statusComboBox.getValue();
+        Double price = Double.parseDouble(priceField.getText());
+        if (title.isEmpty() || description.isEmpty() || galleryUrl.isEmpty() || material.isEmpty() || type.isEmpty() || color.isEmpty() || manufacturer.isEmpty() || price <= 0) {
+            System.err.println("Please fill in all fields");
+            return;
+        }
+
+        try{
+
+            if (price<=0){
+                System.err.println("Price must be greater than 0");
+                return;
+              }
+        
+        }
+        catch (NumberFormatException e){
+            System.err.println("Price must be a number");
+            return;
+        }
+            
+            
+            
+
+        Stationery stationery = new Stationery(title, description, galleryUrl, price, status, type, color, manufacturer, material);
         closeWindow();
+      
+        
     }
 
     @FXML
     private void handleCancel() {
-        closeWindow();
+
     }
 
     private void closeWindow() {

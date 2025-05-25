@@ -25,7 +25,7 @@ public class ProductTypeSelectionController {
     @FXML
     private void handleAddToy() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/view/admin/Manage/Update Inventory/AddToy.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/UpdateStore/AddToy.fxml"));
             Parent root = loader.load();
             
             Stage stage = new Stage();
@@ -40,7 +40,7 @@ public class ProductTypeSelectionController {
     @FXML
     private void handleAddStationery() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/view/admin/Manage/Update Inventory/AddStationery.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/UpdateStore/AddStationery.fxml"));
             Parent root = loader.load();
             
             Stage stage = new Stage();
@@ -55,7 +55,7 @@ public class ProductTypeSelectionController {
     @FXML
     private void handleAddBook() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/frontend/view/admin/Manage/Update Inventory/AddBook.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/UpdateStore/AddBook.fxml"));
             Parent root = loader.load();
             
             Stage stage = new Stage();

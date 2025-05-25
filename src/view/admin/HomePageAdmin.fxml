@@ -101,6 +101,15 @@
                         </DropShadow>
                     </effect>
                 </Button>
+            <Button fx:id="viewStoreButton" mnemonicParsing="false" onAction="#handleViewStoreButton" prefHeight="55.0" prefWidth="250.0" style="&#10;                        -fx-background-radius: 8;&#10;                    " text="View Store">
+               <effect>
+                  <DropShadow height="15.0" radius="7.0" width="15.0">
+                     <color>
+                        <Color opacity="0.25" />
+                     </color>
+                  </DropShadow>
+               </effect>
+            </Button>
             </children>
         </VBox>
     </center>

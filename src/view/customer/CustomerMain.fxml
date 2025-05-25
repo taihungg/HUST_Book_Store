@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.CustomerMainController">
     <top>
         <VBox spacing="10">
             <children>
@@ -25,25 +25,25 @@
                             </font>
                         </Label>
                         <Pane HBox.hgrow="ALWAYS" />
-                        <Button fx:id="loginButton" text="Login" visible="false" />
-                        <Button fx:id="logoutButton" text="Logout" />
+                        <Button fx:id="loginButton" text="Login" onAction="#handleLogin" />
+                        <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout" visible="false" />
                     </children>
                     <padding>
                         <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
                     </padding>
                 </HBox>
-                <MenuBar>
+                <MenuBar fx:id="menuBar" visible="false">
                     <menus>
                         <Menu text="Account">
                             <items>
-                                <MenuItem fx:id="personalInfoMenuItem" text="See Personal Information" />
-                                <MenuItem fx:id="orderHistoryMenuItem" text="See Order History" />
+                                <MenuItem fx:id="personalInfoMenuItem" text="See Personal Information" onAction="#handleMenuItemAction" />
+                                <MenuItem fx:id="orderHistoryMenuItem" text="See Order History" onAction="#handleMenuItemAction" />
                             </items>
                         </Menu>
                         <Menu text="Store">
                             <items>
-                                <MenuItem fx:id="browseProductsMenuItem" text="Browse Products" />
-                                <MenuItem fx:id="cartMenuItem" text="See Cart" />
+                                <MenuItem fx:id="browseProductsMenuItem" text="Browse Products" onAction="#handleMenuItemAction" />
+                                <MenuItem fx:id="cartMenuItem" text="See Cart" onAction="#handleMenuItemAction" />
                             </items>
                         </Menu>
                     </menus>
@@ -53,9 +53,7 @@
     </top>
 
     <center>
-        <StackPane fx:id="contentArea">
-            <fx:include source="PlaceOrder.fxml" />
-        </StackPane>
+        <StackPane fx:id="contentArea" />
     </center>
 
     <bottom>

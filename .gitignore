@@ -2,3 +2,10 @@
 .classpath
 .project
 src/module-info.java
+<<<<<<< Updated upstream
+.vscode/settings.json
+.DS_Store
+=======
+.DS_Store
+.vscode/settings.json
+>>>>>>> Stashed changes

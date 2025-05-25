@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fx:id="mainScrollPane" fitToWidth="true" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.BrowseProductsController">
+    <content>
+        <VBox spacing="10">
+            <padding>
+                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <children>
+                        <Label styleClass="section-header" text="Browse Products">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+
+                <HBox spacing="10">
+                    <children>
+                        <TextField fx:id="searchField" promptText="Search products..." HBox.hgrow="ALWAYS" />
+                        <Button fx:id="searchButton" text="Search" />
+                    </children>
+                </HBox>
+
+                <HBox spacing="15">
+                    <children>
+                        <VBox spacing="5">
+                            <children>
+                                <Label styleClass="filter-header" text="Filter Options">
+                                    <font>
+                                        <Font name="System Bold" size="14.0" />
+                                    </font>
+                                    <VBox.margin>
+                                        <Insets bottom="10.0" />
+                                    </VBox.margin>
+                                </Label>
+
+                                <TitledPane expanded="false" text="Filter by Category">
+                                    <content>
+                                        <VBox spacing="5">
+                                            <children>
+                                                <CheckBox text="Fiction" />
+                                                <CheckBox text="Non-Fiction" />
+                                                <CheckBox text="Science" />
+                                                <CheckBox text="History" />
+                                                <CheckBox text="Programming" />
+                                                <Button text="Apply Filter" />
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </TitledPane>
+
+                                <TitledPane expanded="false" text="Filter by Price">
+                                    <content>
+                                        <VBox spacing="5">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="5">
+                                                    <children>
+                                                        <Label text="Min: " />
+                                                        <TextField fx:id="minPriceField" prefWidth="70" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="5">
+                                                    <children>
+                                                        <Label text="Max:" />
+                                                        <TextField fx:id="maxPriceField" prefWidth="70" />
+                                                    </children>
+                                                </HBox>
+                                                <Button text="Apply Filter" />
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </TitledPane>
+
+                                <TitledPane expanded="false" text="Sort Options">
+                                    <content>
+                                        <VBox spacing="5">
+                                            <children>
+                                                <RadioButton text="Sort by Title">
+                                                    <toggleGroup>
+                                                        <ToggleGroup fx:id="sortGroup" />
+                                                    </toggleGroup>
+                                                </RadioButton>
+                                                <RadioButton text="Sort by Cost" toggleGroup="$sortGroup" />
+                                                <RadioButton text="Sort by Rating" toggleGroup="$sortGroup" />
+                                                <Button text="Apply Sort" />
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </TitledPane>
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="10" HBox.hgrow="ALWAYS">
+                            <children>
+                                <HBox alignment="CENTER_RIGHT" spacing="10">
+                                    <children>
+                                        <Label text="Showing 24 items" />
+                                        <ComboBox fx:id="viewModeComboBox" promptText="View Mode">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value="Grid View" />
+                                                    <String fx:value="List View" />
+                                                </FXCollections>
+                                            </items>
+                                        </ComboBox>
+                                        <Button fx:id="notifyNotFoundButton" text="Notify Not Found" />
+                                    </children>
+                                </HBox>
+
+                                <ScrollPane fx:id="productScrollPane" fitToWidth="true" prefHeight="300">
+                                    <content>
+                                        <GridPane fx:id="productsGrid" hgap="10" vgap="10">
+                                            <columnConstraints>
+                                                <ColumnConstraints percentWidth="33.33" />
+                                                <ColumnConstraints percentWidth="33.33" />
+                                                <ColumnConstraints percentWidth="33.33" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                            </rowConstraints>
+                                            <children>
+                                                <VBox alignment="CENTER" styleClass="product-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                                    <padding>
+                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                    </padding>
+                                                    <children>
+                                                        <ImageView fitHeight="160" fitWidth="120" preserveRatio="true">
+                                                            <image>
+                                                                <Image url="https://pibook.vn/upload/notice/hoc-vien-sieu-anh-hung-tap-16-140424.jpg" />
+                                                            </image>
+                                                            <VBox.margin>
+                                                                <Insets />
+                                                            </VBox.margin>
+                                                        </ImageView>
+                                                        <Label alignment="CENTER" styleClass="product-title" text="Book Title 1" textAlignment="CENTER" wrapText="true">
+                                                            <font>
+                                                                <Font name="System Bold" size="14.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label alignment="CENTER" styleClass="product-price" text="Price: 19.99" textAlignment="CENTER" />
+                                                        <HBox alignment="CENTER" spacing="10">
+                                                            <children>
+                                                                <Button text="Add to Cart" />
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+
+                                                <VBox alignment="CENTER" styleClass="product-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                                    <padding>
+                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                    </padding>
+                                                    <children>
+                                                        <ImageView fitHeight="160" fitWidth="120" preserveRatio="true">
+                                                            <image>
+                                                                <Image url="https://phunuso.mediacdn.vn/603486343963435008/2025/3/24/-17427875816961557383002.jpg" />
+                                                            </image>
+                                                        </ImageView>
+                                                        <Label alignment="CENTER" styleClass="product-title" text="Book Title 2" textAlignment="CENTER" wrapText="true">
+                                                            <font>
+                                                                <Font name="System Bold" size="14.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label alignment="CENTER" styleClass="product-price" text="Price: 24.99" textAlignment="CENTER" />
+                                                        <HBox alignment="CENTER" spacing="10">
+                                                            <children>
+                                                                <Button text="Add to Cart" />
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+
+                                                <VBox alignment="CENTER" styleClass="product-card" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                                    <padding>
+                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                    </padding>
+                                                    <children>
+                                                        <ImageView fitHeight="160" fitWidth="120" preserveRatio="true">
+                                                            <image>
+                                                                <Image url="https://m.media-amazon.com/images/I/81ndXTvRldL._SL1500_.jpg" />
+                                                            </image>
+                                                        </ImageView>
+                                                        <Label alignment="CENTER" styleClass="product-title" text="Book Title 3" textAlignment="CENTER" wrapText="true">
+                                                            <font>
+                                                                <Font name="System Bold" size="14.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label alignment="CENTER" styleClass="product-price" text="Price: 29.99" textAlignment="CENTER" />
+                                                        <HBox alignment="CENTER" spacing="10">
+                                                            <children>
+                                                                <Button text="Add to Cart" />
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </GridPane>
+                                    </content>
+                                </ScrollPane>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </content>
+</ScrollPane>

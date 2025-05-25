@@ -1,0 +1,173 @@
+package controller.admin;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Stage;
+import javafx.util.converter.DoubleStringConverter;
+import model.product.Product; // Đảm bảo bạn có lớp Product này
+import model.product.Stationery;
+import model.product.Toy;
+public class StoreController {
+
+    // Các cột này sẽ khớp với FXML đã được sửa đổi
+    @FXML
+    private TableColumn<Product, String> titleCol; // Đổi từ nameCol cho nhất quán với Product
+
+    @FXML
+    private TableColumn<Product, String> descriptionCol; // Thêm cột này
+
+    @FXML
+    private TableColumn<Product, Double> priceCol;
+
+    @FXML
+    private TableColumn<Product, String> statusCol; // Thêm cột này
+
+    // TableView sẽ chứa các đối tượng Product
+    @FXML
+    private TableView<Product> productTableView;
+
+
+    // Các nút và trường tìm kiếm giữ nguyên fx:id
+    @FXML
+    private Button deleteButton;
+
+    @FXML
+    private Button exitButton;
+
+    @FXML
+    private Button searchButton;
+
+    @FXML
+    private TextField searchField;
+
+    // Các nút Display, Edit, View có thể cần logic cụ thể hoặc bạn có thể tạm thời vô hiệu hóa/xóa chúng
+    // nếu FXML mới không có chúng hoặc bạn chưa định nghĩa hành động.
+     // Giữ lại nếu FXML có
+
+    @FXML
+    private Button viewButton;    // Giữ lại nếu FXML có
+
+
+    private ObservableList<Product> productList;
+
+    @FXML
+    public void initialize() {
+        productList = FXCollections.observableArrayList(
+            // Sử dụng constructor của Product
+            new Stationery(
+                "Harry Potter và Hòn Đá Phù Thủy",    // title
+                "Câu chuyện đầu tiên về cậu bé phù thủy.", // description
+                "url_hinh_anh_1.jpg",                 // galleryURL
+                150000.0,                             // price
+                "Còn hàng"                            // status
+            ),
+            new Toy(
+                "Đắc Nhân Tâm",                       // title
+                "Nghệ thuật ứng xử và thu phục lòng người.",// description
+                "url_hinh_anh_2.jpg",                 // galleryURL
+                120000.0,                             // price
+                "Hết hàng"                            // status
+            )
+        );
+
+        // Cho phép TableView có thể chỉnh sửa
+        productTableView.setEditable(true);
+
+        // Thiết lập CellValueFactory cho các cột tương ứng với thuộc tính của Product
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        titleCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        titleCol.setOnEditCommit((CellEditEvent<Product, String> event) -> {
+            Product product = event.getRowValue();
+            product.setTitle(event.getNewValue()); // Product cần có setTitle()
+        });
+
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        descriptionCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        descriptionCol.setOnEditCommit((CellEditEvent<Product, String> event) -> {
+            Product product = event.getRowValue();
+            product.setDescription(event.getNewValue()); // Product cần có setDescription()
+        });
+
+        priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        priceCol.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        priceCol.setOnEditCommit((CellEditEvent<Product, Double> event) -> {
+            Product product = event.getRowValue();
+            if (event.getNewValue() != null) {
+                product.setPrice(event.getNewValue()); // Product cần có setPrice()
+            }
+        });
+
+        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        statusCol.setOnEditCommit((CellEditEvent<Product, String> event) -> {
+            Product product = event.getRowValue();
+            product.setStatus(event.getNewValue()); // Product cần có setStatus()
+        });
+
+
+        productTableView.setItems(productList);
+
+      
+    }
+
+    @FXML
+    void handleDeleteAction(ActionEvent event) {
+        productList.remove( productTableView.getSelectionModel().getSelectedItem());
+        
+    }
+
+    @FXML
+    void handleExitAction(ActionEvent event) {
+        Stage stage = (Stage) exitButton.getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    void handleSearchAction(ActionEvent event) {
+        String searchText = searchField.getText().toLowerCase().trim();
+        if (searchText.isEmpty()) {
+            productTableView.setItems(productList); // Hiển thị lại toàn bộ danh sách nếu ô tìm kiếm rỗng
+            return;
+        }
+
+        ObservableList<Product> filteredList = FXCollections.observableArrayList();
+        for (Product product : productList) {
+            if (product.getTitle() != null && product.getTitle().equalsIgnoreCase(searchText)) {
+                filteredList.add(product);
+            }
+            // Bạn có thể thêm tìm kiếm theo description hoặc status nếu muốn
+        }
+        productTableView.setItems(filteredList);
+
+       
+    }
+
+    // Các phương thức handleDisplayAction, handleEditAction, handleViewAction
+    // cần được định nghĩa lại hoặc bạn có thể comment out/xóa nếu FXML mới không có các nút này
+    // hoặc nếu chúng chưa có chức năng.
+   
+
+    
+    
+
+    @FXML
+    void handleViewAction(ActionEvent event) {
+         Product selectedProduct = productTableView.getSelectionModel().getSelectedItem();
+        if (selectedProduct != null) {
+            System.out.println("Xem chi tiết sản phẩm: " + selectedProduct.getTitle());
+            // Mở một cửa sổ/dialog mới để hiển thị chi tiết thông tin sản phẩm này
+            // Ví dụ: hiển thị cả description, galleryURL, v.v.
+        } else {
+            System.out.println("Chưa chọn sản phẩm để xem.");
+        }
+    }
+}
