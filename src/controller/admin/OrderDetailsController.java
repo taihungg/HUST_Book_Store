@@ -5,7 +5,7 @@ import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
-public class OrderDetailController {
+public class OrderDetailsController {
 
     @FXML
     private TextField orderIdField;

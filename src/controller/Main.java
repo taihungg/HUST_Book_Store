@@ -15,12 +15,16 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try{
-            Parent root = FXMLLoader.load(this.getClass().getResource("/view/admin/ViewStore.fxml"));
+            // SỬA ĐỂ TẢI HomePageAdmin.fxml
+            Parent root = FXMLLoader.load(this.getClass().getResource("/view/admin/HomePageAdmin.fxml"));
             Scene scene = new Scene(root);
+            primaryStage.setTitle("HUST Book Store - Admin Panel"); // Có thể đặt lại tiêu đề
             primaryStage.setScene(scene);
             primaryStage.show();
         }catch (Exception e){
-            System.out.println(e);
+            System.err.println("Lỗi khi tải HomePageAdmin.fxml:"); // In lỗi ra System.err
+            e.printStackTrace();
         }
     }
+
 }

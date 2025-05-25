@@ -1,7 +1,4 @@
 package model.product;
-
-import java.util.ArrayList;
-
 public class Stationery extends Product{
 	private String type;
     private String color;               

@@ -25,7 +25,7 @@ public class OrderManagementController {
             Parent root = loader.load();
 
             // Truy cập controller của OrderDetail
-            OrderDetailController controller = loader.getController();
+            OrderDetailsController controller = loader.getController();
             controller.setOrderId(orderId); // truyền dữ liệu
 
             // Tạo và chuyển scene
@@ -58,4 +58,4 @@ public class OrderManagementController {
     }
 }
 
-}
+
