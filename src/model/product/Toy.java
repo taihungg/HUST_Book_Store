@@ -7,6 +7,10 @@ public class Toy extends Product{
     private String brand;
     private String type;
 
+	public Toy(String title, String description, String galleryURL, double price, String status) {
+		super(title, description, galleryURL, price, status);
+	}
+
 	public Toy(String id, String title, String description, String galleryURL, double price, String status,
 			String material, String ageRecommendation, String brand, String type) {
 		super(id, title, description, galleryURL, price, status);
