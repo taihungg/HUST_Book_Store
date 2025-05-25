@@ -2,3 +2,5 @@
 .classpath
 .project
 src/module-info.java
+.vscode/settings.json
+.DS_Store
