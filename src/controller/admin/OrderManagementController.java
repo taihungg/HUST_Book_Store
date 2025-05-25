@@ -6,31 +6,56 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.scene.Node;
 
 public class OrderManagementController {
 
     @FXML
-    private TextField orderIdField;
+    private TextField inputOrderId;
 
+    @FXML
+    private TextField searchField;
+
+    // Bấm nút "View"
     @FXML
     private void handleViewDetail(ActionEvent event) {
         try {
-            // Load FXML của OrderDetail
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("OrderDetail_fixed.fxml"));
+            String orderId = inputOrderId.getText();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/OrderDetail_fixed.fxml"));
             Parent root = loader.load();
 
-            // Lấy controller để truyền dữ liệu
+            // Truy cập controller của OrderDetail
             OrderDetailController controller = loader.getController();
-            String orderId = orderIdField.getText();
-            controller.setOrderId(orderId);
+            controller.setOrderId(orderId); // truyền dữ liệu
 
-            // Đổi scene
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+            // Tạo và chuyển scene
+            Stage stage = new Stage();
             stage.setTitle("Order Detail");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            // Đóng cửa sổ hiện tại
+            ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void handleSearch(ActionEvent event) {
+        System.out.println("Searching for: " + searchField.getText());
+    }
+
+    @FXML
+    private void handleDisplayAll(ActionEvent event) {
+        System.out.println("Display all orders.");
+    }
+
+    @FXML
+    private void handleExit(ActionEvent event) {
+        ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
+    }
+}
+
 }
