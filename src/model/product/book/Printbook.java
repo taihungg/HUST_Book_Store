@@ -1,74 +1,54 @@
 package model.product.book;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import model.product.interfaces.PhysicalProduct;
 import model.product.interfaces.Readable;
 
-public class Printbook extends Book implements Readable{
-	private int numberOfPages; //số trang sách
-	private int weight; //trọng lượng quyển sách
-	private String coverType; //loại bìa
-	private String paperType; //loại giấy
-	private String bindingType; //loại gáy sách
-	//khi import sách không cần đủ toàn bộ thuộc tính, cái nào không được nhập thì để là null
-	//chỉ bắt buộc có các thuộc tính của lớp cha (Book)
-	public Printbook(String id, String title, String description, String galleryURL, double price, String status,
-			String isbn, String authors, String publisher, String category, String language, int publicationYear,
-			int numberOfPages, int weight, String coverType, String paperType, String bindingType) {
-		super(id, title, description, galleryURL, price, status, isbn, authors, publisher, category, language,
-				publicationYear);
-		this.numberOfPages = numberOfPages;
-		this.weight = weight;
-		this.coverType = coverType;
-		this.paperType = paperType;
-		this.bindingType = bindingType;
-	}
-	//đây là nhập từ UI nên không cần id	
-	public Printbook(String title, String description, String galleryURL, double price, String status, String authors,
-			String isbn, String publisher, String category, String language, int publicationYear, int numberOfPages,
-			int weight, String coverType, String paperType, String bindingType) {
-		super(title, description, galleryURL, price, status, authors, isbn, publisher, category, language,
-				publicationYear);
-		this.numberOfPages = numberOfPages;
-		this.weight = weight;
-		this.coverType = coverType;
-		this.paperType = paperType;
-		this.bindingType = bindingType;
-	}
+public class Printbook extends Book implements Readable, PhysicalProduct{
+	private final IntegerProperty numberOfPages; //số trang sách
+	private final IntegerProperty weight; //gram - trọng lượng quyển sách
+	private final StringProperty[] demoPageURLs; //đường dẫn trang demo
 	
-	public int getNumberOfPages() {
-		return numberOfPages;
-	}
-	public void setNumberOfPages(int numberOfPages) {
-		this.numberOfPages = numberOfPages;
-	}
-	public int getWeight() {
-		return weight;
-	}
-	public void setWeight(int weight) {
-		this.weight = weight;
-	}
-	public String getCoverType() {
-		return coverType;
-	}
-	public void setCoverType(String coverType) {
-		this.coverType = coverType;
-	}
-	public String getPaperType() {
-		return paperType;
-	}
-	public void setPaperType(String paperType) {
-		this.paperType = paperType;
-	}
-	public String getBindingType() {
-		return bindingType;
-	}
-	public void setBindingType(String bindingType) {
-		this.bindingType = bindingType;
+	public Printbook(String id, String title, String description, String galleryURL, double sellingPrice,
+			double purchasePrice, double averageRating, int numberOfReviews, String status, String isbn, String author,
+			String publisher, String category, String language, int numberOfPages, int weight) {
+		super(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status,
+				isbn, author, publisher, category, language);
+		this.numberOfPages = new SimpleIntegerProperty(numberOfPages);
+		this.weight = new SimpleIntegerProperty(weight);
+		this.demoPageURLs = new SimpleStringProperty[5];
 	}
 
-	@Override
-	public void read(){
-		//giao diện các ảnh để đọc thử
-		//hoặc có thể in ra nội dung của vài trang 
-        System.out.println("Reading...");
+	public final IntegerProperty numberOfPagesProperty() {
+		return this.numberOfPages;
 	}
+	
+	public final int getNumberOfPages() {
+		return this.numberOfPagesProperty().get();
+	}
+	
+	public final void setNumberOfPages(final int numberOfPages) {
+		this.numberOfPagesProperty().set(numberOfPages);
+	}
+	
+	public final IntegerProperty weightProperty() {
+		return this.weight;
+	}
+	
+	public final int getWeight() {
+		return this.weightProperty().get();
+	}
+	
+	public final void setWeight(final int weight) {
+		this.weightProperty().set(weight);
+	}
+	
+	@Override
+    public void read() {
+		//giao diện chỉ cần làm thông báo đang đọc demo
+        System.out.println("Reading demo " + this.getTitle());
+    }
 }

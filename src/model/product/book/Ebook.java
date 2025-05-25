@@ -1,95 +1,54 @@
 package model.product.book;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleStringProperty;
+import model.product.interfaces.DigitalProduct;
 import model.product.interfaces.Readable;
 
-public class Ebook extends Book implements Readable{
-    private int numberOfPages; //số trang sách
-    private double fileSize; //kích thước file
-    private String ebookFormat; //định dạng file
-    private String downloadURL; //đường dẫn tải file
-    private String readOnlineURL; //đường dẫn đọc online
-    private String deviceCompatibility; //tương thích với thiết bị
-    private String demoPageURL; //đường dẫn trang demo
-    private boolean hasDRM; //có DRM (cơ chế chống sao lưu) hay không
-
-	public Ebook(String id, String title, String description, String galleryURL, double price, String status,
-			String isbn, String authors, String publisher, String category, String language, int publicationYear,
-			int numberOfPages, double fileSize, String ebookFormat, String downloadURL, String readOnlineURL,
-			String deviceCompatibility, boolean hasDRM) {
-		super(id, title, description, galleryURL, price, status, isbn, authors, publisher, category, language,
-				publicationYear);
-		this.numberOfPages = numberOfPages;
-		this.fileSize = fileSize;
-		this.ebookFormat = ebookFormat;
-		this.downloadURL = downloadURL;
-		this.readOnlineURL = readOnlineURL;
-		this.deviceCompatibility = deviceCompatibility;
-		this.hasDRM = hasDRM;
+public class Ebook extends Book implements Readable, DigitalProduct{
+    private final IntegerProperty numberOfPages; //số trang sách
+    private final StringProperty downloadURL; //đường dẫn tải file
+    private final StringProperty[] demoPageURLs; //đường dẫn trang demo
+    
+	public Ebook(String id, String title, String description, String galleryURL, double sellingPrice,
+			double purchasePrice, double averageRating, int numberOfReviews, String status, String isbn,
+			String author, String publisher, String category, String language, int numberOfPages, String downloadURL) {
+		super(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status,
+				isbn, author, publisher, category, language);
+		this.numberOfPages = new SimpleIntegerProperty(numberOfPages);
+		this.downloadURL = new SimpleStringProperty(downloadURL);
+		this.demoPageURLs = new SimpleStringProperty[5];
 	}
 
-	public Ebook(String title, String description, String galleryURL, double price, String status, String authors,
-			String isbn, String publisher, String category, String language, int publicationYear, int numberOfPages,
-			double fileSize, String ebookFormat, String downloadURL, String readOnlineURL, String deviceCompatibility,
-			boolean hasDRM) {
-		super(title, description, galleryURL, price, status, authors, isbn, publisher, category, language,
-				publicationYear);
-		this.numberOfPages = numberOfPages;
-		this.fileSize = fileSize;
-		this.ebookFormat = ebookFormat;
-		this.downloadURL = downloadURL;
-		this.readOnlineURL = readOnlineURL;
-		this.deviceCompatibility = deviceCompatibility;
-		this.hasDRM = hasDRM;
+	public final IntegerProperty numberOfPagesProperty() {
+		return this.numberOfPages;
 	}
-
-	public int getNumberOfPages() {
-		return numberOfPages;
+	
+	public final int getNumberOfPages() {
+		return this.numberOfPagesProperty().get();
 	}
-	public void setNumberOfPages(int numberOfPages) {
-		this.numberOfPages = numberOfPages;
+	
+	public final void setNumberOfPages(final int numberOfPages) {
+		this.numberOfPagesProperty().set(numberOfPages);
 	}
-	public double getFileSize() {
-		return fileSize;
+	
+	public final StringProperty downloadURLProperty() {
+		return this.downloadURL;
 	}
-	public void setFileSize(double fileSize) {
-		this.fileSize = fileSize;
+	
+	public final String getDownloadURL() {
+		return this.downloadURLProperty().get();
 	}
-	public String getEbookFormat() {
-		return ebookFormat;
+	
+	public final void setDownloadURL(final String downloadURL) {
+		this.downloadURLProperty().set(downloadURL);
 	}
-	public void setEbookFormat(String ebookFormat) {
-		this.ebookFormat = ebookFormat;
-	}
-	public String getDownloadURL() {
-		return downloadURL;
-	}
-	public void setDownloadURL(String downloadURL) {
-		this.downloadURL = downloadURL;
-	}
-	public String getReadOnlineURL() {
-		return readOnlineURL;
-	}
-	public void setReadOnlineURL(String readOnlineURL) {
-		this.readOnlineURL = readOnlineURL;
-	}
-	public String getDeviceCompatibility() {
-		return deviceCompatibility;
-	}
-	public void setDeviceCompatibility(String deviceCompatibility) {
-		this.deviceCompatibility = deviceCompatibility;
-	}
-	public boolean isHasDRM() {
-		return hasDRM;
-	}
-	public void setHasDRM(boolean hasDRM) {
-		this.hasDRM = hasDRM;
-	}
-
+	
 	@Override
     public void read() {
-        //giao diện các ảnh để đọc thử
-        //hoặc có thể in ra nội dung của vài trang 
-        System.out.println("Reading...");
+		//giao diện chỉ cần làm thông báo đang đọc demo
+        System.out.println("Reading demo " + this.getTitle());
     }
-
 }

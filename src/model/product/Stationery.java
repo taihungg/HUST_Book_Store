@@ -1,53 +1,39 @@
 package model.product;
 
-import java.util.ArrayList;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import model.product.interfaces.PhysicalProduct;
 
-public class Stationery extends Product{
-	private String type;
-    private String color;               
-    private String manufacturer;               
-    private String material;
-    
-	public Stationery(String id, String title, String description, String galleryURL, double price, String status,
-			String type, String color, String manufacturer, String material) {
-		super(id, title, description, galleryURL, price, status);
-		this.type = type;
-		this.color = color;
-		this.manufacturer = manufacturer;
-		this.material = material;
+public class Stationery extends Product implements PhysicalProduct{
+	private final StringProperty brand;
+	private final StringProperty type;
+	public Stationery(String id, String title, String description, String galleryURL, double sellingPrice,
+			double purchasePrice, double averageRating, int numberOfReviews, String status, String brand, String type) {
+		super(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status);
+		this.brand = new SimpleStringProperty(brand);
+		this.type = new SimpleStringProperty(type);
+	}
+	public final StringProperty brandProperty() {
+		return this.brand;
 	}
 	
-	public Stationery(String title, String description, String galleryURL, double price, String status, String type,
-			String color, String manufacturer, String material) {
-		super(title, description, galleryURL, price, status);
-		this.type = type;
-		this.color = color;
-		this.manufacturer = manufacturer;
-		this.material = material;
+	public final String getBrand() {
+		return this.brandProperty().get();
 	}
 	
-	public String getType() {
-		return type;
+	public final void setBrand(final String brand) {
+		this.brandProperty().set(brand);
 	}
-	public void setType(String type) {
-		this.type = type;
+	
+	public final StringProperty typeProperty() {
+		return this.type;
 	}
-	public String getColor() {
-		return color;
+	
+	public final String getType() {
+		return this.typeProperty().get();
 	}
-	public void setColor(String color) {
-		this.color = color;
-	}
-	public String getManufacturer() {
-		return manufacturer;
-	}
-	public void setManufacturer(String manufacturer) {
-		this.manufacturer = manufacturer;
-	}
-	public String getMaterial() {
-		return material;
-	}
-	public void setMaterial(String material) {
-		this.material = material;
+	
+	public final void setType(final String type) {
+		this.typeProperty().set(type);
 	}
 }

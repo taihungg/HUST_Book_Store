@@ -1,126 +1,61 @@
 package model.product.book;
 
-import java.util.ArrayList;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.product.interfaces.DigitalProduct;
 
 import model.product.interfaces.Playable;
 
-public class Audiobook extends Book implements Playable{
-    private String audioFormat; //định dạng file âm thanh
-	private String downloadURL; //đường dẫn tải file
-	private String streamingURL; //đường dẫn stream âm thanh
-	private String narrator; //tên người đọc
-	private int totalDuration; //tổng thời lượng âm thanh
-	private boolean hasDRM; //có DRM (cơ chế chống sao lưu) hay không
-	private boolean soundEffects; //có âm thanh hiệu ứng hay không
-	private boolean musicScore; //có âm thanh điệu dân ca hay không
-	private ArrayList<Audio> demoAudio; //các đoạn âm thanh demo
-
-	public Audiobook(String id, String title, String description, String galleryURL, double price, String status,
-			String isbn, String authors, String publisher, String category, String language, int publicationYear,
-			String audioFormat, String downloadURL, String streamingURL, String narrator, int totalDuration,
-			boolean hasDRM, boolean soundEffects, boolean musicScore, ArrayList<Audio> demoAudio) {
-		super(id, title, description, galleryURL, price, status, isbn, authors, publisher, category, language,
-				publicationYear);
-		this.audioFormat = audioFormat;
-		this.downloadURL = downloadURL;
-		this.streamingURL = streamingURL;
-		this.narrator = narrator;
-		this.totalDuration = totalDuration;
-		this.hasDRM = hasDRM;
-		this.soundEffects = soundEffects;
-		this.musicScore = musicScore;
-		this.demoAudio = demoAudio;
+public class Audiobook extends Book implements Playable, DigitalProduct{
+	private final StringProperty downloadURL; //đường dẫn tải file
+	private ObservableList<Audio> demoAudio; //các đoạn âm thanh demo
+	
+	public Audiobook(String id, String title, String description, String galleryURL, double sellingPrice, double purchasePrice,
+			double averageRating, int numberOfReviews, String status, String isbn, String author, String publisher,
+			String category, String language, String downloadURL) {
+		super(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status, isbn, author,
+				publisher, category, language);
+		this.downloadURL = new SimpleStringProperty(downloadURL);
+		this.demoAudio = FXCollections.observableArrayList();
 	}
 
-	public Audiobook(String title, String description, String galleryURL, double price, String status, String authors,
-			String isbn, String publisher, String category, String language, int publicationYear, String audioFormat,
-			String downloadURL, String streamingURL, String narrator, int totalDuration, boolean hasDRM,
-			boolean soundEffects, boolean musicScore, ArrayList<Audio> demoAudio) {
-		super(title, description, galleryURL, price, status, authors, isbn, publisher, category, language,
-				publicationYear);
-		this.audioFormat = audioFormat;
-		this.downloadURL = downloadURL;
-		this.streamingURL = streamingURL;
-		this.narrator = narrator;
-		this.totalDuration = totalDuration;
-		this.hasDRM = hasDRM;
-		this.soundEffects = soundEffects;
-		this.musicScore = musicScore;
-		this.demoAudio = demoAudio;
+	public final StringProperty downloadURLProperty() {
+		return this.downloadURL;
 	}
 	
-	public String getAudioFormat() {
-		return audioFormat;
+	public final String getDownloadURL() {
+		return this.downloadURLProperty().get();
 	}
-
-	public void setAudioFormat(String audioFormat) {
-		this.audioFormat = audioFormat;
+	
+	public final void setDownloadURL(final String downloadURL) {
+		this.downloadURLProperty().set(downloadURL);
 	}
-
-	public String getDownloadURL() {
-		return downloadURL;
+	
+	public ObservableList<Audio> getDemoAudio(){
+		return this.demoAudio;
 	}
+	
+	public void addAudiok(Audio inputAudio){
+        // Sử dụng phương thức contains() của List, nó sẽ gọi equals() của đối tượng Audio
+        if(demoAudio.contains(inputAudio)){ 
+            System.out.println("This audio is exist.");
+        } else {
+            demoAudio.add(inputAudio);
+            System.out.println("Demo audio " + inputAudio.getAudioName() + " has been added to the Audiobook.");
+        }
+    }
 
-	public void setDownloadURL(String downloadURL) {
-		this.downloadURL = downloadURL;
-	}
-
-	public String getStreamingURL() {
-		return streamingURL;
-	}
-
-	public void setStreamingURL(String streamingURL) {
-		this.streamingURL = streamingURL;
-	}
-
-	public String getNarrator() {
-		return narrator;
-	}
-
-	public void setNarrator(String narrator) {
-		this.narrator = narrator;
-	}
-
-	public int getTotalDuration() {
-		return totalDuration;
-	}
-
-	public void setTotalDuration(int totalDuration) {
-		this.totalDuration = totalDuration;
-	}
-
-	public boolean isHasDRM() {
-		return hasDRM;
-	}
-
-	public void setHasDRM(boolean hasDRM) {
-		this.hasDRM = hasDRM;
-	}
-
-	public boolean isSoundEffects() {
-		return soundEffects;
-	}
-
-	public void setSoundEffects(boolean soundEffects) {
-		this.soundEffects = soundEffects;
-	}
-
-	public boolean isMusicScore() {
-		return musicScore;
-	}
-
-	public void setMusicScore(boolean musicScore) {
-		this.musicScore = musicScore;
-	}
-
-	public ArrayList<Audio> getDemoAudio() {
-		return demoAudio;
-	}
-
-	public void setDemoAudio(ArrayList<Audio> demoAudio) {
-		this.demoAudio = demoAudio;
-	}
-
+    public void removeAudio(Audio outputAudio){
+        // Sử dụng phương thức remove(Object o) của List, nó cũng sẽ gọi equals()
+        if(demoAudio.remove(outputAudio)){ // remove() trả về true nếu đối tượng được tìm thấy và xóa
+            System.out.println("Demo audio " + outputAudio.getAudioName() + " has been removed from the Audiobook.");
+        } else {
+            System.out.println("Demo audio " + outputAudio.getAudioName() + " is not exist in the Audiobook.");
+        }
+    }
+	
 	@Override
 	public void play(){
 		for(Audio demo: demoAudio) demo.play();

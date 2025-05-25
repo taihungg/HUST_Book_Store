@@ -1,72 +1,86 @@
 package model.product.book;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import model.product.Product;
 
 public abstract class Book extends Product{
-    private String isbn; //mã isbn 13 số chuẩn quốc tế
-	private String authors; //tác giả
-    private String publisher; //nhà xuất bản
-    private String category; //thể loại sách
-    private String language; // Ngôn ngữ của sách
-    private int publicationYear; // Năm xuất bản
-
-	public Book(String id, String title, String description, String galleryURL, double price, String status,
-			String isbn, String authors, String publisher, String category, String language, int publicationYear) {
-		super(id, title, description, galleryURL, price, status);
-        this.isbn = isbn;
-		this.authors = authors;
-		this.publisher = publisher;
-		this.category = category;
-		this.language = language;
-		this.publicationYear = publicationYear;
-	}
-
-	public Book(String title, String description, String galleryURL, double price, String status, String authors,
-			String isbn, String publisher, String category, String language, int publicationYear) {
-		super(title, description, galleryURL, price, status);
-        this.isbn = isbn;
-		this.authors = authors;
-		this.publisher = publisher;
-		this.category = category;
-		this.language = language;
-		this.publicationYear = publicationYear;
-	}
+    private final StringProperty isbn; //mã isbn 13 số chuẩn quốc tế
+	private final StringProperty author; //tác giả
+    private final StringProperty publisher; //nhà xuất bản
+    private final StringProperty category; //thể loại sách
+    private final StringProperty language; // Ngôn ngữ của sách
     
-    public String getIsbn() {
-        return isbn;
-    }
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-	public String getAuthors() {
-		return authors;
+	public Book(String id, String title, String description, String galleryURL, double sellingPrice, double purchasePrice,
+			double averageRating, int numberOfReviews, String status, String isbn, String author,
+			String publisher, String category, String language) {
+		super(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status);
+		this.isbn = new SimpleStringProperty(isbn);
+		this.author = new SimpleStringProperty(author);
+		this.publisher = new SimpleStringProperty(publisher);
+		this.category = new SimpleStringProperty(category);
+		this.language = new SimpleStringProperty(language);
 	}
-	public void setAuthors(String authors) {
-		this.authors = authors;
+
+	public final StringProperty isbnProperty() {
+		return this.isbn;
 	}
-	public String getPublisher() {
-		return publisher;
+	
+	public final String getIsbn() {
+		return this.isbnProperty().get();
 	}
-	public void setPublisher(String publisher) {
-		this.publisher = publisher;
+
+	public final void setIsbn(final String isbn) {
+		this.isbnProperty().set(isbn);
 	}
-	public String getCategory() {
-		return category;
+	
+	public final StringProperty authorProperty() {
+		return this.author;
 	}
-	public void setCategory(String category) {
-		this.category = category;
+	
+	public final String getAuthor() {
+		return this.authorProperty().get();
 	}
-	public String getLanguage() {
-		return language;
+	
+	public final void setAuthor(final String author) {
+		this.authorProperty().set(author);
 	}
-	public void setLanguage(String language) {
-		this.language = language;
+	
+	public final StringProperty publisherProperty() {
+		return this.publisher;
 	}
-	public int getPublicationYear() {
-		return publicationYear;
+	
+	public final String getPublisher() {
+		return this.publisherProperty().get();
 	}
-	public void setPublicationYear(int publicationYear) {
-		this.publicationYear = publicationYear;
+	
+	public final void setPublisher(final String publisher) {
+		this.publisherProperty().set(publisher);
 	}
-    
+	
+	public final StringProperty categoryProperty() {
+		return this.category;
+	}
+	
+	public final String getCategory() {
+		return this.categoryProperty().get();
+	}
+	
+	public final void setCategory(final String category) {
+		this.categoryProperty().set(category);
+	}
+	
+	public final StringProperty languageProperty() {
+		return this.language;
+	}
+	
+	public final String getLanguage() {
+		return this.languageProperty().get();
+	}
+	
+	public final void setLanguage(final String language) {
+		this.languageProperty().set(language);
+	}
 }

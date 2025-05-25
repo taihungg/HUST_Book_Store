@@ -1,85 +1,144 @@
 package model.product;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public abstract class Product {
-	private String id;
-	private String title;
-	private String description;
-	private String galleryURL;
-	private double price;
-	private double averageRating;
-	private int numberOfReviews;
-	private String status;
+	private final StringProperty id;
+	private final StringProperty title;
+	private final StringProperty description;
+	private final StringProperty galleryURL;
+	private final DoubleProperty sellingPrice;
+	private final DoubleProperty purchasePrice;
+	private final DoubleProperty averageRating;
+	private final IntegerProperty numberOfReviews;
+	private final StringProperty status;
 	
-	//phương thức khởi tạo này dùng khi import từ dtb (có cả id)
-	public Product(String id, String title, String description, String galleryURL, double price, String status) {
+	public Product(String id, String title, String description, String galleryURL,
+			double sellingPrice, double purchasePrice, double averageRating, int numberOfReviews, String status) {
 		super();
-		this.id = id;
-		this.title = title;
-		this.description = description;
-		this.galleryURL = galleryURL;
-		this.price = price;
-		this.averageRating = 0;
-		this.numberOfReviews = 0;
-		this.status = status;
+		this.id = new SimpleStringProperty(id);
+		this.title = new SimpleStringProperty(title);
+		this.description = new SimpleStringProperty(description);
+		this.galleryURL = new SimpleStringProperty(galleryURL);
+		this.sellingPrice = new SimpleDoubleProperty(sellingPrice);
+		this.purchasePrice = new SimpleDoubleProperty(purchasePrice);
+		this.averageRating = new SimpleDoubleProperty(averageRating);
+		this.numberOfReviews = new SimpleIntegerProperty(numberOfReviews);
+		this.status = new SimpleStringProperty(status);
 	}
-	//dùng khi tạo sản phẩm mới bằng cách nhập vào UI
-	public Product(String title, String description, String galleryURL, double price, String status) {
-		super();
-		this.title = title;
-		this.description = description;
-		this.galleryURL = galleryURL;
-		this.price = price;
-		this.averageRating = 0;
-		this.numberOfReviews = 0;
-		this.status = status;
+
+
+	public final String getId() {
+		return this.idProperty().get();
 	}
 	
-	public String getId() {
-		return id;
+
+	public final void setId(final String id) {
+		this.idProperty().set(id);
 	}
-	public void setId(String id) {
-		this.id = id;
+	
+	public final StringProperty titleProperty() {
+		return this.title;
 	}
-	public String getTitle() {
-		return title;
+	
+	public final String getTitle() {
+		return this.titleProperty().get();
 	}
-	public void setTitle(String title) {
-		this.title = title;
+	
+	public final void setTitle(final String title) {
+		this.titleProperty().set(title);
 	}
-	public String getDescription() {
-		return description;
+	
+	public final StringProperty descriptionProperty() {
+		return this.description;
 	}
-	public void setDescription(String description) {
-		this.description = description;
+	
+	public final String getDescription() {
+		return this.descriptionProperty().get();
 	}
-	public String getGalleryURL() {
-		return galleryURL;
+	
+	public final void setDescription(final String description) {
+		this.descriptionProperty().set(description);
 	}
-	public void setGalleryURL(String galleryURL) {
-		this.galleryURL = galleryURL;
+	
+	public final StringProperty galleryURLProperty() {
+		return this.galleryURL;
 	}
-	public double getPrice() {
-		return price;
+	
+	public final String getGalleryURL() {
+		return this.galleryURLProperty().get();
 	}
-	public void setPrice(double price) {
-		this.price = price;
+	
+	public final void setGalleryURL(final String galleryURL) {
+		this.galleryURLProperty().set(galleryURL);
 	}
-	public double getAverageRating() {
-		return averageRating;
+	
+	public final DoubleProperty sellingPriceProperty() {
+		return this.sellingPrice;
 	}
-	public void setAverageRating(double averageRating) {
-		this.averageRating = averageRating;
+	
+	public final double getSellingPrice() {
+		return this.sellingPriceProperty().get();
 	}
-	public int getNumberOfReviews() {
-		return numberOfReviews;
+	
+	public final void setSellingPrice(final double sellingPrice) {
+		this.sellingPriceProperty().set(sellingPrice);
 	}
-	public void setNumberOfReviews(int numberOfReviews) {
-		this.numberOfReviews = numberOfReviews;
+	
+	public final DoubleProperty purchasePriceProperty() {
+		return this.purchasePrice;
 	}
-	public String getStatus() {
-		return status;
+	
+	public final double getPurchasePrice() {
+		return this.purchasePriceProperty().get();
 	}
-	public void setStatus(String status) {
-		this.status = status;
+	
+	public final void setPurchasePrice(final double purchasePrice) {
+		this.purchasePriceProperty().set(purchasePrice);
+	}
+	
+	public final DoubleProperty averageRatingProperty() {
+		return this.averageRating;
+	}
+	
+	public final double getAverageRating() {
+		return this.averageRatingProperty().get();
+	}
+	
+	public final void setAverageRating(final double averageRating) {
+		this.averageRatingProperty().set(averageRating);
+	}
+	
+	public final IntegerProperty numberOfReviewsProperty() {
+		return this.numberOfReviews;
+	}
+	
+	public final int getNumberOfReviews() {
+		return this.numberOfReviewsProperty().get();
+	}
+	
+	public final void setNumberOfReviews(final int numberOfReviews) {
+		this.numberOfReviewsProperty().set(numberOfReviews);
+	}
+	
+	public final StringProperty statusProperty() {
+		return this.status;
+	}
+	
+	public final String getStatus() {
+		return this.statusProperty().get();
+	}
+	
+	public final void setStatus(final String status) {
+		this.statusProperty().set(status);
+	}
+
+	public final StringProperty idProperty() {
+		return this.id;
 	}
 }
