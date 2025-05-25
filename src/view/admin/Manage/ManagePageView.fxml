@@ -57,7 +57,7 @@
                       <DropShadow height="20.0" radius="9.5" width="20.0">
                          <color>
                             <Color opacity="0.3" />
-                         </color>
+                         </color >
                       </DropShadow>
                    </effect>
                 </Button>

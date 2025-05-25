@@ -103,4 +103,23 @@ public class HomePageAdminController {
             e.printStackTrace();
         }
     } 
+
+    @FXML 
+    private void  handleViewStoreButton () {
+        try {
+         
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/ViewStore.fxml"));
+            Parent root = loader.load();
+            
+            // Create a new stage for the see orders page
+            Stage stage = new Stage();
+            stage.setTitle("Xem Kho hàng");
+            stage.setScene(new Scene(root));
+            
+            // Show the see orders window
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

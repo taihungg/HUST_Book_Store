@@ -2,14 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.BookStoreController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.StoreController">
    <center>
       <BorderPane prefHeight="200.0" prefWidth="200.0">
          <top>
@@ -33,9 +32,6 @@
                 <TableColumn fx:id="totalPriceCol" prefWidth="120.99444580078125" text="TotalPrice" />
                 <TableColumn fx:id="categoryCol" prefWidth="257.00555419921875" text="Category" />
               </columns>
-               <placeholder>
-                  <Label text="No content in table" />
-               </placeholder>
                <BorderPane.margin>
                   <Insets left="15.0" right="15.0" />
                </BorderPane.margin>
@@ -48,9 +44,6 @@
                </padding>
                <children>
                   <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteAction" prefWidth="70.0" style="-fx-background-color: #FF6347;" text="DELETE" textFill="WHITE" />
-                  <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEditAction" prefWidth="70.0" text="EDIT" />
-                  <Button fx:id="displayButton" mnemonicParsing="false" onAction="#handleDisplayAction" prefWidth="70.0" text="DISPLAY" />
-                  <Button fx:id="viewButton" mnemonicParsing="false" onAction="#handleViewAction" prefWidth="70.0" text="VIEW" />
                   <Button fx:id="exitButton" mnemonicParsing="false" onAction="#handleExitAction" prefWidth="70.0" text="EXIT" />
                </children>
             </HBox>

@@ -46,8 +46,7 @@ public class StationeryController {
 
     @FXML
     private void handleAddStationery() {
-        // Xử lý thêm văn phòng phẩm mới
-        // TODO: Thêm logic lưu dữ liệu
+      
         closeWindow();
     }
 
