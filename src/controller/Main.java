@@ -16,7 +16,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try{
             // SỬA ĐỂ TẢI HomePageAdmin.fxml
-            Parent root = FXMLLoader.load(this.getClass().getResource("/view/admin/HomePageAdmin.fxml"));
+            Parent root = FXMLLoader.load(this.getClass().getResource("/view/customer/CustomerMain.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setTitle("HUST Book Store - Admin Panel"); // Có thể đặt lại tiêu đề
             primaryStage.setScene(scene);
