@@ -42,7 +42,7 @@
        <center>
           <VBox alignment="CENTER" spacing="35.0" style="-fx-padding: 30;">
              <children>
-                <Button fx:id="manageUserButton" mnemonicParsing="false" prefHeight="65.0" prefWidth="300.0" text="Manage User">
+                <Button fx:id="manageUserButton" mnemonicParsing="false" onAction="#handleManageUser" prefHeight="65.0" prefWidth="300.0" text="Manage User">
                    <style>
                       -fx-background-color: #009688; /* Teal */
                       -fx-text-fill: white;

@@ -38,7 +38,7 @@ public class ManagePageController {
     @FXML
     private void handleUpdateInventory() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/Update Inventory/ProductTypeSelectionView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/UpdateStore/ProductTypeSelectionView.fxml"));
             Parent root = loader.load();
             
             Stage stage = new Stage();
