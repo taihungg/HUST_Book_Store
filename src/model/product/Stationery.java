@@ -4,6 +4,10 @@ public class Stationery extends Product{
     private String color;               
     private String manufacturer;               
     private String material;
+
+	public Stationery(String title, String description, String galleryURL, double price, String status) {
+		super( title,  description,  galleryURL,  price,  status);
+	}
     
 	public Stationery(String id, String title, String description, String galleryURL, double price, String status,
 			String type, String color, String manufacturer, String material) {

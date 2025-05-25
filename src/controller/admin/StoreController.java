@@ -1,171 +1,173 @@
-    package controller.admin;
+package controller.admin;
 
-  
-    import javafx.collections.FXCollections;
-    import javafx.collections.ObservableList;
-    import javafx.event.ActionEvent;
-    import javafx.fxml.FXML;
-    import javafx.scene.control.Button;
-    import javafx.scene.control.TableColumn;
-    import javafx.scene.control.TableColumn.CellEditEvent; // Quan trọng: Import CellEditEvent
-    import javafx.scene.control.TableView;
-    import javafx.scene.control.TextField;
-    import javafx.scene.control.cell.PropertyValueFactory;
-    import javafx.scene.control.cell.TextFieldTableCell; // Quan trọng: Import TextFieldTableCell
-    import javafx.stage.Stage;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Stage;
+import javafx.util.converter.DoubleStringConverter;
+import model.product.Product; // Đảm bảo bạn có lớp Product này
+import model.product.Stationery;
+import model.product.Toy;
+public class StoreController {
 
-import javafx.util.converter.DoubleStringConverter; // Import converter cho Double
-    import javafx.util.converter.IntegerStringConverter;
-    public class StoreController {
+    // Các cột này sẽ khớp với FXML đã được sửa đổi
+    @FXML
+    private TableColumn<Product, String> titleCol; // Đổi từ nameCol cho nhất quán với Product
 
-        @FXML
-        private TableColumn<Book, String> authorCol;
+    @FXML
+    private TableColumn<Product, String> descriptionCol; // Thêm cột này
 
-        @FXML
-        private TableView<Book> bookTableView;
+    @FXML
+    private TableColumn<Product, Double> priceCol;
 
-        @FXML
-        private TableColumn<Book, String> categoryCol;
+    @FXML
+    private TableColumn<Product, String> statusCol; // Thêm cột này
 
-        @FXML
-        private Button deleteButton;
+    // TableView sẽ chứa các đối tượng Product
+    @FXML
+    private TableView<Product> productTableView;
 
-        @FXML
-        private Button displayButton;
 
-        @FXML
-        private Button editButton;
+    // Các nút và trường tìm kiếm giữ nguyên fx:id
+    @FXML
+    private Button deleteButton;
 
-        @FXML
-        private Button exitButton;
+    @FXML
+    private Button exitButton;
 
-        @FXML
-        private TableColumn<Book, String> nameCol; 
+    @FXML
+    private Button searchButton;
 
-        @FXML
-        private TableColumn<Book, Double> priceCol;
+    @FXML
+    private TextField searchField;
 
-        @FXML
-        private TableColumn<Book, Integer> quantityCol;
+    // Các nút Display, Edit, View có thể cần logic cụ thể hoặc bạn có thể tạm thời vô hiệu hóa/xóa chúng
+    // nếu FXML mới không có chúng hoặc bạn chưa định nghĩa hành động.
+     // Giữ lại nếu FXML có
 
-        @FXML
-        private Button searchButton;
+    @FXML
+    private Button viewButton;    // Giữ lại nếu FXML có
 
-        @FXML
-        private TextField searchField;
 
-        @FXML
-        private TableColumn<Book, Double> totalPriceCol;
+    private ObservableList<Product> productList;
 
-        @FXML
-        private Button viewButton;
+    @FXML
+    public void initialize() {
+        productList = FXCollections.observableArrayList(
+            // Sử dụng constructor của Product
+            new Stationery(
+                "Harry Potter và Hòn Đá Phù Thủy",    // title
+                "Câu chuyện đầu tiên về cậu bé phù thủy.", // description
+                "url_hinh_anh_1.jpg",                 // galleryURL
+                150000.0,                             // price
+                "Còn hàng"                            // status
+            ),
+            new Toy(
+                "Đắc Nhân Tâm",                       // title
+                "Nghệ thuật ứng xử và thu phục lòng người.",// description
+                "url_hinh_anh_2.jpg",                 // galleryURL
+                120000.0,                             // price
+                "Hết hàng"                            // status
+            )
+        );
 
-        private ObservableList<Book> bookList;
+        // Cho phép TableView có thể chỉnh sửa
+        productTableView.setEditable(true);
 
+        // Thiết lập CellValueFactory cho các cột tương ứng với thuộc tính của Product
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        titleCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        titleCol.setOnEditCommit((CellEditEvent<Product, String> event) -> {
+            Product product = event.getRowValue();
+            product.setTitle(event.getNewValue()); // Product cần có setTitle()
+        });
+
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        descriptionCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        descriptionCol.setOnEditCommit((CellEditEvent<Product, String> event) -> {
+            Product product = event.getRowValue();
+            product.setDescription(event.getNewValue()); // Product cần có setDescription()
+        });
+
+        priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        priceCol.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        priceCol.setOnEditCommit((CellEditEvent<Product, Double> event) -> {
+            Product product = event.getRowValue();
+            if (event.getNewValue() != null) {
+                product.setPrice(event.getNewValue()); // Product cần có setPrice()
+            }
+        });
+
+        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        statusCol.setOnEditCommit((CellEditEvent<Product, String> event) -> {
+            Product product = event.getRowValue();
+            product.setStatus(event.getNewValue()); // Product cần có setStatus()
+        });
+
+
+        productTableView.setItems(productList);
+
+      
+    }
+
+    @FXML
+    void handleDeleteAction(ActionEvent event) {
+        productList.remove( productTableView.getSelectionModel().getSelectedItem());
         
-    @FXML 
-public void initialize() {
-    bookList = FXCollections.observableArrayList(
-        new Book(
-            "Harry Potter và Hòn Đá Phù Thủy",    // title (Tên sách)
-            "J.K. Rowling",                       // authors (Tác giả)
-            150000.0,                             // price (Giá)
-            25,                                   // quantity (Số lượng)
-            "Fantasy"                             // category (Thể loại)
-        ),
-        new Book(
-            "Đắc Nhân Tâm",                       // title (Tên sách)
-            "Dale Carnegie",                      // authors (Tác giả)
-            120000.0,                             // price (Giá)
-            30,                                   // quantity (Số lượng)
-            "Self-help"                           // category (Thể loại)
-        )
-    );
-    bookTableView.setEditable(true);
-    nameCol.setCellValueFactory(new PropertyValueFactory<Book, String>("title"));
-    nameCol.setCellFactory(TextFieldTableCell.forTableColumn());
-    nameCol.setOnEditCommit((CellEditEvent<Book,String> event) -> {
-        Book book = event.getRowValue();
-        book.setTitle(event.getNewValue());
-    });
-    authorCol.setCellValueFactory(new PropertyValueFactory<Book, String>("authors"));
-    authorCol.setCellFactory (TextFieldTableCell.forTableColumn());
-    authorCol.setOnEditCommit((CellEditEvent<Book,String> event)-> {
-        Book book = event.getRowValue();
-        book.setAuthors(event.getNewValue());
-    });
+    }
 
-    priceCol.setCellValueFactory(new PropertyValueFactory<Book, Double>("price"));
-    priceCol.setCellFactory (TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-    priceCol.setOnEditCommit((CellEditEvent<Book,Double>e) ->{
-        Book book = e.getRowValue();
-        book.setPrice(e.getNewValue());
-    });
+    @FXML
+    void handleExitAction(ActionEvent event) {
+        Stage stage = (Stage) exitButton.getScene().getWindow();
+        stage.close();
+    }
 
-    quantityCol.setCellValueFactory(new PropertyValueFactory<Book, Integer>("quantity"));
-    quantityCol.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-    quantityCol.setOnEditCommit((CellEditEvent<Book,Integer> e ) -> {
-        Book book = e.getRowValue();
-        book.setQuantity(e.getNewValue());
+    @FXML
+    void handleSearchAction(ActionEvent event) {
+        String searchText = searchField.getText().toLowerCase().trim();
+        if (searchText.isEmpty()) {
+            productTableView.setItems(productList); // Hiển thị lại toàn bộ danh sách nếu ô tìm kiếm rỗng
+            return;
+        }
+
+        ObservableList<Product> filteredList = FXCollections.observableArrayList();
+        for (Product product : productList) {
+            if (product.getTitle() != null && product.getTitle().equalsIgnoreCase(searchText)) {
+                filteredList.add(product);
+            }
+            // Bạn có thể thêm tìm kiếm theo description hoặc status nếu muốn
+        }
+        productTableView.setItems(filteredList);
+
        
-    }); // THÊM CHO QUANTITY
+    }
 
-    categoryCol.setCellValueFactory(new PropertyValueFactory<Book, String>("category"));
-    categoryCol.setCellFactory(TextFieldTableCell.forTableColumn());
-    categoryCol.setOnEditCommit((CellEditEvent<Book,String> e) -> {
-        Book book = e.getRowValue();
-        book.setCategory(e.getNewValue());
-    });
-    totalPriceCol.setCellValueFactory(new PropertyValueFactory<Book, Double>("totalPrice"));
+    // Các phương thức handleDisplayAction, handleEditAction, handleViewAction
+    // cần được định nghĩa lại hoặc bạn có thể comment out/xóa nếu FXML mới không có các nút này
+    // hoặc nếu chúng chưa có chức năng.
+   
+
     
-     // SỬA ĐỂ DÙNG GETTER totalPrice
+    
 
-    bookTableView.setItems(bookList);
-
-    // In ra để kiểm tra
-    System.out.println("Danh sách sách được nạp: " + bookList.size());
-    if (!bookList.isEmpty()) {
-        System.out.println("Sách đầu tiên: " + bookList.get(0).getTitle() + " - SL: " + bookList.get(0).getQuantity());
+    @FXML
+    void handleViewAction(ActionEvent event) {
+         Product selectedProduct = productTableView.getSelectionModel().getSelectedItem();
+        if (selectedProduct != null) {
+            System.out.println("Xem chi tiết sản phẩm: " + selectedProduct.getTitle());
+            // Mở một cửa sổ/dialog mới để hiển thị chi tiết thông tin sản phẩm này
+            // Ví dụ: hiển thị cả description, galleryURL, v.v.
+        } else {
+            System.out.println("Chưa chọn sản phẩm để xem.");
+        }
     }
 }
-
-        @FXML
-        void handleDeleteAction(ActionEvent event) {
-            Book selectedBook = bookTableView.getSelectionModel().getSelectedItem();
-            bookList.remove(selectedBook);
-
-        }
-
-     
-       
-
-       
-
-        @FXML
-        void handleExitAction(ActionEvent event) {
-            Stage stage = (Stage) exitButton.getScene().getWindow();
-            stage.close();
-
-        }
-
-        @FXML
-        void handleSearchAction(ActionEvent event) {
-            String searchText = searchField.getText();
-            ObservableList<Book>filteredList = FXCollections.observableArrayList();
-            for (Book book : bookList){
-                if(book.getTitle().equals(searchText)){
-                    filteredList.add(book);
-                    bookTableView.setItems(filteredList);
-                    break;
-                }
-            }
-            if (filteredList.isEmpty()){
-                bookTableView.setItems(bookList);
-            }
-                
-            
-        }
-
-        
-
-    }
