@@ -54,7 +54,7 @@
 
     <center>
         <StackPane fx:id="contentArea">
-            <fx:include source="PlaceOrder.fxml" />
+            <fx:include source="Store/BrowseProducts.fxml" />
         </StackPane>
     </center>
 
