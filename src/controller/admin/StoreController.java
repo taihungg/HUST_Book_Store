@@ -118,8 +118,22 @@ public class StoreController {
 
     @FXML
     void handleExitAction(ActionEvent event) {
+
+        try{
+        FXMLLoader loader = new FXMLLoader (getClass().getResource("/view/admin/HomePageAdmin.fxml"));
+        Parent root = loader.load();
+        Stage currentstage = new Stage();
+        currentstage.setTitle("Trang chủ");
+        currentstage.setScene (new Scene(root));
+        currentstage.show();
+        
         Stage stage = (Stage) exitButton.getScene().getWindow();
         stage.close();
+    }
+    catch(IOException e){
+        System.err.println("Lỗi khi mở trang chủ");
+        e.printStackTrace();
+    }
     }
 
     @FXML

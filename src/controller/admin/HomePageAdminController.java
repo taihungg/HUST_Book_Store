@@ -42,6 +42,11 @@ public class HomePageAdminController {
             
             // Show the revenue report window
             stage.show();
+
+            Stage curreStage = (Stage)reportButton.getScene().getWindow();
+            curreStage.close();
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,6 +72,9 @@ public class HomePageAdminController {
             
             // Show the see orders window
             stage.show();
+
+            Stage curreStage = (Stage)seeOrdersButton.getScene().getWindow();
+            curreStage.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,6 +94,8 @@ public class HomePageAdminController {
             
             // Show the see orders window
             stage.show();
+            Stage curreStage = (Stage)seeOrdersButton.getScene().getWindow();
+            curreStage.close();
         } 
         catch (Exception e) {
             e.printStackTrace();
@@ -108,10 +118,10 @@ public class HomePageAdminController {
             // Show the see orders window
             stage.show();
 
-            StoreController storeController = loader.getController();
-            if (storeController != null) {
-                System.out.println("HomePageAdminController: Đã lấy được activeStoreController.");
-            } 
+            Stage curreStage = (Stage)seeOrdersButton.getScene().getWindow();
+            curreStage.close();
+
+            
         }
         catch (Exception e) {
             e.printStackTrace();

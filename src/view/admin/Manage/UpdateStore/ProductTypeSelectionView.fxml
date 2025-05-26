@@ -121,11 +121,13 @@
        </center>
        <bottom>
             <HBox alignment="CENTER" style="-fx-padding: 15;">
-                <Label text="Hệ thống Quản lý Hiệu sách HUST" textFill="#78909C">
-                    <font>
-                        <Font size="11.0" />
-                    </font>
-                </Label>
+         <children>
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButton" text="BACK">
+               <HBox.margin>
+                  <Insets left="500.0" />
+               </HBox.margin>
+            </Button>
+         </children>
             </HBox>
         </bottom>
     </BorderPane>

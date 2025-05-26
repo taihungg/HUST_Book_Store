@@ -57,7 +57,7 @@
                       <DropShadow height="20.0" radius="9.5" width="20.0">
                          <color>
                             <Color opacity="0.3" />
-                         </color >
+                         </color>
                       </DropShadow>
                    </effect>
                 </Button>
@@ -83,14 +83,11 @@
              </children>
           </VBox>
        </center>
-       <bottom>
-          <Label text="Chọn một tác vụ để tiếp tục" textFill="#78909C" BorderPane.alignment="CENTER">
-             <font>
-                <Font size="12.0" />
-             </font>
-             <BorderPane.margin>
-                <Insets bottom="20.0" top="10.0" />
-             </BorderPane.margin>
-          </Label>
-       </bottom>
+   <bottom>
+      <Button fx:id="backButton" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#handleBackAction" prefHeight="25.0" prefWidth="51.0" text="BACK" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="500.0" />
+         </BorderPane.margin>
+      </Button>
+   </bottom>
     </BorderPane>

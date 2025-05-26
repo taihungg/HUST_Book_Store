@@ -16,10 +16,31 @@ public class ProductTypeSelectionController {
     
     @FXML
     private Button addBookButton;
+    
+    @FXML
+    private Button backButton;
 
     @FXML
     public void initialize() {
         // Khởi tạo các thành phần nếu cần
+    }
+
+    @FXML
+    private void handleBackButton(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/ManagePageView.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Cập nhật kho");
+            stage.setScene(new Scene(root));
+            stage.show();
+            Stage currentStage = (Stage) backButton.getScene().getWindow();
+            currentStage.close();
+        }
+        catch(Exception e){
+            System.err.println("Lỗi khi đóng cửa sổ");
+            e.printStackTrace();
+    }
     }
 
     @FXML
@@ -32,6 +53,8 @@ public class ProductTypeSelectionController {
             stage.setTitle("Thêm Đồ Chơi Mới");
             stage.setScene(new Scene(root));
             stage.show();
+            Stage currentStage = (Stage) addBookButton.getScene().getWindow();
+            currentStage.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,6 +70,8 @@ public class ProductTypeSelectionController {
             stage.setTitle("Thêm Văn Phòng Phẩm Mới");
             stage.setScene(new Scene(root));
             stage.show();
+            Stage currentStage = (Stage) addBookButton.getScene().getWindow();
+            currentStage.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,6 +87,9 @@ public class ProductTypeSelectionController {
             stage.setTitle("Thêm Sách Mới");
             stage.setScene(new Scene(root));
             stage.show();
+
+            Stage currentStage = (Stage) addBookButton.getScene().getWindow();
+            currentStage.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

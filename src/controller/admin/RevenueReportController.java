@@ -8,6 +8,8 @@ import javafx.scene.chart.NumberAxis;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.cell.PropertyValueFactory;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
@@ -88,8 +90,24 @@ public class RevenueReportController {
 
     @FXML
     private void handleExit() {
+        try{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/HomePageAdmin.fxml"));
+        Parent root = loader.load();
+        Stage currentstage = new Stage();
+        currentstage.setTitle("Trang chủ");
+        currentstage.setScene(new Scene(root));
+        currentstage.show();
+
         Stage stage = (Stage) ExitButton.getScene().getWindow();
         stage.close();
+        }
+        catch(IOException e){
+            System.err.println("Lỗi khi mở trang chủ");
+            e.printStackTrace();
+
+            }
+
+        
     }
 
     @FXML

@@ -2,11 +2,14 @@ package controller.admin;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
@@ -261,10 +264,23 @@ public class BookController {
 
     @FXML
     void handleCancel(ActionEvent event) {
-        Stage stage = (Stage) cancelButton.getScene().getWindow(); // Lấy stage từ nút cancel
-        if (stage != null) {
-            stage.close();
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/UpdateStore/ProductTypeSelectionView.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Cập nhật kho");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            Stage currentStage = (Stage) cancelButton.getScene().getWindow();
+            currentStage.close();
+            
         }
+        catch(Exception e){
+            System.err.println("Lỗi khi đóng cửa sổ");
+            e.printStackTrace();
+        }
+        
     }
 
     private void clearFormFields() {
