@@ -40,14 +40,14 @@ public class BrowseProductsController implements SubController, Initializable {
     @FXML private CheckBox historyCheckBox;
     @FXML private CheckBox programmingCheckBox;
     @FXML private Label itemCountLabel;
-    //endregion
+    //end region
 
     //region Internal State
     private CustomerMainController mainController;
     private List<Product> allProducts;
     private ObservableList<Product> displayedProducts;
     private Map<Product, Integer> cartItems = new HashMap<>(); // Lưu trữ số lượng từng sản phẩm trong giỏ hàng
-    //endregion
+    //end region
 
     //region Nested Classes (Product and CartItem)
     public static class Product {
