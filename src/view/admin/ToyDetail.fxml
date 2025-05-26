@@ -45,15 +45,6 @@
                         <ImageView fx:id="toyImageView" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-color: #CCCCCC; -fx-border-width: 1; -fx-background-color: #f9f9f9;">
                             </ImageView>
                         <HBox alignment="CENTER" spacing="15.0">
-                            <children>
-                                <Button fx:id="prevImageButton" mnemonicParsing="false" onAction="#handlePrevImageAction" prefWidth="80.0" text="&lt; Trước" />
-                                <Label fx:id="imageCounterLabel" text="- / -">
-                                    <font>
-                                        <Font size="12.0" />
-                                    </font>
-                                </Label>
-                                <Button fx:id="nextImageButton" mnemonicParsing="false" onAction="#handleNextImageAction" prefWidth="80.0" text="Sau &gt;" />
-                            </children>
                             <VBox.margin>
                                 <Insets top="5.0" />
                             </VBox.margin>
@@ -85,28 +76,6 @@
                                 <Insets bottom="5.0" left="10.0" />
                             </padding>
                         </Label>
-                        
-                        <Label style="-fx-font-weight: bold;" text="Số lượng còn lại:">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="toyQuantityLabel" style="-fx-font-size: 14px;" text="[Chưa có thông tin]">
-                            <padding>
-                                <Insets bottom="5.0" left="10.0" />
-                            </padding>
-                        </Label>
-
-                        <Label style="-fx-font-weight: bold;" text="Loại đồ chơi:">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="toyTypeLabel" style="-fx-font-size: 14px;" text="[Chưa có thông tin]">
-                            <padding>
-                                <Insets bottom="5.0" left="10.0" />
-                            </padding>
-                        </Label>
 
                         <Label style="-fx-font-weight: bold;" text="Độ tuổi khuyến nghị:">
                             <font>
@@ -125,17 +94,6 @@
                             </font>
                         </Label>
                         <Label fx:id="toyManufacturerLabel" style="-fx-font-size: 14px;" text="[Chưa có thông tin]">
-                            <padding>
-                                <Insets bottom="5.0" left="10.0" />
-                            </padding>
-                        </Label>
-
-                        <Label style="-fx-font-weight: bold;" text="Chất liệu:">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="toyMaterialLabel" style="-fx-font-size: 14px;" text="[Chưa có thông tin]">
                             <padding>
                                 <Insets bottom="5.0" left="10.0" />
                             </padding>

@@ -1,6 +1,7 @@
 package controller.admin;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -99,6 +100,12 @@ public class ToyController {
     brand,  suitableAge);
 
    productDataService.addProduct(newToy);
+
+   Alert alert = new Alert (Alert.AlertType.INFORMATION);
+   alert.setTitle("Thông báo");
+   alert.setHeaderText("Thêm đồ chơi thành công");
+   alert.setContentText("Sản phẩm đã được thêm vào danh sách sản phẩm");
+   alert.showAndWait();
         
         closeWindow();
     }
