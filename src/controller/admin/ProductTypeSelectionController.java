@@ -42,7 +42,7 @@ public class ProductTypeSelectionController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/UpdateStore/AddStationery.fxml"));
             Parent root = loader.load();
-            
+           
             Stage stage = new Stage();
             stage.setTitle("Thêm Văn Phòng Phẩm Mới");
             stage.setScene(new Scene(root));
@@ -66,4 +66,4 @@ public class ProductTypeSelectionController {
             e.printStackTrace();
         }
     }
-} 
+}       

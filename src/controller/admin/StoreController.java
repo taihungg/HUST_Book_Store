@@ -16,6 +16,7 @@ import javafx.util.converter.DoubleStringConverter;
 import model.product.Product; // Đảm bảo bạn có lớp Product này
 import model.product.Stationery;
 import model.product.Toy;
+import java.util.Locale;
 public class StoreController {
 
     // Các cột này sẽ khớp với FXML đã được sửa đổi
@@ -57,14 +58,13 @@ public class StoreController {
     private Button viewButton;    // Giữ lại nếu FXML có
 
 
-    private ObservableList<Product> productList;
+    private ProductDataService productDataService;
 
     @FXML
     public void initialize() {
-        productList = FXCollections.observableArrayList();
-            // Sử dụng constructor của Product
+        productDataService = ProductDataService.getInstance(); // Lấy instance của service
 
-        // Cho phép TableView có thể chỉnh sửa
+
         productTableView.setEditable(true);
 
         // Thiết lập CellValueFactory cho các cột tương ứng với thuộc tính của Product
@@ -82,7 +82,7 @@ public class StoreController {
             product.setDescription(event.getNewValue()); // Product cần có setDescription()
         });
 
-        priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        priceCol.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
         priceCol.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         priceCol.setOnEditCommit((CellEditEvent<Product, Double> event) -> {
             Product product = event.getRowValue();
@@ -99,14 +99,14 @@ public class StoreController {
         });
 
 
-        productTableView.setItems(productList);
+        productTableView.setItems(productDataService.getProductList());
+        System.out.println("StoreController: Khởi tạo hoàn tất. Hiển thị " + productDataService.getProductList().size() + " sản phẩm từ service.");
 
-      
     }
 
     @FXML
     void handleDeleteAction(ActionEvent event) {
-        productList.remove( productTableView.getSelectionModel().getSelectedItem());
+        productDataService.removeProduct( productTableView.getSelectionModel().getSelectedItem());
         
     }
 
@@ -120,12 +120,12 @@ public class StoreController {
     void handleSearchAction(ActionEvent event) {
         String searchText = searchField.getText().toLowerCase().trim();
         if (searchText.isEmpty()) {
-            productTableView.setItems(productList); // Hiển thị lại toàn bộ danh sách nếu ô tìm kiếm rỗng
+            productTableView.setItems(productDataService.getProductList()); // Hiển thị lại toàn bộ danh sách nếu ô tìm kiếm rỗng
             return;
         }
 
         ObservableList<Product> filteredList = FXCollections.observableArrayList();
-        for (Product product : productList) {
+        for (Product product : productDataService.getProductList()) {
             if (product.getTitle() != null && product.getTitle().equalsIgnoreCase(searchText)) {
                 filteredList.add(product);
             }
@@ -155,4 +155,6 @@ public class StoreController {
             System.out.println("Chưa chọn sản phẩm để xem.");
         }
     }
+
+    
 }

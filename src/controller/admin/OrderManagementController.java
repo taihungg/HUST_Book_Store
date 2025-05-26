@@ -21,7 +21,7 @@ public class OrderManagementController {
         try {
             String orderId = inputOrderId.getText();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/OrderDetail_fixed.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/SeeOrders/OrderDetail_fixed.fxml"));
             Parent root = loader.load();
 
             // Truy cập controller của OrderDetail

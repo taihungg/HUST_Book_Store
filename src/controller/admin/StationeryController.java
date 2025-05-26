@@ -7,6 +7,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.product.Stationery;
+import javafx.scene.control.Alert;
 
 public class StationeryController {
     @FXML
@@ -45,12 +46,19 @@ public class StationeryController {
     @FXML 
     private TextField manufacturerField;
 
+    
+
+
     @FXML
     public void initialize() {
         
         statusComboBox.getItems().addAll("Available", "Out of Stock", "Discontinued");
        
 
+    }
+    private ProductDataService productDataService;
+    public StationeryController() { // Hoặc trong initialize()
+        productDataService = ProductDataService.getInstance(); // Lấy instance của service
     }
 
     @FXML
@@ -63,15 +71,16 @@ public class StationeryController {
         String color = colorField.getText();
         String manufacturer = manufacturerField.getText();
         String status = statusComboBox.getValue();
-        Double price = Double.parseDouble(priceField.getText());
-        if (title.isEmpty() || description.isEmpty() || galleryUrl.isEmpty() || material.isEmpty() || type.isEmpty() || color.isEmpty() || manufacturer.isEmpty() || price <= 0) {
+        String id = "STATIONERY_" + System.currentTimeMillis();
+        Double sellingPrice = Double.parseDouble(priceField.getText());
+        if (title.isEmpty() || description.isEmpty() || galleryUrl.isEmpty() || material.isEmpty() || type.isEmpty() || color.isEmpty() || manufacturer.isEmpty()) {
             System.err.println("Please fill in all fields");
             return;
         }
 
         try{
 
-            if (price<=0){
+            if (sellingPrice<=0){
                 System.err.println("Price must be greater than 0");
                 return;
               }
@@ -81,11 +90,31 @@ public class StationeryController {
             System.err.println("Price must be a number");
             return;
         }
+
+            Stationery newStationery = new Stationery(
+                id,        // id
+                title,              // title
+                description,        // description
+                galleryUrl,         // galleryURL
+                sellingPrice,       // sellingPrice
+                0, // purchasePrice
+                0, // averageRating
+                0, // numberOfReviews
+                status,             // status
+                manufacturer,         // brand (truyền giá trị từ manufacturerField hoặc brandField)
+                type                // type
+            );
+
+            System.out.println("Stationery sắp được thêm từ form: " + newStationery.getTitle() + " - Brand: " + newStationery.getBrand() + " - Type: " + newStationery.getType() + " - Price: " + newStationery.getSellingPrice()); // Thêm các thuộc tính khác
             
+            productDataService.addProduct(newStationery);
+            System.out.println("StationeryController: Đã thêm sản phẩm '" + newStationery.getTitle() + "' vào service.");
+
+
+            closeWindow();
             
             
 
-        closeWindow();
       
         
     }

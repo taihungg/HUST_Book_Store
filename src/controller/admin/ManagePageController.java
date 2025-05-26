@@ -15,6 +15,8 @@ public class ManagePageController {
     @FXML
     private Button updateInventoryButton;
 
+   
+
     @FXML
     public void initialize() {
         // Initialize any necessary setup
@@ -37,9 +39,14 @@ public class ManagePageController {
 
     @FXML
     private void handleUpdateInventory() {
+       
+       
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/UpdateStore/ProductTypeSelectionView.fxml"));
             Parent root = loader.load();
+
+           
+
             
             Stage stage = new Stage();
             stage.setTitle("Cập nhật kho");
