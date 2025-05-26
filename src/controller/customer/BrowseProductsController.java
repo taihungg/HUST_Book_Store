@@ -1,157 +1,193 @@
-// File: BrowseProductsController
 package controller.customer;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+
+// Interface này là cần thiết vì CustomerMainController của bạn sử dụng nó để set main controller cho sub-controllers.
+interface SubController {
+    void setMainController(CustomerMainController mainController);
+}
 
 public class BrowseProductsController implements SubController, Initializable {
 
-    // Các thành phần giao diện từ FXML
-    @FXML private TextField searchField;                    // Ô tìm kiếm sản phẩm
-    @FXML private Button searchButton;                      // Nút tìm kiếm
-    @FXML private TextField minPriceField;                  // Ô nhập giá tối thiểu
-    @FXML private TextField maxPriceField;                  // Ô nhập giá tối đa
-    @FXML private ComboBox<String> viewModeComboBox;        // ComboBox chọn chế độ hiển thị
-    @FXML private Button notifyNotFoundButton;              // Nút thông báo không tìm thấy
-    @FXML private GridPane productsGrid;                    // Lưới hiển thị sản phẩm
-    @FXML private ScrollPane productScrollPane;             // Khu vực cuộn sản phẩm
-    @FXML private ToggleGroup sortGroup;                    // Nhóm radio button sắp xếp
-    
-    // Các checkbox lọc theo danh mục
+    //region FXML Components
+    @FXML private TextField searchField;
+    @FXML private Button searchButton;
+    @FXML private TextField minPriceField;
+    @FXML private TextField maxPriceField;
+    @FXML private GridPane productsGrid;
+    @FXML private ScrollPane productScrollPane;
+    @FXML private ToggleGroup sortGroup;
     @FXML private CheckBox fictionCheckBox;
-    @FXML private CheckBox nonFictionCheckBox; 
+    @FXML private CheckBox nonFictionCheckBox;
     @FXML private CheckBox scienceCheckBox;
     @FXML private CheckBox historyCheckBox;
     @FXML private CheckBox programmingCheckBox;
-    
-    private CustomerMainController mainController;           // Tham chiếu đến controller chính
-    private ObservableList<String> products;                // Danh sách sản phẩm hiện tại
-    private String currentSearchQuery = "";                 // Từ khóa tìm kiếm hiện tại
-    private boolean isGridView = true;                      // Chế độ hiển thị (true: lưới, false: danh sách)
+    @FXML private Label itemCountLabel;
+    //endregion
+
+    //region Internal State
+    private CustomerMainController mainController;
+    private List<Product> allProducts;
+    private ObservableList<Product> displayedProducts;
+    private Map<Product, Integer> cartItems = new HashMap<>(); // Lưu trữ số lượng từng sản phẩm trong giỏ hàng
+    //endregion
+
+    //region Nested Classes (Product and CartItem)
+    public static class Product {
+        private String title;
+        private String author;
+        private double price;
+        private String category;
+        private String imagePath; // Path relative to classpath, e.g., "/images/book1.jpg"
+        
+        public Product(String title, String author, double price, String category, String imagePath) {
+            this.title = title;
+            this.author = author;
+            this.price = price;
+            this.category = category;
+            this.imagePath = imagePath;
+        }
+        
+        // Getters
+        public String getTitle() { return title; }
+        public String getAuthor() { return author; }
+        public double getPrice() { return price; }
+        public String getCategory() { return category; }
+        public String getImagePath() { return imagePath; }
+
+        @Override
+        public String toString() {
+            return "Product{" +
+                   "title='" + title + '\'' +
+                   ", author='" + author + '\'' +
+                   ", price=" + price +
+                   '}';
+        }
+    }
+
+    public static class CartItem {
+        private Product product;
+        private int quantity;
+        private double totalPrice;
+
+        public CartItem(Product product, int quantity) {
+            this.product = product;
+            this.quantity = quantity;
+            this.totalPrice = product.getPrice() * quantity;
+        }
+
+        public Product getProduct() { return product; }
+        public int getQuantity() { return quantity; }
+        public double getTotalPrice() { return totalPrice; }
+
+        public void setQuantity(int quantity) {
+            this.quantity = quantity;
+            this.totalPrice = product.getPrice() * quantity;
+        }
+
+        @Override
+        public String toString() {
+            return "CartItem{" +
+                   "item='" + product.getTitle() + '\'' +
+                   ", price=" + String.format("%.2f", product.getPrice()) +
+                   ", quantity=" + quantity +
+                   ", total=" + String.format("%.2f", totalPrice) +
+                   '}';
+        }
+    }
+    //endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Khởi tạo dữ liệu mặc định
-        initializeViewModeComboBox();
         initializeProductsList();
         setupEventHandlers();
         
-        System.out.println("BrowseProductsController đã được khởi tạo");
+        displayedProducts = FXCollections.observableArrayList(allProducts);
+        applyAllFiltersAndSort(); // Hiển thị tất cả sản phẩm ban đầu
+        
+        System.out.println("BrowseProductsController đã được khởi tạo.");
     }
 
     @Override
     public void setMainController(CustomerMainController mainController) {
         this.mainController = mainController;
-        
-        // Thêm logic khởi tạo nếu cần
-        if (mainController.isUserLoggedIn()) {
-            // Ví dụ: Hiển thị thêm tính năng khi đã đăng nhập
-            notifyNotFoundButton.setVisible(true);
-            System.out.println("Người dùng đã đăng nhập - Hiển thị đầy đủ tính năng");
-        } else {
-            // Ẩn một số tính năng khi chưa đăng nhập
-            notifyNotFoundButton.setVisible(false);
-            System.out.println("Người dùng chưa đăng nhập - Hạn chế một số tính năng");
-        }
+        System.out.println("Đã thiết lập MainController cho BrowseProductsController.");
     }
 
     /**
-     * Khởi tạo ComboBox chế độ hiển thị
-     */
-    private void initializeViewModeComboBox() {
-        viewModeComboBox.setItems(FXCollections.observableArrayList("Grid View", "List View"));
-        viewModeComboBox.setValue("Grid View"); // Mặc định là chế độ lưới
-    }
-
-    /**
-     * Khởi tạo danh sách sản phẩm mẫu
+     * Khởi tạo danh sách sản phẩm mẫu.
+     * Đường dẫn ảnh sẽ bắt đầu bằng "/" để tải từ classpath.
+     * Nếu ảnh nằm trong `src/images`, chúng sẽ được đóng gói vào classpath dưới dạng `/images/`.
      */
     private void initializeProductsList() {
-        products = FXCollections.observableArrayList();
-        // Thêm dữ liệu sản phẩm mẫu
-        products.addAll("Book Title 1", "Book Title 2", "Book Title 3", 
-                       "Programming Guide", "Science Fiction Novel", "History Book");
+        allProducts = new ArrayList<>();
+        
+        allProducts.add(new Product("My Hero Academia", "Kohei Horikoshi", 29.99, "Fiction", "/images/book1.jpg"));
+        allProducts.add(new Product("Dragon Ball Super", "Toyotarou", 24.99, "Fiction", "/images/book2.jpg"));
+        allProducts.add(new Product("Rent A Girlfriend", "Miyajima Reiji", 19.99, "Fiction", "/images/book3.jpg"));
+        allProducts.add(new Product("Harry Potter", "J.K.Rowling", 34.99, "Fiction", "/images/book4.jpg"));
+        allProducts.add(new Product("Huyền Thoại Cổ Ngọc", "Ocean Nguyễn", 22.99, "Fiction", "/images/book5.jpg"));
+        allProducts.add(new Product("Thiên Long Bát Bộ", "Kim Dung", 39.99, "Fiction", "/images/book6.jpg"));
+        allProducts.add(new Product("Sapiens: A Brief History of Humankind", "Yuval Noah Harari", 18.50, "Non-Fiction", "/images/book7.jpg"));
+        allProducts.add(new Product("Cosmos", "Carl Sagan", 15.00, "Science", "/images/book8.jpg"));
+        allProducts.add(new Product("Clean Code", "Robert C. Martin", 40.00, "Programming", "/images/book9.jpg"));
+        allProducts.add(new Product("The Guns of August", "Barbara W. Tuchman", 20.00, "History", "/images/book10.jpg"));
+        allProducts.add(new Product("Becoming", "Michelle Obama", 25.00, "Non-Fiction", "/images/book11.jpg"));
     }
 
     /**
-     * Thiết lập các event handler
+     * Thiết lập các event handler cho các thành phần UI.
      */
     private void setupEventHandlers() {
-        // Xử lý khi thay đổi chế độ hiển thị
-        viewModeComboBox.setOnAction(e -> handleViewModeChange());
-        
-        // Xử lý tìm kiếm khi nhấn Enter trong ô tìm kiếm
         searchField.setOnKeyPressed(e -> {
             if (e.getCode().toString().equals("ENTER")) {
                 handleSearch();
             }
         });
+        
+        fictionCheckBox.setOnAction(e -> handleCategoryFilter());
+        nonFictionCheckBox.setOnAction(e -> handleCategoryFilter());
+        scienceCheckBox.setOnAction(e -> handleCategoryFilter());
+        historyCheckBox.setOnAction(e -> handleCategoryFilter());
+        programmingCheckBox.setOnAction(e -> handleCategoryFilter());
+        
+        if (sortGroup != null) {
+            sortGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+                if (newToggle != null) {
+                    handleSort();
+                }
+            });
+        }
     }
 
-    /**
-     * Xử lý sự kiện tìm kiếm sản phẩm
-     */
+    //region Filter and Sort Handlers
     @FXML
     private void handleSearch() {
-        String searchQuery = searchField.getText().trim();
-        currentSearchQuery = searchQuery;
-        
-        if (searchQuery.isEmpty()) {
-            System.out.println("Hiển thị tất cả sản phẩm");
-            // Logic hiển thị tất cả sản phẩm
-            loadAllProducts();
-        } else {
-            System.out.println("Đang tìm kiếm: " + searchQuery);
-            // Logic tìm kiếm sản phẩm
-            searchProducts(searchQuery);
-        }
-        
-        updateProductDisplay();
+        applyAllFiltersAndSort();
     }
 
-    /**
-     * Xử lý sự kiện lọc theo danh mục
-     */
     @FXML
     private void handleCategoryFilter() {
-        System.out.println("Áp dụng bộ lọc danh mục");
-        
-        // Lấy các danh mục được chọn
-        StringBuilder selectedCategories = new StringBuilder("Danh mục được chọn: ");
-        
-        // Kiểm tra từng checkbox (cần thêm fx:id cho các checkbox trong FXML)
-        if (fictionCheckBox != null && fictionCheckBox.isSelected()) {
-            selectedCategories.append("Fiction, ");
-        }
-        if (nonFictionCheckBox != null && nonFictionCheckBox.isSelected()) {
-            selectedCategories.append("Non-Fiction, ");
-        }
-        if (scienceCheckBox != null && scienceCheckBox.isSelected()) {
-            selectedCategories.append("Science, ");
-        }
-        if (historyCheckBox != null && historyCheckBox.isSelected()) {
-            selectedCategories.append("History, ");
-        }
-        if (programmingCheckBox != null && programmingCheckBox.isSelected()) {
-            selectedCategories.append("Programming, ");
-        }
-        
-        System.out.println(selectedCategories.toString());
-        
-        // Logic lọc sản phẩm theo danh mục
-        filterProductsByCategory();
-        updateProductDisplay();
+        applyAllFiltersAndSort();
     }
 
-    /**
-     * Xử lý sự kiện lọc theo giá
-     */
     @FXML
     private void handlePriceFilter() {
         String minPriceText = minPriceField.getText().trim();
@@ -165,203 +201,211 @@ public class BrowseProductsController implements SubController, Initializable {
                 showAlert("Lỗi", "Giá tối thiểu không thể lớn hơn giá tối đa!");
                 return;
             }
-            
-            System.out.println("Lọc theo giá: " + minPrice + " - " + maxPrice);
-            
-            // Logic lọc sản phẩm theo giá
-            filterProductsByPrice(minPrice, maxPrice);
-            updateProductDisplay();
+            applyAllFiltersAndSort();
             
         } catch (NumberFormatException e) {
             showAlert("Lỗi", "Vui lòng nhập số hợp lệ cho giá!");
         }
     }
 
-    /**
-     * Xử lý sự kiện sắp xếp sản phẩm
-     */
     @FXML
     private void handleSort() {
         if (sortGroup.getSelectedToggle() == null) {
-            System.out.println("Chưa chọn tiêu chí sắp xếp");
+            System.out.println("Chưa chọn tiêu chí sắp xếp.");
             return;
         }
-        
-        RadioButton selectedSort = (RadioButton) sortGroup.getSelectedToggle();
-        String sortType = selectedSort.getText();
-        
-        System.out.println("Sắp xếp theo: " + sortType);
-        
-        switch (sortType) {
-            case "Sort by Title":
-                sortProductsByTitle();
-                break;
-            case "Sort by Cost":
-                sortProductsByCost();
-                break;
-            case "Sort by Rating":
-                sortProductsByRating();
-                break;
-            default:
-                System.out.println("Không xác định được tiêu chí sắp xếp");
+        applyAllFiltersAndSort();
+    }
+    //endregion
+
+    /**
+     * Áp dụng tất cả các bộ lọc (tìm kiếm, danh mục, giá) và sắp xếp hiện có.
+     * Cập nhật displayedProducts và gọi updateProductDisplay().
+     */
+    private void applyAllFiltersAndSort() {
+        List<Product> currentProducts = new ArrayList<>(allProducts);
+
+        // 1. Áp dụng bộ lọc tìm kiếm
+        String searchQuery = searchField.getText().trim().toLowerCase();
+        if (!searchQuery.isEmpty()) {
+            currentProducts.removeIf(product -> !(product.getTitle().toLowerCase().contains(searchQuery) || 
+                                                  product.getAuthor().toLowerCase().contains(searchQuery)));
         }
         
+        // 2. Áp dụng bộ lọc danh mục
+        List<String> selectedCategories = new ArrayList<>();
+        if (fictionCheckBox.isSelected()) selectedCategories.add("Fiction");
+        if (nonFictionCheckBox.isSelected()) selectedCategories.add("Non-Fiction");
+        if (scienceCheckBox.isSelected()) selectedCategories.add("Science");
+        if (historyCheckBox.isSelected()) selectedCategories.add("History");
+        if (programmingCheckBox.isSelected()) selectedCategories.add("Programming");
+        
+        if (!selectedCategories.isEmpty()) { 
+            currentProducts.removeIf(product -> !selectedCategories.contains(product.getCategory()));
+        }
+        
+        // 3. Áp dụng bộ lọc giá
+        String minPriceText = minPriceField.getText().trim();
+        String maxPriceText = maxPriceField.getText().trim();
+        try {
+            double minPrice = minPriceText.isEmpty() ? 0 : Double.parseDouble(minPriceText);
+            double maxPrice = maxPriceText.isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceText);
+            
+            if (minPrice <= maxPrice) { 
+                currentProducts.removeIf(product -> !(product.getPrice() >= minPrice && product.getPrice() <= maxPrice));
+            }
+        } catch (NumberFormatException e) {
+            // Lỗi đã được xử lý ở handlePriceFilter, không cần alert lại.
+        }
+        
+        // 4. Áp dụng sắp xếp
+        if (sortGroup.getSelectedToggle() != null) {
+            RadioButton selectedSort = (RadioButton) sortGroup.getSelectedToggle();
+            String sortType = selectedSort.getText();
+            
+            switch (sortType) {
+                case "Sort by Title":
+                    Collections.sort(currentProducts, Comparator.comparing(Product::getTitle));
+                    break;
+                case "Sort by Cost":
+                    Collections.sort(currentProducts, Comparator.comparing(Product::getPrice));
+                    break;
+            }
+        }
+        
+        displayedProducts.setAll(currentProducts);
         updateProductDisplay();
+        itemCountLabel.setText(String.valueOf(displayedProducts.size()));
     }
 
     /**
-     * Xử lý thay đổi chế độ hiển thị
+     * Cập nhật hiển thị sản phẩm trên GridPane.
      */
-    private void handleViewModeChange() {
-        String selectedMode = viewModeComboBox.getValue();
+    private void updateProductDisplay() {
+        productsGrid.getChildren().clear();
         
-        if ("Grid View".equals(selectedMode)) {
-            isGridView = true;
-            System.out.println("Chuyển sang chế độ hiển thị lưới");
-        } else if ("List View".equals(selectedMode)) {
-            isGridView = false;
-            System.out.println("Chuyển sang chế độ hiển thị danh sách");
+        int row = 0;
+        int col = 0;
+        final int maxCols = 3;
+        
+        for (Product product : displayedProducts) {
+            VBox productCard = createProductCard(product);
+            
+            productsGrid.add(productCard, col, row);
+            
+            col++;
+            if (col >= maxCols) {
+                col = 0;
+                row++;
+            }
         }
-        
-        updateProductDisplay();
     }
 
     /**
-     * Xử lý sự kiện thông báo không tìm thấy
+     * Tạo một card sản phẩm động từ đối tượng Product.
      */
-    @FXML
-    private void handleNotifyNotFound() {
-        if (mainController == null || !mainController.isUserLoggedIn()) {
-            showAlert("Thông báo", "Vui lòng đăng nhập để sử dụng tính năng này!");
-            return;
+    private VBox createProductCard(Product product) {
+        VBox productCard = new VBox();
+        productCard.setAlignment(javafx.geometry.Pos.CENTER);
+        productCard.getStyleClass().add("product-card");
+        productCard.setPadding(new Insets(10));
+        productCard.setSpacing(5);
+        
+        ImageView imageView = new ImageView();
+        imageView.setFitHeight(160);
+        imageView.setFitWidth(120);
+        imageView.setPreserveRatio(true);
+        
+        try {
+            // Tải ảnh từ classpath.
+            // Nếu ảnh nằm trong src/images, đường dẫn trong classpath sẽ là /images/ten_file.jpg
+            Image image = new Image(getClass().getResourceAsStream(product.getImagePath()));
+            if (image.isError()) {
+                 System.err.println("Lỗi khi tải ảnh: " + product.getImagePath() + ". Error: " + image.exceptionProperty().get());
+                 // Tải ảnh placeholder nếu lỗi
+                 imageView.setImage(new Image(getClass().getResourceAsStream("/images/placeholder.jpg")));
+            } else {
+                imageView.setImage(image);
+            }
+        } catch (Exception e) {
+            System.err.println("Ngoại lệ khi tải ảnh cho sản phẩm " + product.getTitle() + ": " + product.getImagePath() + " - " + e.getMessage());
+            // Tải ảnh placeholder nếu có ngoại lệ
+            imageView.setImage(new Image(getClass().getResourceAsStream("/images/placeholder.jpg"))); // Đảm bảo có placeholder.jpg
         }
+
+        imageView.setOnMouseClicked(e -> handleViewProductDetails(product));
+        imageView.setStyle("-fx-cursor: hand;");
+
+        Label titleLabel = new Label(product.getTitle());
+        titleLabel.getStyleClass().add("product-title");
+        titleLabel.setWrapText(true);
+        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
         
-        System.out.println("Đã kích hoạt thông báo không tìm thấy sản phẩm");
+        Label authorLabel = new Label("by " + product.getAuthor());
+        authorLabel.getStyleClass().add("product-author");
         
-        // Logic thông báo khi không tìm thấy sản phẩm
-        String message = "Chúng tôi sẽ thông báo cho bạn khi có sản phẩm phù hợp";
-        if (!currentSearchQuery.isEmpty()) {
-            message += " với từ khóa: '" + currentSearchQuery + "'";
-        }
+        Label priceLabel = new Label(String.format("%.2f USD", product.getPrice()));
+        priceLabel.getStyleClass().add("product-price");
+        priceLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
         
-        showAlert("Thông báo", message);
+        Button addToCartBtn = new Button("Add to Cart");
+        addToCartBtn.setOnAction(e -> handleAddToCart(product));
         
-        // Có thể thêm logic lưu thông tin để thông báo sau
-        saveNotificationRequest(currentSearchQuery);
+        productCard.getChildren().addAll(imageView, titleLabel, authorLabel, priceLabel, addToCartBtn);
+        
+        return productCard;
     }
 
     /**
-     * Xử lý sự kiện thêm vào giỏ hàng
+     * Xử lý sự kiện khi nhấn nút "Add to Cart".
+     * Thêm sản phẩm vào giỏ hàng và chuyển sang trang giỏ hàng.
      */
-    @FXML
-    private void handleAddToCart() {
+    private void handleAddToCart(Product product) {
         if (mainController == null || !mainController.isUserLoggedIn()) {
             showAlert("Thông báo", "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!");
             return;
         }
         
-        System.out.println("Đã thêm sản phẩm vào giỏ hàng");
-        showAlert("Thành công", "Đã thêm sản phẩm vào giỏ hàng!");
+        cartItems.put(product, cartItems.getOrDefault(product, 0) + 1);
         
-        // Logic thêm sản phẩm vào giỏ hàng
-        // mainController.addToCart(product);
-    }
-
-    // Các phương thức hỗ trợ
-    
-    /**
-     * Tải tất cả sản phẩm
-     */
-    private void loadAllProducts() {
-        // Logic tải tất cả sản phẩm từ database hoặc service
-        System.out.println("Đang tải tất cả sản phẩm...");
-    }
-
-    /**
-     * Tìm kiếm sản phẩm theo từ khóa
-     */
-    private void searchProducts(String query) {
-        // Logic tìm kiếm sản phẩm
-        System.out.println("Tìm kiếm sản phẩm với từ khóa: " + query);
-    }
-
-    /**
-     * Lọc sản phẩm theo danh mục
-     */
-    private void filterProductsByCategory() {
-        // Logic lọc theo danh mục
-        System.out.println("Đang lọc sản phẩm theo danh mục...");
-    }
-
-    /**
-     * Lọc sản phẩm theo giá
-     */
-    private void filterProductsByPrice(double minPrice, double maxPrice) {
-        // Logic lọc theo giá
-        System.out.println("Lọc sản phẩm trong khoảng giá: " + minPrice + " - " + maxPrice);
-    }
-
-    /**
-     * Sắp xếp sản phẩm theo tên
-     */
-    private void sortProductsByTitle() {
-        // Logic sắp xếp theo tên
-        System.out.println("Sắp xếp sản phẩm theo tên");
-    }
-
-    /**
-     * Sắp xếp sản phẩm theo giá
-     */
-    private void sortProductsByCost() {
-        // Logic sắp xếp theo giá
-        System.out.println("Sắp xếp sản phẩm theo giá");
-    }
-
-    /**
-     * Sắp xếp sản phẩm theo đánh giá
-     */
-    private void sortProductsByRating() {
-        // Logic sắp xếp theo đánh giá
-        System.out.println("Sắp xếp sản phẩm theo đánh giá");
-    }
-
-    /**
-     * Cập nhật hiển thị sản phẩm
-     */
-    private void updateProductDisplay() {
-        if (isGridView) {
-            displayProductsInGrid();
-        } else {
-            displayProductsInList();
+        System.out.println("Đã thêm sản phẩm '" + product.getTitle() + "' vào giỏ hàng. Số lượng: " + cartItems.get(product));
+        showAlert("Thành công", "Đã thêm sản phẩm '" + product.getTitle() + "' vào giỏ hàng!");
+        
+        if (mainController != null) {
+            try {
+                ObservableList<CartItem> itemsForCart = FXCollections.observableArrayList();
+                for (Map.Entry<Product, Integer> entry : cartItems.entrySet()) {
+                    itemsForCart.add(new CartItem(entry.getKey(), entry.getValue()));
+                }
+                // Gọi phương thức loadPageWithData của CustomerMainController
+                mainController.loadPageWithData("view/customer/Store/SeeCart.fxml", itemsForCart);
+            } catch (Exception e) {
+                System.err.println("Lỗi khi chuyển đến trang giỏ hàng: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
     /**
-     * Hiển thị sản phẩm dạng lưới
+     * Xử lý khi nhấn vào ảnh sản phẩm để xem chi tiết.
+     * Chuyển sang trang chi tiết sản phẩm và truyền dữ liệu sản phẩm.
      */
-    private void displayProductsInGrid() {
-        System.out.println("Hiển thị sản phẩm dạng lưới");
-        // Logic hiển thị dạng lưới
+    private void handleViewProductDetails(Product product) {
+        System.out.println("Chuyển đến trang chi tiết sản phẩm: " + product.getTitle());
+        
+        if (mainController != null) {
+            try {
+                // Gọi phương thức loadPageWithData của CustomerMainController
+                mainController.loadPageWithData("view/customer/Store/ViewDetails/ViewBookDetails.fxml", product);
+            } catch (Exception e) {
+                System.err.println("Lỗi khi chuyển đến trang chi tiết: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
-     * Hiển thị sản phẩm dạng danh sách
-     */
-    private void displayProductsInList() {
-        System.out.println("Hiển thị sản phẩm dạng danh sách");
-        // Logic hiển thị dạng danh sách
-    }
-
-    /**
-     * Lưu yêu cầu thông báo
-     */
-    private void saveNotificationRequest(String searchQuery) {
-        // Logic lưu yêu cầu thông báo vào database
-        System.out.println("Đã lưu yêu cầu thông báo cho: " + searchQuery);
-    }
-
-    /**
-     * Hiển thị thông báo alert
+     * Hiển thị thông báo alert.
      */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -372,23 +416,24 @@ public class BrowseProductsController implements SubController, Initializable {
     }
 
     /**
-     * Làm mới dữ liệu trang
+     * Làm mới dữ liệu trang bằng cách reset các bộ lọc và sắp xếp.
      */
     public void refreshPage() {
         searchField.clear();
         minPriceField.clear();
         maxPriceField.clear();
-        viewModeComboBox.setValue("Grid View");
-        currentSearchQuery = "";
         
-        // Bỏ chọn tất cả checkbox và radio button
-        if (sortGroup.getSelectedToggle() != null) {
+        if (fictionCheckBox != null) fictionCheckBox.setSelected(false);
+        if (nonFictionCheckBox != null) nonFictionCheckBox.setSelected(false);
+        if (scienceCheckBox != null) scienceCheckBox.setSelected(false);
+        if (historyCheckBox != null) historyCheckBox.setSelected(false);
+        if (programmingCheckBox != null) programmingCheckBox.setSelected(false);
+        
+        if (sortGroup != null && sortGroup.getSelectedToggle() != null) {
             sortGroup.getSelectedToggle().setSelected(false);
         }
         
-        loadAllProducts();
-        updateProductDisplay();
-        
-        System.out.println("Đã làm mới trang duyệt sản phẩm");
+        applyAllFiltersAndSort();
+        System.out.println("Đã làm mới trang duyệt sản phẩm.");
     }
 }
