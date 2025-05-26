@@ -4,6 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -11,11 +14,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
 import model.product.Product; // Đảm bảo bạn có lớp Product này
 import model.product.Stationery;
 import model.product.Toy;
+
+import java.io.IOException;
 import java.util.Locale;
 public class StoreController {
 
@@ -147,13 +153,34 @@ public class StoreController {
     @FXML
     void handleViewAction(ActionEvent event) {
          Product selectedProduct = productTableView.getSelectionModel().getSelectedItem();
-        if (selectedProduct != null) {
-            System.out.println("Xem chi tiết sản phẩm: " + selectedProduct.getTitle());
-            // Mở một cửa sổ/dialog mới để hiển thị chi tiết thông tin sản phẩm này
-            // Ví dụ: hiển thị cả description, galleryURL, v.v.
-        } else {
-            System.out.println("Chưa chọn sản phẩm để xem.");
+        if (selectedProduct !=null){
+            try{
+            if (selectedProduct instanceof Toy){
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/ToyDetail.fxml")); // Đường dẫn đến FXML chi tiết
+                Parent detailRoot = loader.load();
+                ToyDetailController toyDetailController = loader.getController();
+                toyDetailController.setToy((Toy)selectedProduct);
+
+                Stage detailStage = new Stage();
+                detailStage.setTitle("Chi Tiết Sản Phẩm - " + selectedProduct.getTitle());
+                detailStage.setScene(new Scene(detailRoot));
+                detailStage.initModality(Modality.APPLICATION_MODAL); // Chặn tương tác với cửa sổ StoreController
+                detailStage.showAndWait(); // Hiển thị và chờ cho đến khi cửa sổ này đóng
+
+            }
+
         }
+        catch (IOException e){
+            System.err.println("Lỗi khi mở cửa sổ chi tiết sản phẩm:");
+
+            e.printStackTrace();
+        }
+        }
+
+        else {
+            System.out.println("Selected product is null");
+        }
+        
     }
 
     
