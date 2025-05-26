@@ -1,5 +1,7 @@
 package model.user;
 
+import model.cart.Cart;
+
 public class User {
 	private String id;
 	private String name;
@@ -10,6 +12,7 @@ public class User {
 	private String password;
 	private String role;
 	private double salary;
+	private final Cart cart;
 	public User(String id, String name, String email, String phone, String address, String username, String password,
 			String role, double salary) {
 		super();
@@ -22,6 +25,7 @@ public class User {
 		this.password = password;
 		this.role = role;
 		this.salary = salary;
+		this.cart = new Cart();
 	}
 	public String getId() {
 		return id;
@@ -76,5 +80,8 @@ public class User {
 	}
 	public void setSalary(double salary) {
 		this.salary = salary;
+	}
+	public Cart getCart() {
+		return cart;
 	}
 }

@@ -9,9 +9,9 @@ import model.product.Product;
 import model.product.interfaces.PhysicalProduct;
 
 public class ProductManager {
-	private ObservableList<Product> productList;
-	private Map<String, Product> productMap;
-	private Map<String, Integer> productQuantity;
+	private final ObservableList<Product> productList;
+	private final Map<String, Product> productMap;
+	private final Map<String, Integer> productQuantity;
 	public ProductManager() {
 		this.productList = FXCollections.observableArrayList();
 		this.productMap = new HashMap<>();
