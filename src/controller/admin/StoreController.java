@@ -22,7 +22,8 @@ import model.product.Stationery;
 import model.product.Toy;
 
 import java.io.IOException;
-import java.util.Locale;
+
+import model.manager.product.ProductManager;
 public class StoreController {
 
     // Các cột này sẽ khớp với FXML đã được sửa đổi

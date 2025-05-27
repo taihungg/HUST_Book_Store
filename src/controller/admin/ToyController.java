@@ -109,8 +109,22 @@ public class ToyController {
    alert.setHeaderText("Thêm đồ chơi thành công");
    alert.setContentText("Sản phẩm đã được thêm vào danh sách sản phẩm");
    alert.showAndWait();
+
+   try{
+   FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/UpdateStore/ProductTypeSelectionView.fxml"));
+   Parent root = loader.load();
+   Stage stage = new Stage();
+   stage.setTitle("Cập nhật kho");
+   stage.setScene(new Scene(root));
+   stage.show();
+   Stage currentStage = (Stage) cancelButton.getScene().getWindow();
+   currentStage.close();
+   }
+   catch(Exception e){
+    System.err.println("Lỗi khi đóng cửa sổ");
+    e.printStackTrace();
+   }
         
-        closeWindow();
     }
 
     @FXML
