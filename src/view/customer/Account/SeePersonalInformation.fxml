@@ -6,14 +6,12 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SeePersonalInformationController">
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.SeePersonalInformationController">
    <children>
       <ScrollPane fitToWidth="true" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <content>
@@ -31,34 +29,6 @@
                            </font>
                         </Label>
                         <Separator prefWidth="200.0" />
-                     </children>
-                  </VBox>
-                  
-                  <!-- Profile Picture Section -->
-                  <VBox alignment="CENTER" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
-                     <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                     </padding>
-                     <children>
-                        <ImageView fx:id="profileImageView" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);">
-                           <image>
-                              <Image url="https://phanmemmkt.vn/wp-content/uploads/2024/09/avatar-Facebook-dep-dang-yeu.jpg" />
-                           </image>
-                        </ImageView>
-                        <HBox alignment="CENTER" spacing="10.0">
-                           <children>
-                              <Button fx:id="changePhotoButton" mnemonicParsing="false" onAction="#handleChangePhoto" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5;" text="Change Photo">
-                                 <font>
-                                    <Font size="12.0" />
-                                 </font>
-                              </Button>
-                              <Button fx:id="removePhotoButton" mnemonicParsing="false" onAction="#handleRemovePhoto" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 5;" text="Remove Photo">
-                                 <font>
-                                    <Font size="12.0" />
-                                 </font>
-                              </Button>
-                           </children>
-                        </HBox>
                      </children>
                   </VBox>
                   
@@ -122,95 +92,15 @@
                            </children>
                         </VBox>
                         
-                        <!-- Date of Birth -->
+                        <!-- Address -->
                         <VBox spacing="5.0">
                            <children>
-                              <Label text="Date of Birth" textFill="#7f8c8d">
+                              <Label text="Address" textFill="#7f8c8d">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="dateOfBirthField" prefHeight="35.0" promptText="DD/MM/YYYY" style="-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                     </children>
-                  </VBox>
-                  
-                  <!-- Address Information Section -->
-                  <VBox spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
-                     <padding>
-                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-                     </padding>
-                     <children>
-                        <Label text="Address Information" textFill="#34495e">
-                           <font>
-                              <Font name="System Bold" size="18.0" />
-                           </font>
-                        </Label>
-                        
-                        <!-- Street Address -->
-                        <VBox spacing="5.0">
-                           <children>
-                              <Label text="Street Address" textFill="#7f8c8d">
-                                 <font>
-                                    <Font name="System Bold" size="12.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="streetAddressField" prefHeight="35.0" promptText="Enter your street address" style="-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                        
-                        <!-- City and Postal Code -->
-                        <HBox spacing="15.0">
-                           <children>
-                              <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label text="City" textFill="#7f8c8d">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                    <TextField fx:id="cityField" prefHeight="35.0" promptText="Enter your city" style="-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                    </TextField>
-                                 </children>
-                              </VBox>
-                              <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label text="Postal Code" textFill="#7f8c8d">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                    <TextField fx:id="postalCodeField" prefHeight="35.0" promptText="Enter postal code" style="-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                    </TextField>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        
-                        <!-- Country -->
-                        <VBox spacing="5.0">
-                           <children>
-                              <Label text="Country" textFill="#7f8c8d">
-                                 <font>
-                                    <Font name="System Bold" size="12.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="countryField" prefHeight="35.0" promptText="Enter your country" style="-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;">
+                              <TextField fx:id="addressField" prefHeight="35.0" promptText="Enter your address" style="-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -248,7 +138,7 @@
                            </children>
                         </VBox>
                         
-                        <!-- Member Since -->
+                        <!-- Password -->
                         <VBox spacing="5.0">
                            <children>
                               <Label text="Password" textFill="#7f8c8d">
@@ -269,7 +159,7 @@
                   <!-- Action Buttons -->
                   <HBox alignment="CENTER" spacing="15.0">
                      <children>
-                        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handleSave" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Save Changes">
+                        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handleSave" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Save Changes" visible="false">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -279,7 +169,7 @@
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Cancel">
+                        <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Cancel" visible="false">
                            <font>
                               <Font size="14.0" />
                            </font>
