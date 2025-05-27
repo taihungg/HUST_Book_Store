@@ -52,6 +52,19 @@
                                         <Insets bottom="10.0" />
                                     </VBox.margin>
                                 </Label>
+                        <TitledPane expanded="false" text="Filter by Products">
+                           <content>
+                              <VBox spacing="5">
+                                 <children>
+                                    <CheckBox fx:id="printBookCheckBox" text="Printbook" />
+                                    <CheckBox fx:id="eBookCheckBox" text="Ebook" />
+                                    <CheckBox fx:id="audioBookCheckBox" text="Audiobook" />
+                                    <CheckBox fx:id="toyCheckBox" text="Toy" />
+                                    <CheckBox fx:id="stationeryCheckBox" text="Stationery" />
+                                 </children>
+                              </VBox>
+                           </content>
+                        </TitledPane>
 
                                 <TitledPane expanded="false" text="Filter by Category">
                                     <content>
@@ -62,7 +75,6 @@
                                                 <CheckBox fx:id="scienceCheckBox" text="Science" />
                                                 <CheckBox fx:id="historyCheckBox" text="History" />
                                                 <CheckBox fx:id="programmingCheckBox" text="Programming" />
-                                                <Button onAction="#handleCategoryFilter" text="Apply Filter" />
                                             </children>
                                         </VBox>
                                     </content>
@@ -100,7 +112,6 @@
                                                     </toggleGroup>
                                                 </RadioButton>
                                                 <RadioButton text="Sort by Cost" toggleGroup="$sortGroup" />
-                                                <Button onAction="#handleSort" text="Apply Sort" />
                                             </children>
                                         </VBox>
                                     </content>

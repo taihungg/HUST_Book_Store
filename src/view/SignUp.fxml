@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox alignment="CENTER" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<HBox alignment="CENTER" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SignUpController">
    <children>
       <VBox alignment="CENTER" maxWidth="2000.0" style="-fx-background-color: #E0E0E0;" HBox.hgrow="ALWAYS">
          <padding>

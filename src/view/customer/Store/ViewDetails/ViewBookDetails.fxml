@@ -7,8 +7,6 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -67,6 +65,12 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5">
                            <children>
+                              <Label text="Status:" />
+                              <Label fx:id="statusLabel" text="Out of Stock" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                           <children>
                               <Label styleClass="product-price" text="Price:">
                                  <font>
                                     <Font name="System Bold" size="16.0" />
@@ -99,16 +103,6 @@
                   </VBox>
                </children>
             </HBox>
-            <TitledPane expanded="false" text="Customer Reviews" HBox.hgrow="ALWAYS">
-               <content>
-                  <VBox spacing="10">
-                     <children>
-                        <Label text="Average Rating: 4.5/5.0 (42 reviews)" />
-                        <TextField HBox.hgrow="ALWAYS" />
-                     </children>
-                  </VBox>
-               </content>
-            </TitledPane>
          </children>
       </VBox>
    </content>
