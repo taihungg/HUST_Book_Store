@@ -1,1 +1,1 @@
-package view.admin.report;
+package view.admin.Report;

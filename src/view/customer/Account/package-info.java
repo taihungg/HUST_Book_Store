@@ -1,1 +1,1 @@
-package view.customer.account;
+package view.customer.Account;
