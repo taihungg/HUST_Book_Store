@@ -5,11 +5,11 @@ import model.user.cart.Cart;
 
 public class Customer extends User{
 	private String address;
-	private Cart cart;
-	public Customer(String name, String email, String phone, String address, String username, String password,
-			String address2) {
-		super(name, email, phone, address, username, password);
-		this.address = address2;
+	private final Cart cart;
+	public Customer(String name, String email, String phone, String username, String password,
+			String address) {
+		super(name, email, phone, username, password);
+		this.address = address;
 		cart = new Cart();
 	}
 	public String getAddress() {
@@ -20,8 +20,5 @@ public class Customer extends User{
 	}
 	public Cart getCart() {
 		return cart;
-	}
-	public void setCart(Cart cart) {
-		this.cart = cart;
 	}
 }

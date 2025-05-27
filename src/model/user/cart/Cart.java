@@ -16,7 +16,6 @@ public class Cart {
     public ObservableList<CartItem> getItems() {
         return items;
     }
-
     /**
      * Thêm sản phẩm vào giỏ hàng hoặc cập nhật số lượng nếu sản phẩm đã tồn tại.
      * Kiểm tra tồn kho cho PhysicalProduct.
@@ -28,29 +27,101 @@ public class Cart {
      * @throws IllegalStateException nếu không đủ tồn kho cho PhysicalProduct.
      * @throws NullPointerException nếu productManager không tìm thấy sản phẩm.
      */
-    public void addItem(String productId, int quantity, ProductManager productManager) {
-
+    public boolean addItem(String productId, int quantity, ProductManager productManager) {
+    	if (quantity <= 0) {
+        	System.out.println("New quantity must be positive.");
+        	return false;
+        }
+    	int availableStock = productManager.getProductQuantity(productId);
+        Product product = productManager.getProductById(productId);
+        for (CartItem item : items) {
+            if (item.getProductId().equals(productId)) { // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
+            	int newQuantityForCart = item.getQuantity() + quantity;
+                // Kiểm tra tồn kho cho PhysicalProduct
+                if (product instanceof PhysicalProduct) {
+                    if (newQuantityForCart > availableStock) {
+                    	System.out.println("Not enough stock for " + product.getTitle() + ". Available: " + availableStock);
+                    	return false;
+                    } else {
+                    	item.setQuantity(newQuantityForCart);
+                    	return true;
+                    }
+                } else { // DigitalProduct
+                    return true;
+                }
+            }
+        }
+        // Nếu sản phẩm không tồn tại trong giỏ hàng, thêm mới
+        // Kiểm tra tồn kho ban đầu cho PhysicalProduct
+        if (product instanceof PhysicalProduct) {
+        	if (quantity > availableStock) {
+            	System.out.println("Not enough stock for " + product.getTitle() + ". Available: " + availableStock);
+            	return false;
+            }
+        	else {
+            	items.add(new CartItem(productId, quantity));
+            	return true;
+            }
+        } else {
+        	items.add(new CartItem(productId, 1));
+        	return true;
+        }
     }
 
-    /**
-     * Xóa một sản phẩm khỏi giỏ hàng.
-     *
-     * @param productId ID của sản phẩm cần xóa.
-     * @return true nếu sản phẩm được xóa, false nếu không tìm thấy.
-     */
-    public boolean removeItem(String productId) {
-        return false;
-    }
     /**
      * Cập nhật số lượng của một mục đã có trong giỏ hàng.
      *
      * @param productId ID của sản phẩm.
      * @param newQuantity Số lượng mới cho mục này. Phải là số dương.
      * @param productManager Instance của ProductManager để kiểm tra tồn kho cho PhysicalProduct.
+     * @throws IllegalArgumentException nếu newQuantity không hợp lệ.
+     * @throws IllegalStateException nếu không đủ tồn kho cho PhysicalProduct.
      * @throws NullPointerException nếu productManager không tìm thấy sản phẩm.
      */
-    public void updateItemQuantity(String productId, int newQuantity, ProductManager productManager) {
-        
+    public boolean updateItemQuantity(String productId, int newQuantity, ProductManager productManager) {
+        if (newQuantity <= 0) {
+        	System.out.println("New quantity must be positive.");
+        	return false;
+        }
+        for (CartItem item : items) {
+            if (item.getProductId().equals(productId)) {
+                if(newQuantity == 0) {
+                	items.remove(item);
+                	return true;
+                }
+                else {
+                    Product product = productManager.getProductById(productId);
+                    // Kiểm tra tồn kho cho PhysicalProduct
+                    if (product instanceof PhysicalProduct) {
+                        int availableStock = productManager.getProductQuantity(productId);
+                        if (newQuantity > availableStock) {
+                            System.out.println("Not enough stock for " + product.getTitle() + ". Available: " + availableStock);
+                            return false;
+                        }
+                        else {
+                            item.setQuantity(newQuantity);
+                            return true;
+                        }
+                    }
+                    else { // DigitalProduct
+                        if (newQuantity > 1) { // Nếu quy định chỉ mua 1 bản quyền DigitalProduct
+                            System.out.println("Warning: Digital product " + product.getTitle() + " typically allows only one copy. Updating to more than 1.");
+                            return false;
+                        }
+                        else {
+                            item.setQuantity(newQuantity);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false; // Nếu không tìm thấy sản phẩm trong giỏ hàng
+    }
+    
+
+    public void removeItem(CartItem itemRemove) {
+        items.remove(itemRemove);
     }
 
     /**
@@ -60,8 +131,16 @@ public class Cart {
      * @return Tổng giá trị giỏ hàng.
      */
     public double calculateTotal(ProductManager productManager) {
-        return 0;
-        
+        double total = 0.0;
+        for (CartItem item : items) {
+            Product product = productManager.getProductById(item.getProductId());
+            if (product != null) {
+                total += product.getSellingPrice() * item.getQuantity();
+            } else {
+                System.err.println("Warning: Product " + item.getProductId() + " not found in ProductManager. Skipping from total.");
+            }
+        }
+        return total;
     }
 
     /**
@@ -70,6 +149,5 @@ public class Cart {
     public void clear() {
         items.clear();
     }
-
 
 }

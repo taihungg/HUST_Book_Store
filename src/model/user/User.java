@@ -8,14 +8,22 @@ public abstract class User {
 	private String phone;
 	private String username;
 	private String password;
-	public User(String name, String email, String phone, String address, String username, String password) {
+	public User(String name, String email, String phone, String username, String password) {
 		super();
-		this.id = "user" + index++;
+		this.id = genId();
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
 		this.username = username;
 		this.password = password;
+	}
+	private String genId() {
+		index++;
+		String tempId = new String();
+		if(index < 10) tempId = "USER00" + index;
+		else if(index >= 10 && index < 100) tempId = "USER0" + index;
+		else if(index >= 100 && index < 1000) tempId = "USER" + index;
+		return tempId;
 	}
 	public String getId() {
 		return id;
