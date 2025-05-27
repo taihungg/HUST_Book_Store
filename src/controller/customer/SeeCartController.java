@@ -1,6 +1,6 @@
 package controller.customer;
 
-import javafx.collections.FXCollections;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,136 +14,148 @@ import java.util.ResourceBundle;
 public class SeeCartController implements Initializable, SubController {
 
     @FXML private TableView<BrowseProductsController.CartItem> cartTable;
-    @FXML private TableColumn<BrowseProductsController.CartItem, String> itemColumn;
+    @FXML private TableColumn<BrowseProductsController.CartItem, BrowseProductsController.Product> itemColumn;
     @FXML private TableColumn<BrowseProductsController.CartItem, Double> priceColumn;
     @FXML private TableColumn<BrowseProductsController.CartItem, Integer> quantityColumn;
     @FXML private TableColumn<BrowseProductsController.CartItem, Double> totalPriceColumn;
     @FXML private Label totalLabel;
     @FXML private Button continueShoppingButton;
-    @FXML private Button updateCartButton;
     @FXML private Button removeCartButton;
     @FXML private Button clearCartButton;
     @FXML private Button checkoutButton;
 
     private CustomerMainController mainController;
-    private ObservableList<BrowseProductsController.CartItem> cartItems = FXCollections.observableArrayList();
-    private boolean isCartUpdated = true;
+    private ObservableList<BrowseProductsController.CartItem> cartItems;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupTableColumns();
         setupEventHandlers();
-        cartTable.setItems(cartItems);
     }
 
     @Override
     public void setMainController(CustomerMainController mainController) {
         this.mainController = mainController;
+        this.cartItems = mainController.getCartItems();
+        cartTable.setItems(cartItems);
+        updateTotalLabel();
     }
 
     public void setCartData(ObservableList<BrowseProductsController.CartItem> items) {
-        cartItems.setAll(items);
+        if (items != null) {
+            this.cartItems = items;
+            cartTable.setItems(cartItems);
+        } else {
+            this.cartItems.clear();
+        }
         updateTotalLabel();
-        isCartUpdated = true;
     }
 
     private void setupTableColumns() {
-        itemColumn.setCellValueFactory(new PropertyValueFactory<>("product"));
-        itemColumn.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty ? null : getItem() != null ? getItem().toString() : "<no name>");
-            }
-        });
-
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("product"));
-        priceColumn.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(Double item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
-                    setText(null);
-                } else {
-                    BrowseProductsController.CartItem cartItem = getTableRow().getItem();
-                    setText(String.format("%.2f", cartItem.getProduct().getPrice()));
+        if (itemColumn != null) {
+            itemColumn.setCellValueFactory(new PropertyValueFactory<>("product"));
+            itemColumn.setCellFactory(col -> new TableCell<>() {
+                @Override
+                protected void updateItem(BrowseProductsController.Product item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.getTitle());
                 }
-            }
-        });
+            });
+        } else {
+            System.err.println("itemColumn is null, check FXML configuration.");
+        }
 
-        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        quantityColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        quantityColumn.setOnEditCommit(event -> {
-            BrowseProductsController.CartItem item = event.getRowValue();
-            int newQuantity = event.getNewValue();
-            if (newQuantity > 0) {
-                item.setQuantity(newQuantity);
-                cartTable.refresh();
-                isCartUpdated = false;
-            } else {
-                showAlert("Lỗi", "Số lượng phải lớn hơn 0!");
-                cartTable.refresh();
-            }
-        });
+        if (priceColumn != null) {
+            priceColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getProduct().getPrice()).asObject());
+            priceColumn.setCellFactory(col -> new TableCell<>() {
+                @Override
+                protected void updateItem(Double price, boolean empty) {
+                    super.updateItem(price, empty);
+                    setText(empty || price == null ? null : String.format("%.2f USD", price));
+                }
+            });
+        } else {
+            System.err.println("priceColumn is null, check FXML configuration.");
+        }
 
-        totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+        if (quantityColumn != null) {
+            quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+            quantityColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+            quantityColumn.setOnEditCommit(event -> {
+                BrowseProductsController.CartItem item = event.getRowValue();
+                int oldQuantity = item.getQuantity();
+                int newQuantity = event.getNewValue();
+                if (newQuantity > 0) {
+                    item.setQuantity(newQuantity);
+                } else {
+                    item.setQuantity(oldQuantity);
+                    showAlert("Lỗi", "Số lượng phải lớn hơn 0!");
+                }
+                updateTotalLabel();
+                if (cartTable != null) cartTable.refresh();
+            });
+        } else {
+            System.err.println("quantityColumn is null, check FXML configuration.");
+        }
+
+        if (totalPriceColumn != null) {
+            totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+            totalPriceColumn.setCellFactory(col -> new TableCell<>() {
+                @Override
+                protected void updateItem(Double total, boolean empty) {
+                    super.updateItem(total, empty);
+                    setText(empty || total == null ? null : String.format("%.2f USD", total));
+                }
+            });
+        } else {
+            System.err.println("totalPriceColumn is null, check FXML configuration.");
+        }
     }
 
     private void setupEventHandlers() {
         continueShoppingButton.setOnAction(e -> handleContinueShopping());
-        updateCartButton.setOnAction(e -> handleUpdateCart());
         removeCartButton.setOnAction(e -> handleRemoveCart());
         clearCartButton.setOnAction(e -> handleClearCart());
         checkoutButton.setOnAction(e -> handleCheckout());
     }
 
-    private void handleContinueShopping() {
+    public void handleContinueShopping() {
         if (mainController != null) {
             mainController.loadPageWithData("/view/customer/Store/BrowseProducts.fxml", null);
         }
     }
 
-    private void handleUpdateCart() {
-        updateTotalLabel();
-        isCartUpdated = true;
-        showAlert("Thông báo", "Giỏ hàng đã được cập nhật!");
-    }
-
-    private void handleRemoveCart() {
+    public void handleRemoveCart() {
         BrowseProductsController.CartItem selectedItem = cartTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             cartItems.remove(selectedItem);
             updateTotalLabel();
-            isCartUpdated = false;
             showAlert("Thông báo", "Đã xóa mặt hàng khỏi giỏ hàng!");
         } else {
             showAlert("Lỗi", "Vui lòng chọn một mặt hàng để xóa!");
         }
     }
 
-    private void handleClearCart() {
+    public void handleClearCart() {
         cartItems.clear();
         updateTotalLabel();
-        isCartUpdated = false;
         showAlert("Thông báo", "Đã xóa toàn bộ giỏ hàng!");
     }
 
-    private void handleCheckout() {
+    public void handleCheckout() {
         if (cartItems.isEmpty()) {
             showAlert("Lỗi", "Giỏ hàng trống, không thể thanh toán!");
-        } else if (!isCartUpdated) {
-            showAlert("Thông báo", "Vui lòng cập nhật giỏ hàng trước khi thanh toán!");
         } else {
             showAlert("Thành công", "Thanh toán thành công!");
+            cartItems.clear();
+            updateTotalLabel();
         }
     }
 
     private void updateTotalLabel() {
-        double total = 0;
-        for (BrowseProductsController.CartItem item : cartItems) {
-            item.setQuantity(item.getQuantity()); // Updates totalPrice internally
-            total += item.getTotalPrice();
-        }
+        double total = cartItems.stream()
+            .mapToDouble(BrowseProductsController.CartItem::getTotalPrice)
+            .sum();
         totalLabel.setText(String.format("%.2f USD", total));
         cartTable.refresh();
     }

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.ViewBookDetailsController">
    <content>
       <VBox maxWidth="2000.0" spacing="15" HBox.hgrow="ALWAYS">
          <padding>
@@ -23,7 +23,7 @@
          <children>
             <HBox alignment="CENTER_LEFT" spacing="10">
                <children>
-                  <Button fx:id="backButton" text="&lt; Back to Products" />
+                  <Button fx:id="backButton" text="&lt; Back to Products" /> <!-- Xóa onAction -->
                   <Label styleClass="section-header" text="Product Details">
                      <font>
                         <Font name="System Bold" size="18.0" />
@@ -41,7 +41,7 @@
                         <ImageView fx:id="bookImage" fitHeight="300" fitWidth="200" preserveRatio="true" />
                         <HBox alignment="CENTER" spacing="10">
                            <children>
-                              <Button fx:id="readDemoButton" text="Read Demo" />
+                              <Button fx:id="readDemoButton" text="Read Demo" /> <!-- Xóa onAction -->
                            </children>
                         </HBox>
                      </children>
@@ -90,9 +90,9 @@
                         <HBox alignment="CENTER_LEFT" spacing="10">
                            <children>
                               <Label text="Quantity:" />
-                              <Spinner fx:id="quantitySpinner" initialValue="1" max="99" min="1" prefWidth="70" />
-                              <Button fx:id="addToCartButton" defaultButton="true" text="Add to Cart" />
-                              <Button fx:id="notifyButton" text="Notify When Available" visible="false" />
+                              <Spinner fx:id="quantitySpinner" editable="true" initialValue="1" max="99" min="1" prefWidth="70" />
+                              <Button fx:id="addToCartButton" defaultButton="true" text="Add to Cart" /> <!-- Xóa onAction -->
+                              <Button fx:id="notifyButton" text="Notify When Available" visible="false" /> <!-- Xóa onAction -->
                            </children>
                         </HBox>
                      </children>

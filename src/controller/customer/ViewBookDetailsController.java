@@ -1,6 +1,5 @@
 package controller.customer;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,14 +21,18 @@ public class ViewBookDetailsController implements Initializable, SubController {
     @FXML private Button addToCartButton;
     @FXML private Button backButton;
     @FXML private Button readDemoButton;
+    @FXML private Button notifyButton;
 
     private CustomerMainController mainController;
     private BrowseProductsController.Product product;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Khởi tạo spinner với giá trị mặc định 1, min 1, max 99
         quantitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 99, 1));
+        addToCartButton.setOnAction(e -> handleAddToCart());
+        backButton.setOnAction(e -> handleBackToProducts());
+        readDemoButton.setOnAction(e -> handleReadDemo());
+        notifyButton.setOnAction(e -> handleNotify());
     }
 
     @Override
@@ -45,32 +48,21 @@ public class ViewBookDetailsController implements Initializable, SubController {
     private void updateUI() {
         if (product != null) {
             titleLabel.setText(product.getTitle());
-            authorLabel.setText(product.getAuthor());
+            authorLabel.setText("by " + product.getAuthor());
             categoryLabel.setText(product.getCategory());
             priceLabel.setText(String.format("%.2f USD", product.getPrice()));
-            descriptionArea.setText("Description of " + product.getTitle());
+            descriptionArea.setText("Description of " + product.getTitle()); // TODO: Lấy mô tả thực tế
 
             try {
                 Image image = new Image(getClass().getResourceAsStream(product.getImagePath()));
-                bookImage.setImage(image);
+                bookImage.setImage(image.isError() ? getPlaceholderImage() : image);
             } catch (Exception e) {
-                System.err.println("Lỗi khi tải hình ảnh: " + e.getMessage());
-                bookImage.setImage(new Image(getClass().getResourceAsStream("/images/placeholder.jpg")));
+                System.err.println("Lỗi khi tải hình ảnh: " + product.getImagePath() + " - " + e.getMessage());
+                bookImage.setImage(getPlaceholderImage());
             }
         }
     }
 
-    @FXML
-    private void handleBackToProducts() {
-        if (mainController == null) {
-            showAlert("Lỗi", "Không thể quay lại trang sản phẩm vì mainController chưa được thiết lập!");
-            return;
-        }
-        // Sửa lỗi: Thay loadContentView bằng loadPageWithData
-        mainController.loadPageWithData("/view/customer/Store/BrowseProducts.fxml", null);
-    }
-
-    @FXML
     private void handleAddToCart() {
         if (mainController == null || !mainController.isUserLoggedIn()) {
             showAlert("Thông báo", "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!");
@@ -82,17 +74,42 @@ public class ViewBookDetailsController implements Initializable, SubController {
         }
 
         int quantity = quantitySpinner.getValue();
-        BrowseProductsController.CartItem cartItem = new BrowseProductsController.CartItem(product, quantity);
-
-        ObservableList<BrowseProductsController.CartItem> cartItems = FXCollections.observableArrayList();
-        cartItems.add(cartItem);
-
-        mainController.loadPageWithData("/view/customer/Store/SeeCart.fxml", cartItems);
+        ObservableList<BrowseProductsController.CartItem> cartItems = mainController.getCartItems();
+        BrowseProductsController.CartItem existingItem = cartItems.stream()
+            .filter(item -> item.getProduct().equals(product))
+            .findFirst()
+            .orElse(null);
+        if (existingItem != null) {
+            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+        } else {
+            cartItems.add(new BrowseProductsController.CartItem(product, quantity));
+        }
+        showAlert("Thành công", "Đã thêm " + quantity + " '" + product.getTitle() + "' vào giỏ hàng!");
     }
 
-    @FXML
+    private void handleBackToProducts() {
+        if (mainController == null) {
+            showAlert("Lỗi", "Không thể quay lại trang sản phẩm vì mainController chưa được thiết lập!");
+            return;
+        }
+        mainController.loadPageWithData("/view/customer/Store/BrowseProducts.fxml", null);
+    }
+
     private void handleReadDemo() {
-        System.out.println("Đọc demo cho sản phẩm: " + (product != null ? product.getTitle() : "Unknown"));
+        showAlert("Thông báo", "Đọc demo cho sản phẩm: " + (product != null ? product.getTitle() : "Unknown"));
+    }
+
+    private void handleNotify() {
+        showAlert("Thông báo", "Bạn sẽ được thông báo khi sản phẩm '" + (product != null ? product.getTitle() : "Unknown") + "' có sẵn!");
+    }
+
+    private Image getPlaceholderImage() {
+        try {
+            return new Image(getClass().getResourceAsStream("/images/placeholder.png"));
+        } catch (Exception e) {
+            System.err.println("Không tìm thấy placeholder.png, trả về ảnh trống.");
+            return new Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=");
+        }
     }
 
     private void showAlert(String title, String message) {

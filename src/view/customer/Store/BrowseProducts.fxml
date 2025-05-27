@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="mainScrollPane" fitToWidth="true" prefHeight="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.BrowseProductsController">
+<ScrollPane fx:id="mainScrollPane" fitToWidth="true" maxHeight="600.0" prefWidth="800.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.BrowseProductsController">
     <content>
         <VBox spacing="10">
             <padding>
@@ -117,24 +117,19 @@
                                         <Label text="items" />
                                     </children>
                                 </HBox>
-
-                                <ScrollPane fx:id="productScrollPane" fitToHeight="true" fitToWidth="true">
-                                    <content>
-                                        <GridPane fx:id="productsGrid" hgap="10" vgap="10">
-                                            <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                            </columnConstraints>
-                                            <rowConstraints>
-                                                <RowConstraints vgrow="SOMETIMES" />
-                                                <RowConstraints vgrow="SOMETIMES" />
-                                                <RowConstraints vgrow="SOMETIMES" />
-                                                <RowConstraints vgrow="SOMETIMES" />
-                                            </rowConstraints>
-                                            </GridPane>
-                                    </content>
-                                </ScrollPane>
+                                  <GridPane fx:id="productsGrid" hgap="10" vgap="10">
+                                      <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                          <RowConstraints vgrow="SOMETIMES" />
+                                          <RowConstraints vgrow="SOMETIMES" />
+                                          <RowConstraints vgrow="SOMETIMES" />
+                                          <RowConstraints vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                      </GridPane>
                             </children>
                         </VBox>
                     </children>

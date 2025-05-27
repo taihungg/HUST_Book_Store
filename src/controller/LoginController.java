@@ -52,7 +52,7 @@ public class LoginController {
     @FXML
     private void initialize() {
         // Khởi tạo danh sách tài khoản
-        accounts = new HashMap<>();
+        accounts = new HashMap<String, UserAccount>();
         accounts.put("admin", new UserAccount("admin", "admin123", "admin"));
         accounts.put("customer1", new UserAccount("customer1", "pass123", "customer"));
         accounts.put("customer2", new UserAccount("customer2", "pass456", "customer"));
