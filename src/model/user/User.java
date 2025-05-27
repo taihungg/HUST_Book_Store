@@ -1,37 +1,24 @@
 package model.user;
 
-import model.cart.Cart;
-
-public class User {
+public abstract class User {
+	private static int index = 0;
 	private String id;
 	private String name;
 	private String email;
 	private String phone;
-	private String address;
 	private String username;
 	private String password;
-	private String role;
-	private double salary;
-	private final Cart cart;
-	public User(String id, String name, String email, String phone, String address, String username, String password,
-			String role, double salary) {
+	public User(String name, String email, String phone, String address, String username, String password) {
 		super();
-		this.id = id;
+		this.id = "user" + index++;
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
-		this.address = address;
 		this.username = username;
 		this.password = password;
-		this.role = role;
-		this.salary = salary;
-		this.cart = new Cart();
 	}
 	public String getId() {
 		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
 	}
 	public String getName() {
 		return name;
@@ -51,12 +38,6 @@ public class User {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
 	public String getUsername() {
 		return username;
 	}
@@ -68,20 +49,5 @@ public class User {
 	}
 	public void setPassword(String password) {
 		this.password = password;
-	}
-	public String getRole() {
-		return role;
-	}
-	public void setRole(String role) {
-		this.role = role;
-	}
-	public double getSalary() {
-		return salary;
-	}
-	public void setSalary(double salary) {
-		this.salary = salary;
-	}
-	public Cart getCart() {
-		return cart;
 	}
 }
