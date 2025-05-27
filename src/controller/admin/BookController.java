@@ -14,61 +14,97 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
+import model.manager.AppServiceManager;
 // Import các lớp model của bạn
 import model.product.Product;
 import model.product.book.Book;
 import model.product.book.Ebook;
 import model.product.book.Audiobook;
+import model.product.book.Printbook;
 // Import service quản lý dữ liệu
 
 
 public class BookController {
 
     //<editor-fold defaultstate="collapsed" desc="FXML Fields">
-    @FXML private Button addProductButton;
-    @FXML private TextField audioFormatField;
-    @FXML private TextField audiobookDownloadUrlField;
-    @FXML private CheckBox audiobookHasDrmCheckBox;
-    @FXML private GridPane audiobookSpecificFieldsPane;
-    @FXML private TextField authorsField; // Cho nhiều tác giả, cách nhau bằng dấu phẩy
-    @FXML private ComboBox<String> bookTypeComboBox;
-    @FXML private Button cancelButton;
-    @FXML private ComboBox<String> categoryComboBox;
-    @FXML private TextArea demoAudioArea;
-    @FXML private TextArea descriptionArea;
-    @FXML private TextField deviceCompatibilityField;
-    @FXML private TextField ebookDownloadUrlField;
-    @FXML private TextField ebookFormatField;
-    @FXML private CheckBox ebookHasDrmCheckBox;
-    @FXML private GridPane ebookSpecificFieldsPane;
-    @FXML private TextField fileSizeField;
-    @FXML private TextField galleryUrlField;
-    @FXML private TextField idField;
-    @FXML private TextField isbnField;
-    @FXML private ComboBox<String> languageComboBox;
-    @FXML private CheckBox musicScoreCheckBox;
-    @FXML private TextField narratorField;
-    @FXML private TextField numberOfPagesField;
-    @FXML private TextField priceField; // sellingPrice
-    @FXML private TextField publicationYearField;
-    @FXML private TextField publisherField;
-    @FXML private TextField readOnlineUrlField;
-    @FXML private CheckBox soundEffectsCheckBox;
-    @FXML private ComboBox<String> statusComboBox;
-    @FXML private TextField streamingUrlField;
-    @FXML private TextField titleField;
-    @FXML private TextField totalDurationField;
+    @FXML
+    private Button addProductButton;
+
+    @FXML
+    private TextField audiobookDownloadUrlField;
+
+    @FXML
+    private GridPane audiobookSpecificFieldsPane;
+
+    @FXML
+    private TextField authorsField;
+
+    @FXML
+    private ComboBox<String> bookTypeComboBox;
+
+    @FXML
+    private Button cancelButton;
+
+    @FXML
+    private ComboBox<String> categoryComboBox;
+
+    @FXML
+    private TextArea descriptionArea;
+
+    @FXML
+    private TextField ebookDownloadUrlField;
+
+    @FXML
+    private TextField ebookNumberOfPagesField;
+
+    @FXML
+    private GridPane ebookSpecificFieldsPane;
+
+    @FXML
+    private TextField galleryUrlField;
+
+    @FXML
+    private TextField isbnField;
+
+    @FXML       
+    private ComboBox<String> languageComboBox;
+
+    @FXML
+    private TextField printBookNumberOfPagesField;
+
+    @FXML
+    private GridPane printBookSpecificFieldsPane;
+
+    @FXML
+    private TextField printBookWeightField;
+
+    @FXML
+    private TextField publicationYearField;
+
+    @FXML
+    private TextField publisherField;
+
+    @FXML
+    private TextField purchasePriceField;
+
+    @FXML
+    private TextField sellingPriceField;
+
+    @FXML
+    private ComboBox<String> statusComboBox;
+
+    @FXML
+    private TextField titleField;
+
     //</editor-fold>
 
-    private ProductDataService productDataService;
-
+    private AppServiceManager appServiceManager = AppServiceManager.getInstance();
     @FXML
     public void initialize() {
         // Populate ComboBoxes
         languageComboBox.getItems().addAll("Tiếng Việt", "Tiếng Anh", "Tiếng Nhật", "Tiếng Pháp", "Song ngữ", "Khác");
         statusComboBox.getItems().addAll("Còn hàng", "Hết hàng", "Sắp phát hành", "Ngừng kinh doanh");
-        bookTypeComboBox.getItems().addAll("Sách thường (Print Book)", "Sách điện tử (Ebook)", "Sách nói (Audiobook)");
+        bookTypeComboBox.getItems().addAll("Print Book", "Ebook", "Audiobook");
         categoryComboBox.getItems().addAll("Văn học", "Kinh tế", "Tâm lý - Kỹ năng sống", "Thiếu nhi", "Tiểu sử - Hồi ký",
                                            "Giáo trình", "Khoa học - Kỹ thuật", "Ngoại ngữ", "Lịch sử", "Truyện tranh", "Khác");
 
@@ -83,36 +119,41 @@ public class BookController {
         audiobookSpecificFieldsPane.setVisible(false);
         audiobookSpecificFieldsPane.setManaged(false);
 
-        productDataService = ProductDataService.getInstance(); // Lấy instance của service
     }
 
     private void updateSpecificFieldsVisibility(String bookType) {
-        if ("Sách điện tử (Ebook)".equals(bookType)) {
+        if ("Ebook".equals(bookType)) {
             ebookSpecificFieldsPane.setVisible(true);
             ebookSpecificFieldsPane.setManaged(true);
             audiobookSpecificFieldsPane.setVisible(false);
             audiobookSpecificFieldsPane.setManaged(false);
-        } else if ("Sách nói (Audiobook)".equals(bookType)) {
+            printBookSpecificFieldsPane.setVisible(false);
+            printBookSpecificFieldsPane.setManaged(false);
+        } else if ("Audiobook".equals(bookType)) {
             ebookSpecificFieldsPane.setVisible(false);
             ebookSpecificFieldsPane.setManaged(false);
             audiobookSpecificFieldsPane.setVisible(true);
             audiobookSpecificFieldsPane.setManaged(true);
+            printBookSpecificFieldsPane.setVisible(false);
+            printBookSpecificFieldsPane.setManaged(false);
         } else { // Sách thường hoặc không chọn
             ebookSpecificFieldsPane.setVisible(false);
             ebookSpecificFieldsPane.setManaged(false);
             audiobookSpecificFieldsPane.setVisible(false);
             audiobookSpecificFieldsPane.setManaged(false);
+            printBookSpecificFieldsPane.setVisible(true);
+            printBookSpecificFieldsPane.setManaged(true);
         }
     }
 
     @FXML
     void handleAddBook(ActionEvent event) {
         // 1. Lấy các giá trị chung từ form
-        String id = idField.getText().trim();
         String title = titleField.getText().trim();
         String description = descriptionArea.getText().trim();
         String galleryURL = galleryUrlField.getText().trim(); // Sửa tên biến cho nhất quán
-        String priceText = priceField.getText().trim();
+        double sellingPrice = Double.parseDouble(sellingPriceField.getText().trim());
+        double purchasePrice = Double.parseDouble(purchasePriceField.getText().trim());
         String status = statusComboBox.getValue();
         String isbn = isbnField.getText().trim();
         String authors = authorsField.getText().trim();
@@ -123,14 +164,14 @@ public class BookController {
         String selectedBookType = bookTypeComboBox.getValue();
 
         // 2. Validate dữ liệu chung cơ bản
-        if (id.isEmpty() || title.isEmpty() || priceText.isEmpty() || status == null ||
+        if ( title.isEmpty() || sellingPriceField.getText().isEmpty() || purchasePriceField.getText().isEmpty() || status == null ||
             isbn.isEmpty() || authors.isEmpty() || publisher.isEmpty() || category == null ||
             language == null || publicationYearText.isEmpty() || selectedBookType == null) {
             showAlert(AlertType.ERROR, "Thiếu thông tin", "Vui lòng điền đầy đủ các trường thông tin chung bắt buộc của sách.");
             return;
         }
 
-        double sellingPrice;
+        
         int publicationYear;
         // Các giá trị mặc định cho các tham số của Product mà Book cần truyền cho super()
         // Bạn có thể thêm trường nhập liệu cho chúng nếu muốn người dùng tự nhập
@@ -140,9 +181,13 @@ public class BookController {
         // int quantityDefault = 0; // Nếu lớp Book của bạn có quantity
 
         try {
-            sellingPrice = Double.parseDouble(priceText);
+            
             if (sellingPrice <= 0) {
                 showAlert(AlertType.ERROR, "Giá không hợp lệ", "Giá bán phải lớn hơn 0.");
+                return;
+            }
+            if (purchasePrice <= 0) {
+                showAlert(AlertType.ERROR, "Giá không hợp lệ", "Giá mua phải lớn hơn 0.");
                 return;
             }
             publicationYear = Integer.parseInt(publicationYearText);
@@ -155,15 +200,11 @@ public class BookController {
         Product productToAdd = null; // Sử dụng kiểu Product cha
 
         // 3. Tạo đối tượng dựa trên loại sách được chọn
-        if ("Sách điện tử (Ebook)".equals(selectedBookType)) {
-            String numberOfPagesText = numberOfPagesField.getText().trim();
+        if ("Ebook".equals(selectedBookType)) {
+            String numberOfPagesText = ebookNumberOfPagesField.getText().trim();
             String ebookDownloadURL = ebookDownloadUrlField.getText().trim();
             // Lấy các trường khác của Ebook
-            String fileSizeText = fileSizeField.getText().trim();
-            String ebookFormat = ebookFormatField.getText().trim();
-            String readOnlineURL = readOnlineUrlField.getText().trim();
-            String deviceCompatibility = deviceCompatibilityField.getText().trim();
-            boolean ebookHasDRM = ebookHasDrmCheckBox.isSelected();
+            
 
 
             if (numberOfPagesText.isEmpty() || ebookDownloadURL.isEmpty() /*|| các trường Ebook bắt buộc khác */) {
@@ -171,17 +212,18 @@ public class BookController {
                  return;
             }
             int numberOfPages;
-            double fileSize = 0; // Giá trị mặc định nếu không bắt buộc
             try {
                 numberOfPages = Integer.parseInt(numberOfPagesText);
-                if (!fileSizeText.isEmpty()) {
-                    fileSize = Double.parseDouble(fileSizeText);
+                if (numberOfPages <= 0) {
+                    showAlert(AlertType.ERROR, "Số trang không hợp lệ", "Số trang phải lớn hơn 0.");
+                    return;
                 }
             } catch (NumberFormatException e) {
                 showAlert(AlertType.ERROR, "Định dạng Ebook không hợp lệ", "Số trang hoặc kích thước file của Ebook phải là số.");
                 return;
             }
 
+            String id = "Ebook_" + System.currentTimeMillis();
             // Giả sử constructor Ebook của bạn là:
             // Ebook(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status,
             //       isbn, authors, publisher, category, language, publicationYear,
@@ -192,7 +234,7 @@ public class BookController {
                 description,
                 galleryURL,
                 sellingPrice,
-                purchasePriceDefault,    // purchasePrice
+                purchasePrice,    // purchasePrice
                 averageRatingDefault,    // averageRating
                 numberOfReviewsDefault,  // numberOfReviews
                 status,
@@ -201,64 +243,66 @@ public class BookController {
                 publisher,
                 category,
                 language,
-                // publicationYear,      // Constructor Ebook này không trực tiếp nhận publicationYear.
-                                         // Nếu lớp Book (cha của Ebook) cần publicationYear,
-                                         // thì constructor Book mà Ebook gọi super() đến phải xử lý việc này,
-                                         // hoặc Ebook phải nhận publicationYear để truyền cho super().
-                                         // Hiện tại, constructor Ebook bạn đưa không có, nên Book cũng không được truyền.
-            
-                numberOfPages,           // Tham số thứ 15 cho Ebook
-                ebookDownloadURL    // Tham số thứ 16 cho Ebook
+                numberOfPages,           
+                ebookDownloadURL   
             );
             
 
-        } else if ("Sách nói (Audiobook)".equals(selectedBookType)) {
-            String audioFormat = audioFormatField.getText().trim();
+        } else if ("Audiobook".equals(selectedBookType)) {
             String audiobookDownloadURL = audiobookDownloadUrlField.getText().trim();
-            String narrator = narratorField.getText().trim();
-            String totalDurationText = totalDurationField.getText().trim();
-            // Lấy các trường khác của Audiobook
-            String streamingURL = streamingUrlField.getText().trim();
-            // String demoAudioData = demoAudioArea.getText(); // Cần parse thành ArrayList<Audio>
-            boolean audiobookHasDRM = audiobookHasDrmCheckBox.isSelected();
-            boolean soundEffects = soundEffectsCheckBox.isSelected();
-            boolean musicScore = musicScoreCheckBox.isSelected();
+            
 
-            if (audioFormat.isEmpty() || narrator.isEmpty() || totalDurationText.isEmpty() /*|| các trường Audiobook bắt buộc khác */) {
-                 showAlert(AlertType.ERROR, "Thiếu thông tin Audiobook", "Vui lòng điền định dạng, người đọc và thời lượng cho Audiobook.");
+            if (audiobookDownloadURL.isEmpty()  /*|| các trường Audiobook bắt buộc khác */) {
+                 showAlert(AlertType.ERROR, "Thiếu thông tin Audiobook", "Vui lòng điền URL Audiobook.");
                  return;
             }
-            int totalDuration;
-            try {
-                totalDuration = Integer.parseInt(totalDurationText);
-            } catch (NumberFormatException e) {
-                showAlert(AlertType.ERROR, "Định dạng Audiobook không hợp lệ", "Thời lượng của Audiobook phải là số (phút).");
-                return;
-            }
-
+            
+            String id = "Audiobook_" + System.currentTimeMillis();
             // Giả sử constructor Audiobook của bạn là:
             // Audiobook(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status,
             //           isbn, authors, publisher, category, language, publicationYear,
             //           audioFormat, downloadURL, streamingURL, narrator, totalDuration, hasDRM, soundEffects, musicScore /*, demoAudioList */)
-            productToAdd = new Audiobook(id, title, description, galleryURL, sellingPrice, purchasePriceDefault,
+            productToAdd = new Audiobook(id, title, description, galleryURL, sellingPrice, purchasePrice,
             averageRatingDefault, numberOfReviewsDefault, status, isbn, authors, // authors ở đây
-            publisher, category, language, streamingURL
+            publisher, category, language, audiobookDownloadURL
             );
 
         } 
+        else if ("Print Book".equals(selectedBookType)) {
+            int numberOfPages = Integer.parseInt(printBookNumberOfPagesField.getText().trim());
+            int weight = Integer.parseInt(printBookWeightField.getText().trim());
+            String id = "PrintBook_" + System.currentTimeMillis();
+            productToAdd = new Printbook(id, title, description, galleryURL, sellingPrice, purchasePrice,
+            averageRatingDefault, numberOfReviewsDefault, status, isbn, authors, publisher, category, language, numberOfPages, weight);
+        }
+
          else {
             showAlert(AlertType.WARNING, "Chưa chọn loại", "Vui lòng chọn loại sách cụ thể (Sách thường, Ebook, Audiobook).");
             return;
         }
+        int quantityDefault = 10;
 
         // 4. Thêm sản phẩm vào DataService
         if (productToAdd != null) {
-            productDataService.addProduct(productToAdd);
+            appServiceManager.getProductManager().addProduct(productToAdd,quantityDefault);
             showAlert(AlertType.INFORMATION, "Thành Công", "Đã thêm sách '" + title + "' vào hệ thống.");
-            clearFormFields(); // Xóa các trường sau khi thêm thành công
-            // Bạn có thể đóng cửa sổ này nếu muốn
-            Stage stage = (Stage) addProductButton.getScene().getWindow();
-             stage.close();
+            clearFormFields(); 
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/UpdateStore/ProductTypeSelectionView.fxml"));
+                Parent root = loader.load();
+                Stage stage = new Stage();
+                stage.setTitle("Cập nhật kho");
+                stage.setScene(new Scene(root));
+                stage.show();
+                Stage currentStage = (Stage) cancelButton.getScene().getWindow();
+                currentStage.close();
+            }
+            catch(Exception e){
+                System.err.println("Lỗi khi đóng cửa sổ");
+                e.printStackTrace();
+            }
+
+            
         }
     }
 
@@ -284,11 +328,12 @@ public class BookController {
     }
 
     private void clearFormFields() {
-        idField.clear();
+       
         titleField.clear();
         descriptionArea.clear();
         galleryUrlField.clear();
-        priceField.clear();
+        sellingPriceField.clear();
+        purchasePriceField.clear();
         statusComboBox.setValue(null); // Đặt lại giá trị ComboBox
         isbnField.clear();
         authorsField.clear();
@@ -299,24 +344,14 @@ public class BookController {
         bookTypeComboBox.setValue(null); // Việc này sẽ tự động ẩn các panel specific nhờ listener
 
         // Clear Ebook specific fields
-        numberOfPagesField.clear();
-        fileSizeField.clear();
-        ebookFormatField.clear();
+        ebookNumberOfPagesField.clear();
         ebookDownloadUrlField.clear();
-        readOnlineUrlField.clear();
-        deviceCompatibilityField.clear();
-        ebookHasDrmCheckBox.setSelected(false);
 
         // Clear Audiobook specific fields
-        audioFormatField.clear();
         audiobookDownloadUrlField.clear();
-        streamingUrlField.clear();
-        narratorField.clear();
-        totalDurationField.clear();
-        demoAudioArea.clear();
-        audiobookHasDrmCheckBox.setSelected(false);
-        soundEffectsCheckBox.setSelected(false);
-        musicScoreCheckBox.setSelected(false);
+        
+        printBookNumberOfPagesField.clear();
+        printBookWeightField.clear();   
     }
 
     private void showAlert(AlertType alertType, String title, String message) {

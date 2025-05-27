@@ -10,6 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.manager.AppServiceManager;
 import model.product.Toy;
 public class ToyController {
     @FXML
@@ -22,13 +23,13 @@ public class ToyController {
     private TextField galleryUrlField;
     
     @FXML
-    private TextField priceField;
+    private TextField sellingpriceField;
     
     @FXML
     private ComboBox<String> statusComboBox;
     
     @FXML
-    private TextField materialField;
+    private TextField quantityField;
     
     @FXML
     private TextField ageRecommendationField;
@@ -45,14 +46,17 @@ public class ToyController {
     @FXML
     private Button cancelButton;
 
-    private ProductDataService productDataService;
+    @FXML
+    private TextField purchasepriceField;
+
+    private AppServiceManager   appServiceManager ;
    
 
     @FXML
     public void initialize() {
         // Khởi tạo các thành phần nếu cần
         statusComboBox.getItems().addAll("In Stock", "Out of Stock");
-        productDataService = ProductDataService.getInstance(); 
+        appServiceManager = AppServiceManager.getInstance();
     }
 
     @FXML
@@ -66,17 +70,17 @@ public class ToyController {
    String galleryUrl = galleryUrlField.getText();
     
     
-    Double sellingPrice =Double.parseDouble(priceField.getText()) ;
+    Double sellingPrice =Double.parseDouble(sellingpriceField.getText()) ;
+    Double purchasePrice = Double.parseDouble(purchasepriceField.getText());
      
     String status = statusComboBox.getValue();
     
-    String material = materialField.getText();
+    int quantity = Integer.parseInt(quantityField.getText());
     
     int suitableAge = Integer.parseInt(ageRecommendationField.getText());
     
     String brand =  brandField.getText();
     
-   String type =  typeField.getText();
 
    String id = "TOY_" + System.currentTimeMillis();
 
@@ -91,7 +95,7 @@ public class ToyController {
 
         }
 
-        if (title.isEmpty() || description.isEmpty() || galleryUrl.isEmpty() || brand.isEmpty() || type.isEmpty()){
+        if (title.isEmpty() || description.isEmpty() || galleryUrl.isEmpty() || brand.isEmpty() ){
             System.err.println("Please fill in all fields");
             return;
         }
@@ -99,10 +103,10 @@ public class ToyController {
    
 
    Toy newToy = new Toy( id,  title,  description,  galleryUrl,  sellingPrice,
-   0, 0, 10,  status,
+   purchasePrice, 0, 10,  status,
     brand,  suitableAge);
 
-   productDataService.addProduct(newToy);
+   appServiceManager.getProductManager().addProduct(newToy, quantity);
 
    Alert alert = new Alert (Alert.AlertType.INFORMATION);
    alert.setTitle("Thông báo");

@@ -9,6 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import model.manager.AppServiceManager;
 import model.product.Toy;
 public class ToyDetailController {
 
@@ -63,6 +64,8 @@ public class ToyDetailController {
     @FXML
     private ImageView toyImage;
 
+    private AppServiceManager appServiceManager = AppServiceManager.getInstance();
+
     
     public void setToy(Toy toy){
         if (toy == null){
@@ -78,6 +81,7 @@ public class ToyDetailController {
         //toyMaterialLabel.setText(toy.
         descriptionArea.setText(toy.getDescription());
         toyImage.setImage(new Image(toy.getGalleryURL()));
+        quantityLabel.setText(String.valueOf(appServiceManager.getProductManager().getProductQuantity(toy.getId())));
 
     }
 

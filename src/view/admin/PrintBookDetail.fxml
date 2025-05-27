@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
@@ -12,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.ToyDetailController">
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.PrintBookDetailController">
            <content>
               <VBox maxWidth="2000.0" spacing="15" HBox.hgrow="ALWAYS">
                  <padding>
@@ -21,7 +20,7 @@
                  <children>
                     <HBox alignment="CENTER_LEFT" spacing="10">
                        <children>
-                          <Button fx:id="backButton" text="&lt; Back to Products" /> <!-- Xóa onAction -->
+                          <Button fx:id="backButton" onAction="#handleBackButton" text="&lt; Back " /> <!-- Xóa onAction -->
                           <Label styleClass="section-header" text="Product Details">
                              <font>
                                 <Font name="System Bold" size="18.0" />
@@ -42,7 +41,7 @@
                           </VBox>
                           <VBox spacing="10" HBox.hgrow="ALWAYS">
                              <children>
-                                <Label fx:id="titleLabel" styleClass="product-title" text="Book Title" wrapText="true">
+                                <Label fx:id="titleLabel" styleClass="product-title" text="Print Book Title" wrapText="true">
                                    <font>
                                       <Font name="System Bold" size="24.0" />
                                    </font>
@@ -53,18 +52,17 @@
                                       <Label fx:id="authorLabel" text="Tran Chi Vu" />
                                    </children>
                                 </HBox>
-                        <ComboBox fx:id="categoryComboBox" prefWidth="150.0" promptText="--Category" />
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                           <children>
+                              <Label text="Cateogry" />
+                              <Label fx:id="categoryLabel" text="1999" />
+                           </children>
+                        </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5" />
                         <HBox alignment="CENTER_LEFT" spacing="5">
                            <children>
                               <Label text="Publisher: " />
                               <Label fx:id="publisherLabel" text="Chi Vu" />
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="5">
-                           <children>
-                              <Label text="Year of publication: " />
-                              <Label fx:id="publicationYearLabel" text="1999" />
                            </children>
                         </HBox>
                             <HBox alignment="CENTER_LEFT" spacing="5">
@@ -73,6 +71,30 @@
                                   <Label fx:id="languageLabel" text="Chi Vu" />
                                </children>
                             </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                           <children>
+                              <Label text="Status: " />
+                              <Label fx:id="statusLabel" text="Chi Vu" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                           <children>
+                              <Label text="ISBN: " />
+                              <Label fx:id="ISBNLabel" text="...." />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                           <children>
+                              <Label text="Number of pages: " />
+                              <Label fx:id="numberOfPageLabel" text="...." />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                           <children>
+                              <Label text="Weight: " />
+                              <Label fx:id="weightLabel" text="...." />
+                           </children>
+                        </HBox>
                                 <HBox alignment="CENTER_LEFT" spacing="5">
                                    <children>
                                       <Label styleClass="product-price" text="SellingPrice:">
@@ -101,7 +123,6 @@
                                   </Label>
                                </children>
                             </HBox>
-                            <ComboBox fx:id="statusComboBox" prefWidth="150.0" promptText="--Status" />
                                 <Separator />
                                 <Label text="Description:" />
                                 <ScrollPane fitToWidth="true" prefHeight="150" VBox.vgrow="ALWAYS">

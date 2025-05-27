@@ -1,5 +1,6 @@
 package controller.admin;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,13 +18,18 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.IntegerStringConverter;
 import model.product.Product; // Đảm bảo bạn có lớp Product này
 import model.product.Stationery;
 import model.product.Toy;
-
+import model.product.book.Book;
+import model.product.book.Ebook;
+import model.product.book.Audiobook;
+import model.product.book.Book;
+import model.product.book.Printbook;
 import java.io.IOException;
 
-import model.manager.product.ProductManager;
+import model.manager.AppServiceManager;
 public class StoreController {
 
     // Các cột này sẽ khớp với FXML đã được sửa đổi
@@ -38,6 +44,8 @@ public class StoreController {
 
     @FXML
     private TableColumn<Product, String> statusCol; // Thêm cột này
+    @FXML 
+    private TableColumn<Product,Integer>quantityCol;
 
     // TableView sẽ chứa các đối tượng Product
     @FXML
@@ -65,13 +73,14 @@ public class StoreController {
     private Button viewButton;    // Giữ lại nếu FXML có
 
 
-    private ProductDataService productDataService;
+    private AppServiceManager appServiceManager;
+
+
 
     @FXML
     public void initialize() {
-        productDataService = ProductDataService.getInstance(); // Lấy instance của service
 
-
+        appServiceManager = AppServiceManager.getInstance();
         productTableView.setEditable(true);
 
         // Thiết lập CellValueFactory cho các cột tương ứng với thuộc tính của Product
@@ -105,15 +114,37 @@ public class StoreController {
             product.setStatus(event.getNewValue()); // Product cần có setStatus()
         });
 
+        quantityCol.setCellValueFactory(cellData -> {
+            Product product = cellData.getValue(); // Lấy đối tượng Product của hàng hiện tại
+            if (product != null) {
+                // Gọi phương thức từ ProductManager để lấy số lượng
+                int quantity = appServiceManager.getProductManager().getProductQuantity(product.getId());
+                return new SimpleIntegerProperty(quantity).asObject();
+            }
+            return null; // Hoặc new SimpleIntegerProperty(0).asObject(); nếu bạn muốn hiển thị 0 khi product là null
+        });       
+         quantityCol.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+         quantityCol.setOnEditCommit((CellEditEvent<Product, Integer> event) -> {
+            Product product = event.getRowValue();
+            if (event.getNewValue() != null && product != null) {
+                appServiceManager.getProductManager().setProductQuantity(product.getId(), event.getNewValue());
+                System.out.println("Đã cập nhật Quantity cho " + product.getTitle() + " thành: " + event.getNewValue());
+                productTableView.refresh(); 
+            }
+        });
+    
 
-        productTableView.setItems(productDataService.getProductList());
-        System.out.println("StoreController: Khởi tạo hoàn tất. Hiển thị " + productDataService.getProductList().size() + " sản phẩm từ service.");
+
+        productTableView.setItems(appServiceManager.getProductManager().getAllProducts());
+        System.out.println("StoreController: Khởi tạo hoàn tất. Hiển thị " + appServiceManager.getProductManager().getAllProducts().size() + " sản phẩm từ service.");
 
     }
 
     @FXML
     void handleDeleteAction(ActionEvent event) {
-        productDataService.removeProduct( productTableView.getSelectionModel().getSelectedItem());
+       if( appServiceManager.getProductManager().removeProduct( productTableView.getSelectionModel().getSelectedItem().getId())){
+        productTableView.setItems(appServiceManager.getProductManager().getAllProducts());
+       }
         
     }
 
@@ -141,12 +172,12 @@ public class StoreController {
     void handleSearchAction(ActionEvent event) {
         String searchText = searchField.getText().toLowerCase().trim();
         if (searchText.isEmpty()) {
-            productTableView.setItems(productDataService.getProductList()); // Hiển thị lại toàn bộ danh sách nếu ô tìm kiếm rỗng
+            productTableView.setItems(appServiceManager.getProductManager().getAllProducts()); // Hiển thị lại toàn bộ danh sách nếu ô tìm kiếm rỗng
             return;
         }
 
         ObservableList<Product> filteredList = FXCollections.observableArrayList();
-        for (Product product : productDataService.getProductList()) {
+        for (Product product :appServiceManager.getProductManager().getAllProducts()) {
             if (product.getTitle() != null && product.getTitle().equalsIgnoreCase(searchText)) {
                 filteredList.add(product);
             }
@@ -183,7 +214,58 @@ public class StoreController {
                 detailStage.showAndWait(); // Hiển thị và chờ cho đến khi cửa sổ này đóng
 
             }
+            else if (selectedProduct instanceof Stationery){
+               
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/StationeryDetail.fxml")); // Đường dẫn đến FXML chi tiết
+                Parent detailRoot = loader.load();
+                StationeryDetailController stationeryDetailController = loader.getController();
+                stationeryDetailController.setStationery((Stationery)selectedProduct);
 
+                Stage detailStage = new Stage();
+                detailStage.setTitle("Chi Tiết Sản Phẩm - " + selectedProduct.getTitle());
+                detailStage.setScene(new Scene(detailRoot));
+                detailStage.initModality(Modality.APPLICATION_MODAL); // Chặn tương tác với cửa sổ StoreController
+                detailStage.showAndWait();
+
+            }
+            else if (selectedProduct instanceof Printbook){
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/PrintBookDetail.fxml"));
+                Parent detailRoot = loader.load();
+                PrintBookDetailController bookDetailController = loader.getController();
+                bookDetailController.setPrintBook((Printbook)selectedProduct);
+
+                Stage detailStage = new Stage();
+                detailStage.setTitle("Chi Tiết Sản Phẩm - " + selectedProduct.getTitle());
+                detailStage.setScene(new Scene(detailRoot));
+                detailStage.initModality(Modality.APPLICATION_MODAL); // Chặn tương tác với cửa sổ StoreController
+                detailStage.showAndWait();
+            }
+            else if (selectedProduct instanceof Ebook){
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/EbookDetail.fxml"));
+                Parent detailRoot = loader.load();
+                EBookDetailController ebookDetailController = loader.getController();
+                ebookDetailController.setEbook((Ebook)selectedProduct);
+
+                Stage detailStage = new Stage();
+                detailStage.setTitle("Chi Tiết Sản Phẩm - " + selectedProduct.getTitle());
+                detailStage.setScene(new Scene(detailRoot));
+                detailStage.initModality(Modality.APPLICATION_MODAL); // Chặn tương tác với cửa sổ StoreController
+                detailStage.showAndWait();
+            }
+            else if (selectedProduct instanceof Audiobook){
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/AudioBookDetail.fxml"));
+                Parent detailRoot = loader.load();
+                AudioBookDetailController audioBookDetailController = loader.getController();
+                audioBookDetailController.setAudiobook((Audiobook)selectedProduct);
+
+                Stage detailStage = new Stage();
+                detailStage.setTitle("Chi Tiết Sản Phẩm - " + selectedProduct.getTitle());
+                detailStage.setScene(new Scene(detailRoot));
+                detailStage.initModality(Modality.APPLICATION_MODAL); // Chặn tương tác với cửa sổ StoreController
+                detailStage.showAndWait();
+            }
+                
+                
         }
         catch (IOException e){
             System.err.println("Lỗi khi mở cửa sổ chi tiết sản phẩm:");

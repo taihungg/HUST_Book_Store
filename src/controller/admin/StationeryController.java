@@ -4,11 +4,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.manager.AppServiceManager;
 import model.product.Stationery;
 
 public class StationeryController {
@@ -22,13 +24,13 @@ public class StationeryController {
     private TextField galleryUrlField;
     
     @FXML
-    private TextField priceField;
+    private TextField sellingpriceField;
+
+    @FXML
+    private TextField purchasepriceField;
     
     @FXML
     private ComboBox<String> statusComboBox;
-    
-    @FXML
-    private TextField materialField;
     
     @FXML
     private TextField brandField;
@@ -37,45 +39,39 @@ public class StationeryController {
     private TextField typeField;
 
     @FXML
-    private TextField colorField;
-    
-    @FXML
-    private Button addStationeryButton;
-    
-    @FXML
     private Button cancelButton;
 
     @FXML 
     private TextField manufacturerField;
-
+    
+    @FXML
+    private TextField quantityField;
     
 
 
     @FXML
     public void initialize() {
         
-        statusComboBox.getItems().addAll("Available", "Out of Stock", "Discontinued");
+        statusComboBox.getItems().addAll("In Stock", "Out of Stock");
        
 
     }
-    private ProductDataService productDataService;
-    public StationeryController() { // Hoặc trong initialize()
-        productDataService = ProductDataService.getInstance(); // Lấy instance của service
-    }
+    private AppServiceManager appServiceManager = AppServiceManager.getInstance();
+    
 
     @FXML
     private void handleAddStationery() {
         String title = titleField.getText();
         String description = descriptionArea.getText();
         String galleryUrl = galleryUrlField.getText();
-        String material = materialField.getText();
         String type = typeField.getText();
-        String color = colorField.getText();
-        String manufacturer = manufacturerField.getText();
         String status = statusComboBox.getValue();
+        String brand = brandField.getText();
         String id = "STATIONERY_" + System.currentTimeMillis();
-        Double sellingPrice = Double.parseDouble(priceField.getText());
-        if (title.isEmpty() || description.isEmpty() || galleryUrl.isEmpty() || material.isEmpty() || type.isEmpty() || color.isEmpty() || manufacturer.isEmpty()) {
+        Double sellingPrice = Double.parseDouble(sellingpriceField.getText());
+        Double purchasePrice = Double.parseDouble(purchasepriceField.getText());
+        int quantity = Integer.parseInt(quantityField.getText());
+        if (title.isEmpty() || description.isEmpty() || galleryUrl.isEmpty()  || type.isEmpty() ) {
             System.err.println("Please fill in all fields");
             return;
         }
@@ -99,22 +95,39 @@ public class StationeryController {
                 description,        // description
                 galleryUrl,         // galleryURL
                 sellingPrice,       // sellingPrice
-                0, // purchasePrice
+                purchasePrice, // purchasePrice
                 0, // averageRating
                 0, // numberOfReviews
                 status,             // status
-                manufacturer,         // brand (truyền giá trị từ manufacturerField hoặc brandField)
-                type                // type
+                brand,
+                type              // type
             );
 
-            System.out.println("Stationery sắp được thêm từ form: " + newStationery.getTitle() + " - Brand: " + newStationery.getBrand() + " - Type: " + newStationery.getType() + " - Price: " + newStationery.getSellingPrice()); // Thêm các thuộc tính khác
             
-            productDataService.addProduct(newStationery);
-            System.out.println("StationeryController: Đã thêm sản phẩm '" + newStationery.getTitle() + "' vào service.");
+            appServiceManager.getProductManager().addProduct(newStationery,quantity);
+
+            Alert alert = new Alert (Alert.AlertType.INFORMATION);
+            alert.setTitle("Thông báo");
+            alert.setHeaderText("Thêm đồ chơi thành công");
+            alert.setContentText("Sản phẩm đã được thêm vào danh sách sản phẩm");
+            alert.showAndWait();
+        
 
 
-            closeWindow();
-            
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/UpdateStore/ProductTypeSelectionView.fxml"));
+                Parent root = loader.load();
+                Stage stage = new Stage();
+                stage.setTitle("Cập nhật kho");
+                stage.setScene(new Scene(root));
+                stage.show();
+                Stage currentStage = (Stage) cancelButton.getScene().getWindow();
+                currentStage.close();
+                }
+                catch(Exception e){
+                 System.err.println("Lỗi khi đóng cửa sổ");
+                 e.printStackTrace();
+                }
             
 
       
