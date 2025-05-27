@@ -4,16 +4,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
+import model.manager.AppServiceManager;
 import java.io.IOException;
 import java.net.URL;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
-public class CustomerMainController {
+public class HomePageController {
 
     @FXML private Button loginButton;
     @FXML private Button logoutButton;
@@ -25,11 +25,11 @@ public class CustomerMainController {
     @FXML private StackPane contentArea;
 
     private final SessionManager sessionManager = SessionManager.getInstance();
-    private ObservableList<BrowseProductsController.CartItem> cartItems = FXCollections.observableArrayList();
+    private final AppServiceManager appServiceManager = new AppServiceManager();
 
     @FXML
     public void initialize() {
-        sessionManager.login();
+        sessionManager.login(); // Temporarily logged in as Customer
         updateButtonsVisibility(sessionManager.isLoggedIn());
         loadContentView("/view/customer/Store/BrowseProducts.fxml");
     }
@@ -40,7 +40,7 @@ public class CustomerMainController {
         }
         loginButton.setVisible(!isLoggedIn);
         logoutButton.setVisible(isLoggedIn);
-        menuBar.setVisible(isLoggedIn);
+        menuBar.setVisible(true); // Always visible, but actions will check login status
     }
 
     @FXML
@@ -51,13 +51,16 @@ public class CustomerMainController {
     @FXML
     private void handleLogout() {
         try {
+            // Xử lý đăng xuất thông qua UserManager
+            if (appServiceManager != null) {
+                appServiceManager.getUserManager().logout();
+            }
             sessionManager.logout();
             updateButtonsVisibility(false);
             loadContentView("/view/customer/Store/BrowseProducts.fxml");
-            cartItems.clear();
             System.out.println("User logged out successfully");
         } catch (Exception e) {
-            System.err.println("Lỗi khi đăng xuất: " + e.getMessage());
+            System.err.println("Error during logout: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -66,6 +69,13 @@ public class CustomerMainController {
     private void handleMenuItemAction(ActionEvent event) {
         MenuItem menuItem = (MenuItem) event.getSource();
         String fxmlPath;
+        
+        // Check login status for certain menu items
+        if (!sessionManager.isLoggedIn() && !menuItem.getId().equals("browseProductsMenuItem")) {
+            showAlert("Login Required", "Please log in to access this feature.");
+            return;
+        }
+        
         switch (menuItem.getId()) {
             case "personalInfoMenuItem":
                 fxmlPath = "/view/customer/Account/SeePersonalInformation.fxml";
@@ -80,16 +90,13 @@ public class CustomerMainController {
                 fxmlPath = "/view/customer/Store/SeeCart.fxml";
                 break;
             default:
-                System.err.println("MenuItem không được hỗ trợ: " + menuItem.getId());
+                System.err.println("Unsupported MenuItem: " + menuItem.getId());
                 return;
         }
-        if ("cartMenuItem".equals(menuItem.getId())) {
-            loadPageWithData(fxmlPath, cartItems);
-        } else {
-            Object subController = loadContentView(fxmlPath);
-            if (subController instanceof SubController) {
-                ((SubController) subController).setMainController(this);
-            }
+        
+        Object subController = loadContentView(fxmlPath);
+        if (subController instanceof SubController) {
+            ((SubController) subController).setMainController(this);
         }
     }
 
@@ -107,29 +114,23 @@ public class CustomerMainController {
             FXMLLoader loader = new FXMLLoader(location);
             Parent content = loader.load();
             Object controller = loader.getController();
+            
             if (controller == null) {
                 System.err.println("Controller not found for " + fxmlPath);
                 return null;
             }
+            
             if (controller instanceof SubController) {
                 ((SubController) controller).setMainController(this);
             }
-            if (fxmlPath.contains("/view/customer/Store/SeeCart.fxml")) {
-                if (controller instanceof SeeCartController) {
-                    ObservableList<BrowseProductsController.CartItem> items = 
-                        (data instanceof ObservableList) ? 
-                        (ObservableList<BrowseProductsController.CartItem>) data : cartItems;
-                    ((SeeCartController) controller).setCartData(items);
-                } else {
-                    System.err.println("Invalid Controller for " + fxmlPath);
-                }
-            } else if (fxmlPath.contains("/view/customer/Store/ViewDetails/ViewBookDetails.fxml")) {
-                if (controller instanceof ViewBookDetailsController && data instanceof BrowseProductsController.Product) {
-                    ((ViewBookDetailsController) controller).setProductData((BrowseProductsController.Product) data);
-                } else {
-                    System.err.println("Invalid data for ViewBookDetailsController: " + data);
+            
+            // Pass AppServiceManager to BrowseProductsController
+            if (fxmlPath.contains("/view/customer/Store/BrowseProducts.fxml")) {
+                if (controller instanceof BrowseProductsController) {
+                    ((BrowseProductsController) controller).setAppServiceManager(appServiceManager);
                 }
             }
+            
             if (contentArea == null) {
                 System.err.println("contentArea not initialized!");
                 return null;
@@ -144,18 +145,35 @@ public class CustomerMainController {
         }
     }
 
-    public ObservableList<BrowseProductsController.CartItem> getCartItems() {
-        return cartItems;
-    }
-
     public void onLoginSuccess() {
-        sessionManager.login();
-        updateButtonsVisibility(true);
-        loadContentView("/view/customer/Store/BrowseProducts.fxml");
+        if (appServiceManager != null) {
+            try {
+                // Xử lý đăng nhập thông qua UserManager
+                appServiceManager.getUserManager().login();
+                sessionManager.login();
+                updateButtonsVisibility(true);
+                loadContentView("/view/customer/Store/BrowseProducts.fxml");
+            } catch (Exception e) {
+                System.err.println("Error during login: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     public boolean isUserLoggedIn() {
         return sessionManager.isLoggedIn();
+    }
+
+    public AppServiceManager getAppServiceManager() {
+        return appServiceManager;
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private static class SessionManager {

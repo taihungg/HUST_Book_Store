@@ -7,9 +7,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import model.manager.AppServiceManager;
+import model.product.Product;
+import model.product.interfaces.PhysicalProduct;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +21,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 interface SubController {
-    void setMainController(CustomerMainController mainController);
+    void setMainController(HomePageController mainController);
 }
 
 public class BrowseProductsController implements SubController, Initializable {
@@ -39,141 +42,129 @@ public class BrowseProductsController implements SubController, Initializable {
     @FXML private Label itemCountLabel;
     //end region
 
-    //region Internal State
-    private CustomerMainController mainController;
-    private List<Product> allProducts;
+    //region Trạng thái nội bộ
+    private HomePageController mainController;
+    private AppServiceManager appServiceManager;
     private ObservableList<Product> displayedProducts;
-
-    //end region
-
-    //region Nested Classes (Product and CartItem)
-    public static class Product {
-        private String title;
-        private String author;
-        private double price;
-        private String category;
-        private String imagePath;
-
-        public Product(String title, String author, double price, String category, String imagePath) {
-            this.title = title;
-            this.author = author;
-            this.price = price;
-            this.category = category;
-            this.imagePath = imagePath;
-        }
-
-        public String getTitle() { return title; }
-        public String getAuthor() { return author; }
-        public double getPrice() { return price; }
-        public String getCategory() { return category; }
-        public String getImagePath() { return imagePath; }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Product product = (Product) o;
-            return Double.compare(product.price, price) == 0 &&
-                   title.equals(product.title) &&
-                   author.equals(product.author) &&
-                   category.equals(product.category);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = title.hashCode();
-            result = 31 * result + author.hashCode();
-            result = 31 * result + category.hashCode();
-            result = 31 * result + Double.hashCode(price);
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "Product{title='" + title + "', author='" + author + "', price=" + price + "}";
-        }
-    }
-
-    public static class CartItem {
-        private Product product;
-        private int quantity;
-        private double totalPrice;
-
-        public CartItem(Product product, int quantity) {
-            this.product = product;
-            this.quantity = quantity;
-            this.totalPrice = product.getPrice() * quantity;
-        }
-
-        public Product getProduct() { return product; }
-        public int getQuantity() { return quantity; }
-        public double getTotalPrice() { return totalPrice; }
-
-        public void setQuantity(int quantity) {
-            this.quantity = quantity;
-            this.totalPrice = product.getPrice() * quantity;
-        }
-
-        @Override
-        public String toString() {
-            return "CartItem{item='" + product.getTitle() + "', price=" + String.format("%.2f", product.getPrice()) +
-                   ", quantity=" + quantity + ", total=" + String.format("%.2f", totalPrice) + "}";
-        }
-    }
+    private ObservableList<Product> filteredProducts;
     //end region
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initializeProductsList();
         setupEventHandlers();
-        displayedProducts = FXCollections.observableArrayList(allProducts);
-        applyAllFiltersAndSort();
-        System.out.println("BrowseProductsController đã được khởi tạo.");
+        displayedProducts = FXCollections.observableArrayList();
+        filteredProducts = FXCollections.observableArrayList();
+        System.out.println("BrowseProductsController initialized.");
     }
 
     @Override
-    public void setMainController(CustomerMainController mainController) {
+    public void setMainController(HomePageController mainController) {
         this.mainController = mainController;
-        System.out.println("Đã thiết lập MainController cho BrowseProductsController.");
+        System.out.println("MainController set for BrowseProductsController.");
     }
 
-    private void initializeProductsList() {
-        allProducts = new ArrayList<>();
-        allProducts.add(new Product("My Hero Academia", "Kohei Horikoshi", 29.99, "Fiction", "/images/book1.jpg"));
-        allProducts.add(new Product("Dragon Ball Super", "Toyotarou", 24.99, "Fiction", "/images/book2.jpg"));
-        allProducts.add(new Product("Rent A Girlfriend", "Miyajima Reiji", 19.99, "Fiction", "/images/book3.jpg"));
-        allProducts.add(new Product("Harry Potter", "J.K.Rowling", 34.99, "Fiction", "/images/book4.jpg"));
-        allProducts.add(new Product("Huyền Thoại Cổ Ngọc", "Ocean Nguyễn", 22.99, "Fiction", "/images/book5.jpg"));
-        allProducts.add(new Product("Thiên Long Bát Bộ", "Kim Dung", 39.99, "Fiction", "/images/book6.jpg"));
-        allProducts.add(new Product("Sapiens: A Brief History of Humankind", "Yuval Noah Harari", 18.50, "Non-Fiction", "/images/book7.jpg"));
-        allProducts.add(new Product("Cosmos", "Carl Sagan", 15.00, "Science", "/images/book8.jpg"));
-        allProducts.add(new Product("Clean Code", "Robert C. Martin", 40.00, "Programming", "/images/book9.jpg"));
-        allProducts.add(new Product("The Guns of August", "Barbara W. Tuchman", 20.00, "History", "/images/book10.jpg"));
-        allProducts.add(new Product("Becoming", "Michelle Obama", 25.00, "Non-Fiction", "/images/book11.jpg"));
+    public void setAppServiceManager(AppServiceManager appServiceManager) {
+        this.appServiceManager = appServiceManager;
+        loadInStockProducts();
+    }
 
+    private void loadInStockProducts() {
+        if (appServiceManager == null) {
+            System.err.println("AppServiceManager is not initialized.");
+            return;
+        }
+        
+        ObservableList<Product> allProducts = appServiceManager.getProductManager().getAllProducts();
+        displayedProducts.clear();
+        
+        for (Product product : allProducts) {
+            if ("In Stock".equalsIgnoreCase(product.getStatus())) {
+                displayedProducts.add(product);
+            }
+        }
+        
+        applyAllFiltersAndSort();
     }
 
     private void setupEventHandlers() {
-        searchField.setOnKeyPressed(e -> {
-            if (e.getCode().toString().equals("ENTER")) {
-                handleSearch();
-            }
-        });
-        fictionCheckBox.setOnAction(e -> handleCategoryFilter());
-        nonFictionCheckBox.setOnAction(e -> handleCategoryFilter());
-        scienceCheckBox.setOnAction(e -> handleCategoryFilter());
-        historyCheckBox.setOnAction(e -> handleCategoryFilter());
-        programmingCheckBox.setOnAction(e -> handleCategoryFilter());
-
-
-        if (sortGroup != null) {
-            sortGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
-                if (newToggle != null) {
-                    handleSort();
+        if (searchField != null) {
+            searchField.setOnKeyPressed(e -> {
+                if (e.getCode().toString().equals("ENTER")) {
+                    handleSearch();
                 }
             });
+        }
+        
+        if (fictionCheckBox != null) {
+            fictionCheckBox.setOnAction(_ -> {
+                if (fictionCheckBox.isSelected()) {
+                    filteredProducts.removeIf(product -> !product.getTitle().toLowerCase().contains("fiction"));
+                } else {
+                    loadInStockProducts(); // Tải lại danh sách gốc
+                }
+            });
+        }
+        
+        if (nonFictionCheckBox != null) {
+            nonFictionCheckBox.setOnAction(_ -> {
+                if (nonFictionCheckBox.isSelected()) {
+                    filteredProducts.removeIf(product -> !product.getTitle().toLowerCase().contains("non-fiction"));
+                } else {
+                    loadInStockProducts();
+                }
+            });
+        }
+        
+        if (scienceCheckBox != null) {
+            scienceCheckBox.setOnAction(_ -> {
+                if (scienceCheckBox.isSelected()) {
+                    filteredProducts.removeIf(product -> !product.getTitle().toLowerCase().contains("science"));
+                } else {
+                    loadInStockProducts();
+                }
+            });
+        }
+        
+        if (historyCheckBox != null) {
+            historyCheckBox.setOnAction(_ -> {
+                if (historyCheckBox.isSelected()) {
+                    filteredProducts.removeIf(product -> !product.getTitle().toLowerCase().contains("history"));
+                } else {
+                    loadInStockProducts();
+                }
+            });
+        }
+        
+        if (programmingCheckBox != null) {
+            programmingCheckBox.setOnAction(_ -> {
+                if (programmingCheckBox.isSelected()) {
+                    filteredProducts.removeIf(product -> !product.getTitle().toLowerCase().contains("programming"));
+                } else {
+                    loadInStockProducts();
+                }
+            });
+        }
 
-
+        if (sortGroup != null) {
+            sortGroup.selectedToggleProperty().addListener((_, oldToggle, newToggle) -> {
+                if (newToggle != null) {
+                    RadioButton selectedSort = (RadioButton) newToggle;
+                    String sortType = selectedSort.getText();
+                    
+                    FXCollections.sort(filteredProducts, (p1, p2) -> {
+                        switch (sortType) {
+                            case "Sort by Title":
+                                return p1.getTitle().compareTo(p2.getTitle());
+                            case "Sort by Cost":
+                                return Double.compare(p1.getSellingPrice(), p2.getSellingPrice());
+                            default:
+                                return 0;
+                        }
+                    });
+                    
+                    updateProductDisplay(filteredProducts);
+                }
+            });
         }
     }
 
@@ -195,74 +186,85 @@ public class BrowseProductsController implements SubController, Initializable {
             double minPrice = minPriceText.isEmpty() ? 0 : Double.parseDouble(minPriceText);
             double maxPrice = maxPriceText.isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceText);
             if (minPrice > maxPrice) {
-                showAlert("Lỗi", "Giá tối thiểu không thể lớn hơn giá tối đa!");
+                showAlert("Error", "Minimum price cannot be greater than maximum price!");
                 return;
             }
             applyAllFiltersAndSort();
         } catch (NumberFormatException e) {
-            showAlert("Lỗi", "Vui lòng nhập số hợp lệ cho giá!");
+            showAlert("Error", "Please enter valid numbers for price!");
         }
     }
 
     @FXML
     private void handleSort() {
         if (sortGroup.getSelectedToggle() == null) {
-            System.out.println("Chưa chọn tiêu chí sắp xếp.");
+            System.out.println("No sorting criteria selected.");
             return;
         }
         applyAllFiltersAndSort();
     }
 
     private void applyAllFiltersAndSort() {
-        List<Product> currentProducts = new ArrayList<>(allProducts);
-        String searchQuery = searchField.getText().trim().toLowerCase();
+        if (displayedProducts == null) {
+            return;
+        }
+        
+        filteredProducts.clear();
+        filteredProducts.addAll(displayedProducts);
+        
+        // Lọc theo tìm kiếm
+        String searchQuery = searchField != null ? searchField.getText().trim().toLowerCase() : "";
         if (!searchQuery.isEmpty()) {
-            currentProducts.removeIf(product -> !(product.getTitle().toLowerCase().contains(searchQuery) ||
-                                                  product.getAuthor().toLowerCase().contains(searchQuery)));
+            filteredProducts.removeIf(product -> !(product.getTitle().toLowerCase().contains(searchQuery) ||
+                                                  product.getId().toLowerCase().contains(searchQuery)));
         }
-        List<String> selectedCategories = new ArrayList<>();
-        if (fictionCheckBox.isSelected()) selectedCategories.add("Fiction");
-        if (nonFictionCheckBox.isSelected()) selectedCategories.add("Non-Fiction");
-        if (scienceCheckBox.isSelected()) selectedCategories.add("Science");
-        if (historyCheckBox.isSelected()) selectedCategories.add("History");
-        if (programmingCheckBox.isSelected()) selectedCategories.add("Programming");
-        if (!selectedCategories.isEmpty()) {
-            currentProducts.removeIf(product -> !selectedCategories.contains(product.getCategory()));
-        }
-        String minPriceText = minPriceField.getText().trim();
-        String maxPriceText = maxPriceField.getText().trim();
+        
+        // Lọc theo giá
+        String minPriceText = minPriceField != null ? minPriceField.getText().trim() : "";
+        String maxPriceText = maxPriceField != null ? maxPriceField.getText().trim() : "";
         try {
             double minPrice = minPriceText.isEmpty() ? 0 : Double.parseDouble(minPriceText);
             double maxPrice = maxPriceText.isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceText);
             if (minPrice <= maxPrice) {
-                currentProducts.removeIf(product -> !(product.getPrice() >= minPrice && product.getPrice() <= maxPrice));
+                filteredProducts.removeIf(product -> !(product.getSellingPrice() >= minPrice && product.getSellingPrice() <= maxPrice));
             }
         } catch (NumberFormatException e) {
-            showAlert("Lỗi", "Vui lòng nhập số hợp lệ cho giá!");
+            // Bỏ qua giá trị giá không hợp lệ
         }
-        if (sortGroup.getSelectedToggle() != null) {
+        
+        // Sắp xếp
+        if (sortGroup != null && sortGroup.getSelectedToggle() != null) {
             RadioButton selectedSort = (RadioButton) sortGroup.getSelectedToggle();
             String sortType = selectedSort.getText();
-            switch (sortType) {
-                case "Sort by Title":
-                    Collections.sort(currentProducts, Comparator.comparing(Product::getTitle));
-                    break;
-                case "Sort by Cost":
-                    Collections.sort(currentProducts, Comparator.comparing(Product::getPrice));
-                    break;
-            }
+            FXCollections.sort(filteredProducts, (p1, p2) -> {
+                switch (sortType) {
+                    case "Sort by Title":
+                        return p1.getTitle().compareTo(p2.getTitle());
+                    case "Sort by Cost":
+                        return Double.compare(p1.getSellingPrice(), p2.getSellingPrice());
+                    default:
+                        return 0;
+                }
+            });
         }
-        displayedProducts.setAll(currentProducts);
-        updateProductDisplay();
-        itemCountLabel.setText(String.valueOf(displayedProducts.size()));
+        
+        updateProductDisplay(filteredProducts);
+        if (itemCountLabel != null) {
+            itemCountLabel.setText(String.valueOf(filteredProducts.size()));
+        }
     }
 
-    private void updateProductDisplay() {
+    private void updateProductDisplay(List<Product> products) {
+        if (productsGrid == null) {
+            return;
+        }
+        
         productsGrid.getChildren().clear();
         int row = 0;
         int col = 0;
         final int maxCols = 3;
-        for (Product product : displayedProducts) {
+        
+        for (Product product : products) {
             VBox productCard = createProductCard(product);
             productsGrid.add(productCard, col, row);
             col++;
@@ -279,31 +281,58 @@ public class BrowseProductsController implements SubController, Initializable {
         productCard.getStyleClass().add("product-card");
         productCard.setPadding(new Insets(10));
         productCard.setSpacing(5);
+        
+        // Hình ảnh
         ImageView imageView = new ImageView();
         imageView.setFitHeight(160);
         imageView.setFitWidth(120);
         imageView.setPreserveRatio(true);
         try {
-            Image image = new Image(getClass().getResourceAsStream(product.getImagePath()));
+            Image image = new Image(getClass().getResourceAsStream(product.getGalleryURL()));
             imageView.setImage(image.isError() ? getPlaceholderImage() : image);
         } catch (Exception e) {
-            System.err.println("Lỗi khi tải ảnh: " + product.getImagePath() + " - " + e.getMessage());
+            System.err.println("Error loading image: " + product.getGalleryURL() + " - " + e.getMessage());
             imageView.setImage(getPlaceholderImage());
         }
         imageView.setOnMouseClicked(e -> handleViewProductDetails(product));
         imageView.setStyle("-fx-cursor: hand;");
+        
+        // Tiêu đề
         Label titleLabel = new Label(product.getTitle());
         titleLabel.getStyleClass().add("product-title");
         titleLabel.setWrapText(true);
         titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
-        Label authorLabel = new Label("by " + product.getAuthor());
-        authorLabel.getStyleClass().add("product-author");
-        Label priceLabel = new Label(String.format("%.2f USD", product.getPrice()));
+        
+        // Mô tả
+        Label descriptionLabel = new Label(product.getDescription());
+        descriptionLabel.getStyleClass().add("product-description");
+        descriptionLabel.setWrapText(true);
+        descriptionLabel.setMaxWidth(120);
+        
+        // Giá
+        Label priceLabel = new Label(String.format("%.2f USD", product.getSellingPrice()));
         priceLabel.getStyleClass().add("product-price");
         priceLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+        
+        // Thông tin tồn kho cho sản phẩm vật lý
+        Label stockLabel = new Label();
+        if (product instanceof PhysicalProduct && appServiceManager != null) {
+            int quantity = appServiceManager.getProductManager().getProductQuantity(product.getId());
+            stockLabel.setText("Stock: " + quantity);
+            stockLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666;");
+        }
+        
+        // Nút thêm vào giỏ hàng
         Button addToCartBtn = new Button("Add to Cart");
         addToCartBtn.setOnAction(e -> handleAddToCart(product));
-        productCard.getChildren().addAll(imageView, titleLabel, authorLabel, priceLabel, addToCartBtn);
+        
+        // Thêm tất cả thành phần vào card
+        productCard.getChildren().addAll(imageView, titleLabel, descriptionLabel, priceLabel);
+        if (product instanceof PhysicalProduct) {
+            productCard.getChildren().add(stockLabel);
+        }
+        productCard.getChildren().add(addToCartBtn);
+        
         return productCard;
     }
 
@@ -311,37 +340,46 @@ public class BrowseProductsController implements SubController, Initializable {
         try {
             return new Image(getClass().getResourceAsStream("/images/placeholder.png"));
         } catch (Exception e) {
-            System.err.println("Không tìm thấy placeholder.png, trả về ảnh trống.");
+            System.err.println("Placeholder image not found, returning empty image.");
             return new Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=");
         }
     }
 
     private void handleAddToCart(Product product) {
         if (mainController == null || !mainController.isUserLoggedIn()) {
-            showAlert("Thông báo", "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!");
+            showAlert("Login Required", "Please log in to add products to cart!");
             return;
         }
-        ObservableList<CartItem> sharedCartItems = mainController.getCartItems();
-        CartItem existingItem = sharedCartItems.stream()
-            .filter(item -> item.getProduct().equals(product))
-            .findFirst()
-            .orElse(null);
-        if (existingItem != null) {
-            existingItem.setQuantity(existingItem.getQuantity() + 1);
-        } else {
-            sharedCartItems.add(new CartItem(product, 1));
+        
+        // Kiểm tra tồn kho cho sản phẩm vật lý
+        if (product instanceof PhysicalProduct && appServiceManager != null) {
+            int availableStock = appServiceManager.getProductManager().getProductQuantity(product.getId());
+            if (availableStock <= 0) {
+                showAlert("Out of Stock", "This product is currently out of stock!");
+                return;
+            }
         }
-        System.out.println("Đã thêm sản phẩm '" + product.getTitle() + "' vào giỏ hàng.");
-        showAlert("Thành công", "Đã thêm sản phẩm '" + product.getTitle() + "' vào giỏ hàng!");
+        
+        // Thêm vào giỏ hàng sử dụng OrderManager
+        if (appServiceManager != null) {
+            try {
+                appServiceManager.getOrderManager().addToCart(product.getId(), 1);
+                System.out.println("Added product '" + product.getTitle() + "' to cart.");
+                showAlert("Success", "Added product '" + product.getTitle() + "' to cart!");
+            } catch (Exception e) {
+                System.err.println("Error adding to cart: " + e.getMessage());
+                showAlert("Error", "Failed to add product to cart. Please try again.");
+            }
+        }
     }
 
     private void handleViewProductDetails(Product product) {
-        System.out.println("Chuyển đến trang chi tiết sản phẩm: " + product.getTitle());
+        System.out.println("Viewing product details: " + product.getTitle());
         if (mainController != null) {
             try {
                 mainController.loadPageWithData("/view/customer/Store/ViewDetails/ViewBookDetails.fxml", product);
             } catch (Exception e) {
-                System.err.println("Lỗi khi chuyển đến trang chi tiết: " + e.getMessage());
+                System.err.println("Error loading product details: " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -356,20 +394,18 @@ public class BrowseProductsController implements SubController, Initializable {
     }
 
     public void refreshPage() {
-        searchField.clear();
-        minPriceField.clear();
-        maxPriceField.clear();
+        if (searchField != null) searchField.clear();
+        if (minPriceField != null) minPriceField.clear();
+        if (maxPriceField != null) maxPriceField.clear();
         if (fictionCheckBox != null) fictionCheckBox.setSelected(false);
         if (nonFictionCheckBox != null) nonFictionCheckBox.setSelected(false);
         if (scienceCheckBox != null) scienceCheckBox.setSelected(false);
         if (historyCheckBox != null) historyCheckBox.setSelected(false);
-        if (programmingCheckBox != null) {
-            programmingCheckBox.setSelected(false);
-        }
+        if (programmingCheckBox != null) programmingCheckBox.setSelected(false);
         if (sortGroup != null && sortGroup.getSelectedToggle() != null) {
             sortGroup.getSelectedToggle().setSelected(false);
         }
-        applyAllFiltersAndSort();
-        System.out.println("Đã làm mới toàn bộ dữ liệu sản phẩm:");
+        loadInStockProducts();
+        System.out.println("Product data refreshed.");
     }
 }
