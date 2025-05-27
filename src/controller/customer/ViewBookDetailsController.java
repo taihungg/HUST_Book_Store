@@ -28,11 +28,31 @@ public class ViewBookDetailsController implements Initializable, SubController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        quantitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 99, 1));
-        addToCartButton.setOnAction(e -> handleAddToCart());
-        backButton.setOnAction(e -> handleBackToProducts());
-        readDemoButton.setOnAction(e -> handleReadDemo());
-        notifyButton.setOnAction(e -> handleNotify());
+        if (quantitySpinner != null) {
+            quantitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 99, 1));
+        } else {
+            System.err.println("quantitySpinner is null, check FXML configuration.");
+        }
+        if (addToCartButton != null) {
+            addToCartButton.setOnAction(e -> handleAddToCart());
+        } else {
+            System.err.println("addToCartButton is null, check FXML configuration.");
+        }
+        if (backButton != null) {
+            backButton.setOnAction(e -> handleBackToProducts());
+        } else {
+            System.err.println("backButton is null, check FXML configuration.");
+        }
+        if (readDemoButton != null) {
+            readDemoButton.setOnAction(e -> handleReadDemo());
+        } else {
+            System.err.println("readDemoButton is null, check FXML configuration.");
+        }
+        if (notifyButton != null) {
+            notifyButton.setOnAction(e -> handleNotify());
+        } else {
+            System.err.println("notifyButton is null, check FXML configuration.");
+        }
     }
 
     @Override
@@ -47,19 +67,27 @@ public class ViewBookDetailsController implements Initializable, SubController {
 
     private void updateUI() {
         if (product != null) {
-            titleLabel.setText(product.getTitle());
-            authorLabel.setText("by " + product.getAuthor());
-            categoryLabel.setText(product.getCategory());
-            priceLabel.setText(String.format("%.2f USD", product.getPrice()));
-            descriptionArea.setText("Description of " + product.getTitle()); // TODO: Lấy mô tả thực tế
-
-            try {
-                Image image = new Image(getClass().getResourceAsStream(product.getImagePath()));
-                bookImage.setImage(image.isError() ? getPlaceholderImage() : image);
-            } catch (Exception e) {
-                System.err.println("Lỗi khi tải hình ảnh: " + product.getImagePath() + " - " + e.getMessage());
-                bookImage.setImage(getPlaceholderImage());
+            if (titleLabel != null) titleLabel.setText(product.getTitle());
+            if (authorLabel != null) authorLabel.setText("by " + product.getAuthor());
+            if (categoryLabel != null) categoryLabel.setText(product.getCategory());
+            if (priceLabel != null) priceLabel.setText(String.format("%,d VNĐ", product.getPrice()));
+            if (bookImage != null) {
+                try {
+                    Image image = new Image(getClass().getResourceAsStream(product.getImagePath()));
+                    bookImage.setImage(image.isError() ? getPlaceholderImage() : image);
+                } catch (Exception e) {
+                    System.err.println("Lỗi khi tải hình ảnh: " + product.getImagePath() + " - " + e.getMessage());
+                    bookImage.setImage(getPlaceholderImage());
+                }
             }
+        } else {
+            if (titleLabel != null) titleLabel.setText("Không có sản phẩm");
+            if (authorLabel != null) authorLabel.setText("");
+            if (categoryLabel != null) categoryLabel.setText("");
+            if (priceLabel != null) priceLabel.setText("");
+            if (descriptionArea != null) descriptionArea.setText("");
+            if (bookImage != null) bookImage.setImage(getPlaceholderImage());
+            System.err.println("Product is null, displaying default UI.");
         }
     }
 
@@ -73,7 +101,7 @@ public class ViewBookDetailsController implements Initializable, SubController {
             return;
         }
 
-        int quantity = quantitySpinner.getValue();
+        int quantity = quantitySpinner != null ? quantitySpinner.getValue() : 1;
         ObservableList<BrowseProductsController.CartItem> cartItems = mainController.getCartItems();
         BrowseProductsController.CartItem existingItem = cartItems.stream()
             .filter(item -> item.getProduct().equals(product))
@@ -85,6 +113,9 @@ public class ViewBookDetailsController implements Initializable, SubController {
             cartItems.add(new BrowseProductsController.CartItem(product, quantity));
         }
 
+        if (quantitySpinner != null) {
+            quantitySpinner.getValueFactory().setValue(1); // Reset spinner
+        }
         showAlert("Thành công", "Đã thêm " + quantity + " '" + product.getTitle() + "' vào giỏ hàng!");
     }
 

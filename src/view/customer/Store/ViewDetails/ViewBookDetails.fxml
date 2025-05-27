@@ -90,7 +90,7 @@
                         <HBox alignment="CENTER_LEFT" spacing="10">
                            <children>
                               <Label text="Quantity:" />
-                              <Spinner fx:id="quantitySpinner" initialValue="1" max="99" min="1" prefWidth="70" />
+                              <Spinner fx:id="quantitySpinner" editable="true" initialValue="1" max="99" min="1" prefWidth="70" />
                               <Button fx:id="addToCartButton" defaultButton="true" text="Add to Cart" /> <!-- Xóa onAction -->
                               <Button fx:id="notifyButton" text="Notify When Available" visible="false" /> <!-- Xóa onAction -->
                            </children>
