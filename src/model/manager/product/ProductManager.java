@@ -7,6 +7,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.product.Product;
 import model.product.interfaces.PhysicalProduct;
+import model.user.User;
+import model.user.interfaces.Manager;
 
 public class ProductManager {
 	private final ObservableList<Product> productList;
@@ -26,25 +28,35 @@ public class ProductManager {
      * @param initialQuantity Số lượng tồn kho ban đầu (chỉ áp dụng cho PhysicalProduct).
      * @return true nếu thêm thành công, false nếu ID đã tồn tại.
      */
-    public boolean addProduct(Product product, int initialQuantity) {
-        if (productMap.containsKey(product.getId())) {
-            System.out.println("Error: Product with ID " + product.getId() + " already exists.");
+    public boolean addProduct(Product product, int initialQuantity, User currentUser) {
+        if(!(currentUser instanceof Manager)) {
+            System.out.println("Error: Only managers can add products.");
             return false;
         }
-        productList.add(product); // Thêm vào ObservableList -> UI cập nhật
-        productMap.put(product.getId(), product); // Thêm vào Map để tra cứu nhanh
-
-        if (product instanceof PhysicalProduct) {
-            if (initialQuantity < 0) {
-                throw new IllegalArgumentException("Initial quantity cannot be negative for physical product.");
+        else {
+            if (productMap.containsKey(product.getId())) {
+                System.out.println("Error: Product with ID " + product.getId() + " already exists.");
+                return false;
             }
-            productQuantity.put(product.getId(), initialQuantity); // Lưu số lượng tồn kho
+            productList.add(product); // Thêm vào ObservableList -> UI cập nhật
+            productMap.put(product.getId(), product); // Thêm vào Map để tra cứu nhanh
+
+            if (product instanceof PhysicalProduct) {
+                if (initialQuantity < 0) {
+                    throw new IllegalArgumentException("Initial quantity cannot be negative for physical product.");
+                }
+                productQuantity.put(product.getId(), initialQuantity); // Lưu số lượng tồn kho
+            }
+            System.out.println("Product added: " + product.getTitle() + " (ID: " + product.getId() + ")");
+            return true;
         }
-        System.out.println("Product added: " + product.getTitle() + " (ID: " + product.getId() + ")");
-        return true;
     }
 
-	public boolean updateProduct(Product updatedProduct) {
+	public boolean updateProduct(Product updatedProduct, User currentUser) {
+        if(!(currentUser instanceof Manager)) {
+            System.out.println("Error: Only managers can update products.");
+            return false;
+        }
         // Trong trường hợp này, vì các thuộc tính của Product là Property
         // và UI đã two-way bind với chúng, đối tượng Product trong productList/productMap
         // (nếu nó là cùng một instance) đã tự động được cập nhật.
@@ -74,29 +86,27 @@ public class ProductManager {
      * @param productId ID của sản phẩm cần xóa.
      * @return true nếu xóa thành công, false nếu không tìm thấy ID.
      */
-    public boolean removeProduct(String productId) {
-        Product productToRemove = productMap.get(productId);
-        if (productToRemove != null) {
-            productList.remove(productToRemove); // Xóa khỏi ObservableList -> UI cập nhật
-            productMap.remove(productId);       // Xóa khỏi Map
-
-            if (productToRemove instanceof PhysicalProduct) {
-                productQuantity.remove(productId); // Xóa số lượng tồn kho nếu là PhysicalProduct
-            }
-            System.out.println("Product removed: " + productToRemove.getTitle() + " (ID: " + productId + ")");
-            return true;
+    public boolean removeProduct(String productId, User currentUser) {
+        if(!(currentUser instanceof Manager)) {
+            System.out.println("Error: Only managers can remove products.");
+            return false;
         }
-        System.out.println("Error: Product with ID " + productId + " not found for removal.");
-        return false;
+        else {
+            Product productToRemove = productMap.get(productId);
+            if (productToRemove != null) {
+                productList.remove(productToRemove); // Xóa khỏi ObservableList -> UI cập nhật
+                productMap.remove(productId);       // Xóa khỏi Map
+
+                if (productToRemove instanceof PhysicalProduct) {
+                    productQuantity.remove(productId); // Xóa số lượng tồn kho nếu là PhysicalProduct
+                }
+                System.out.println("Product removed: " + productToRemove.getTitle() + " (ID: " + productId + ")");
+                return true;
+            }
+            System.out.println("Error: Product with ID " + productId + " not found for removal.");
+            return false;
+        }
     }
-
-	public Product getProductById(String productId) {
-		return productMap.get(productId);
-	}
-
-	public int getProductQuantity(String productId) {
-		return productQuantity.getOrDefault(productId, 0);
-	}
 
 	/**
      * Giảm số lượng tồn kho của một sản phẩm vật lý.
@@ -104,27 +114,33 @@ public class ProductManager {
      * @param amount Số lượng cần giảm. Phải là số dương.
      * @return true nếu giảm thành công, false nếu không đủ hàng, sản phẩm không phải vật lý, hoặc không tìm thấy.
      */
-    public boolean decreaseProductStock(String productId, int amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Decrease amount must be positive.");
-        }
-        Product p = productMap.get(productId);
-        if (p == null) {
-            System.out.println("Error: Product with ID " + productId + " not found.");
+    public boolean decreaseProductStock(String productId, int amount, User currentUser) {
+        if(!(currentUser instanceof Manager)) {
+            System.out.println("Error: Only managers can decrease product stock.");
             return false;
         }
-        if (!(p instanceof PhysicalProduct)) {
-            System.out.println("Error: Product " + p.getTitle() + " (ID: " + productId + ") is a digital product and does not have physical stock to decrease.");
-            return false;
+        else {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("Decrease amount must be positive.");
+            }
+            Product product = productMap.get(productId);
+            if (product == null) {
+                System.out.println("Error: Product with ID " + productId + " not found.");
+                return false;
+            }
+            if (!(product instanceof PhysicalProduct)) {
+                System.out.println("Error: Product " + product.getTitle() + " (ID: " + productId + ") is a digital product and does not have physical stock to decrease.");
+                return false;
+            }
+            int currentQuantity = productQuantity.getOrDefault(productId, 0);
+            if (currentQuantity < amount) {
+                System.out.println("Stock Error for " + product.getTitle() + ": Not enough stock. Available: " + currentQuantity + ", trying to decrease by " + amount);
+                return false;
+            }
+            productQuantity.put(productId, currentQuantity - amount);
+            System.out.println("Decreased stock for " + product.getTitle() + " by " + amount + ". New stock: " + productQuantity.get(productId));
+            return true;
         }
-        int currentQuantity = productQuantity.getOrDefault(productId, 0);
-        if (currentQuantity < amount) {
-            System.out.println("Stock Error for " + p.getTitle() + ": Not enough stock. Available: " + currentQuantity + ", trying to decrease by " + amount);
-            return false;
-        }
-        productQuantity.put(productId, currentQuantity - amount);
-        System.out.println("Decreased stock for " + p.getTitle() + " by " + amount + ". New stock: " + productQuantity.get(productId));
-        return true;
     }
 
 	/**
@@ -158,26 +174,44 @@ public class ProductManager {
      * @param newQuantity Số lượng tồn kho mới.
      * @return true nếu thiết lập thành công, false nếu sản phẩm không tìm thấy, không phải vật lý, hoặc số lượng mới không hợp lệ.
      */
-    public boolean setProductQuantity(String productId, int newQuantity) {
-        if (newQuantity < 0) {
-            throw new IllegalArgumentException("Quantity cannot be negative.");
-        }
-        Product p = productMap.get(productId);
-        if (p == null) {
-            System.out.println("Error: Product with ID " + productId + " not found.");
+    public boolean setProductQuantity(String productId, int newQuantity, User currentUser) {
+        if(!(currentUser instanceof Manager)) {
+            System.out.println("Error: Only managers can set product quantity.");
             return false;
         }
-        if (!(p instanceof PhysicalProduct)) {
-            System.out.println("Error: Product " + p.getTitle() + " (ID: " + productId + ") is a digital product and cannot have stock set directly.");
-            return false;
+        else {
+            if (newQuantity < 0) {
+                throw new IllegalArgumentException("Quantity cannot be negative.");
+            }
+            Product product = productMap.get(productId);
+            if (product == null) {
+                System.out.println("Error: Product with ID " + productId + " not found.");
+                return false;
+            }
+            if (!(product instanceof PhysicalProduct)) {
+                System.out.println("Error: Product " + product.getTitle() + " (ID: " + productId + ") is a digital product and cannot have stock set directly.");
+                return false;
+            }
+            productQuantity.put(productId, newQuantity);
+            System.out.println("Set new stock for " + product.getTitle() + " (ID: " + productId + ") to: " + newQuantity);
+            return true;
         }
-        productQuantity.put(productId, newQuantity);
-        System.out.println("Set new stock for " + p.getTitle() + " (ID: " + productId + ") to: " + newQuantity);
-        return true;
     }
 
-	public ObservableList<Product> getAllProducts() {
-		return productList;
+	public Product getProductById(String productId) {
+		return productMap.get(productId);
+	}
+
+	public int getProductQuantity(String productId) {
+		return productQuantity.getOrDefault(productId, 0);
+	}
+    
+	public ObservableList<Product> getAllProducts(User currentUser) {
+		if(!(currentUser instanceof Manager)) {
+            System.out.println("Error: Only managers can get all products.");
+            return null;
+        }
+		else return productList;
 	}
 
 	public ObservableList<Product> searchProducts(String keyword) {
