@@ -111,29 +111,26 @@ public class SeePersonalInformationController implements SubController, Initiali
     }
 
     private void setFieldsEditable(boolean editable) {
-        // Chỉ Basic Information fields được edit
+        // Basic Information fields được edit
         fullNameField.setEditable(editable);
         emailField.setEditable(editable);
         phoneField.setEditable(editable);
         addressField.setEditable(editable);
         
-        // Account Information không bao giờ được edit
-        usernameField.setEditable(false);
-        passwordField.setEditable(false);
+        // Account Information được edit
+        usernameField.setEditable(editable);
+        passwordField.setEditable(editable);
         
         // Update style để hiển thị trạng thái
         String editableStyle = "-fx-background-color: white; -fx-background-radius: 5; -fx-border-color: #3498db; -fx-border-radius: 5;";
-        String readOnlyStyle = "-fx-background-color: #ecf0f1; -fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;";
         
-        String basicFieldsStyle = editable ? editableStyle : readOnlyStyle;
+        String basicFieldsStyle = editableStyle;
         fullNameField.setStyle(basicFieldsStyle);
         emailField.setStyle(basicFieldsStyle);
         phoneField.setStyle(basicFieldsStyle);
         addressField.setStyle(basicFieldsStyle);
-        
-        // Account fields luôn read-only
-        usernameField.setStyle(readOnlyStyle);
-        passwordField.setStyle(readOnlyStyle);
+        usernameField.setStyle(basicFieldsStyle);
+        passwordField.setStyle(basicFieldsStyle);
     }
 
     private void updateButtonVisibility(boolean isEditing) {
