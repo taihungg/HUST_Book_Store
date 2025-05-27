@@ -57,7 +57,6 @@
    
    <HBox alignment="CENTER_RIGHT" spacing="10">
       <Button fx:id="removeCartButton" mnemonicParsing="false" text="Remove Cart" />
-      <Button fx:id="updateCartButton" text="Update Cart" />
       <Button fx:id="clearCartButton" text="Clear Cart" />
       <Button fx:id="checkoutButton" defaultButton="true" text="Checkout" />
    </HBox>
