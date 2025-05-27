@@ -3,6 +3,7 @@ package controller.admin;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -12,68 +13,71 @@ import model.product.Toy;
 public class ToyDetailController {
 
     @FXML
+    private Label ageLabel;
+
+    @FXML
+    private Label authorLabel;
+
+    @FXML
     private Button backButton;
 
     @FXML
-    private Label imageCounterLabel;
+    private ImageView bookImage;
 
     @FXML
-    private Button nextImageButton;
+    private Label brandLabel;
 
     @FXML
-    private Button prevImageButton;
+    private TextArea descriptionArea;
 
     @FXML
-    private Label toyAgeRecommendationLabel;
+    private Button notifyButton;
 
     @FXML
-    private TextArea toyDescriptionArea;
+    private Label purchasePriceLabel;
 
     @FXML
-    private ImageView toyImageView;
+    private Label quantityLabel;
 
     @FXML
-    private Label toyManufacturerLabel;
+    private Label sellingPriceLabel;
 
     @FXML
-    private Label toyMaterialLabel;
+    private ComboBox<String> statusComboBox;
 
     @FXML
-    private Label toyNameHeaderLabel;
+    private Label titleLabel;
 
     @FXML
-    private Label toyPriceLabel;
+    private Label statusLabel;
 
     @FXML
-    private Label toyQuantityLabel;
-
+    void intialize(){
+        statusComboBox.getItems().addAll("In Stock", "Out of Stock");
+    }
     @FXML
-    private Label toyStatusLabel;
-
-    @FXML
-    private Label toyTypeLabel;
-
-    @FXML
-    void handleBackButtonAction(ActionEvent event) {
+    void handleBack(ActionEvent event) {
         Stage stage = (Stage) backButton.getScene().getWindow();
         stage.close();
     }
+    @FXML
+    private ImageView toyImage;
 
+    
     public void setToy(Toy toy){
         if (toy == null){
             System.out.println("Toy is null");
             return;
         }
-        toyNameHeaderLabel.setText(toy.getTitle());
-        toyPriceLabel.setText(String.valueOf(toy.getSellingPrice()));
-        toyStatusLabel.setText(toy.getStatus());
+        titleLabel.setText(toy.getTitle());
+        sellingPriceLabel.setText(String.valueOf(toy.getSellingPrice()));
+        statusLabel.setText(toy.getStatus());
+        purchasePriceLabel.setText(String.valueOf(toy.getPurchasePrice()));
         //toyTypeLabel.setText(toy.getT
-        toyAgeRecommendationLabel.setText(String.valueOf(toy.getSuitableAge()));
-        toyManufacturerLabel.setText(toy.getBrand());
+        ageLabel.setText(String.valueOf(toy.getSuitableAge()));
         //toyMaterialLabel.setText(toy.
-        toyDescriptionArea.setText(toy.getDescription());
-        toyImageView.setImage(new Image(toy.getGalleryURL()));
-        toyPriceLabel.setText(String.valueOf(toy.getSellingPrice()));
+        descriptionArea.setText(toy.getDescription());
+        toyImage.setImage(new Image(toy.getGalleryURL()));
 
     }
 

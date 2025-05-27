@@ -3,129 +3,121 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.ToyDetailController">
-    <top>
-        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #D3D3D3; -fx-border-color: #BDBDBD; -fx-border-width: 0 0 1 0;">
-            <padding>
-                <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
-            </padding>
-            <children>
-                <Label fx:id="toyNameHeaderLabel" text="[Tên Đồ Chơi]">
-                    <font>
-                        <Font name="Arial Bold" size="26.0" />
-                    </font>
-                    <HBox.margin>
-                        <Insets left="10.0" />
-                    </HBox.margin>
-                </Label>
-            </children>
-        </HBox>
-    </top>
-
-    <center>
-        <HBox spacing="25.0">
-            <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-            </padding>
-            <children>
-                <VBox alignment="TOP_CENTER" minWidth="-Infinity" prefWidth="320.0" spacing="10.0" HBox.hgrow="NEVER">
-                    <children>
-                        <Label text="Hình Ảnh Đồ Chơi">
-                            <font>
-                                <Font name="System Bold" size="16.0" />
-                            </font>
-                        </Label>
-                        <ImageView fx:id="toyImageView" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-color: #CCCCCC; -fx-border-width: 1; -fx-background-color: #f9f9f9;">
-                            </ImageView>
-                        <HBox alignment="CENTER" spacing="15.0">
-                            <VBox.margin>
-                                <Insets top="5.0" />
-                            </VBox.margin>
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.ToyDetailController">
+       <content>
+          <VBox maxWidth="2000.0" spacing="15" HBox.hgrow="ALWAYS">
+             <padding>
+                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+             </padding>
+             <children>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                   <children>
+                      <Button fx:id="backButton" onAction="#handleBack" text="&lt; Back " /> <!-- Xóa onAction -->
+                      <Label styleClass="section-header" text="Product Details">
+                         <font>
+                            <Font name="System Bold" size="18.0" />
+                         </font>
+                      </Label>
+                   </children>
+                </HBox>
+                <HBox spacing="20" HBox.hgrow="ALWAYS">
+                   <children>
+                      <VBox alignment="TOP_CENTER" maxWidth="400" minWidth="300" spacing="15">
+                         <padding>
+                            <Insets top="10" />
+                         </padding>
+                         <children>
+                            <ImageView fx:id="toyImage" fitHeight="300" fitWidth="200" preserveRatio="true" />
+                            <HBox alignment="CENTER" spacing="10" />
+                         </children>
+                      </VBox>
+                      <VBox spacing="10" HBox.hgrow="ALWAYS">
+                         <children>
+                            <Label fx:id="titleLabel" styleClass="product-title" text="Toy Title" wrapText="true">
+                               <font>
+                                  <Font name="System Bold" size="24.0" />
+                               </font>
+                            </Label>
+                            <HBox alignment="CENTER_LEFT" spacing="5">
+                               <children>
+                                  <Label text="Author:" />
+                                  <Label fx:id="authorLabel" text="Tran Chi Vu" />
+                               </children>
+                            </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                           <children>
+                              <Label text="Suitable Age: " />
+                              <Label fx:id="ageLabel" text="20" />
+                           </children>
                         </HBox>
-                        <Label style="-fx-font-style: italic; -fx-text-fill: gray;" text="(Ảnh minh họa)" />
-                    </children>
-                </VBox>
-
-                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
-                    <children>
-                        <Label style="-fx-font-weight: bold;" text="Giá bán:">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="toyPriceLabel" style="-fx-font-size: 14px; -fx-text-fill: #2c3e50;" text="[Chưa có thông tin]">
-                            <padding>
-                                <Insets bottom="5.0" left="10.0" />
-                            </padding>
-                        </Label>
-
-                        <Label style="-fx-font-weight: bold;" text="Trạng thái:">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="toyStatusLabel" style="-fx-font-size: 14px;" text="[Chưa có thông tin]">
-                            <padding>
-                                <Insets bottom="5.0" left="10.0" />
-                            </padding>
-                        </Label>
-
-                        <Label style="-fx-font-weight: bold;" text="Độ tuổi khuyến nghị:">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="toyAgeRecommendationLabel" style="-fx-font-size: 14px;" text="[Chưa có thông tin]">
-                            <padding>
-                                <Insets bottom="5.0" left="10.0" />
-                            </padding>
-                        </Label>
-
-                        <Label style="-fx-font-weight: bold;" text="Nhà sản xuất/Thương hiệu:">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="toyManufacturerLabel" style="-fx-font-size: 14px;" text="[Chưa có thông tin]">
-                            <padding>
-                                <Insets bottom="5.0" left="10.0" />
-                            </padding>
-                        </Label>
-                        
-                        <Label style="-fx-font-weight: bold;" text="Mô tả chi tiết:">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                            <VBox.margin>
-                                <Insets top="5.0" />
-                            </VBox.margin>
-                        </Label>
-                        <TextArea fx:id="toyDescriptionArea" editable="false" prefHeight="100.0" prefRowCount="7" promptText="[Chưa có thông tin mô tả đồ chơi...]" style="-fx-font-size: 13px;" wrapText="true">
-                            <VBox.margin>
-                                <Insets left="5.0" />
-                            </VBox.margin>
-                        </TextArea>
-                    </children>
-                </VBox>
-            </children>
-        </HBox>
-    </center>
-
-    <bottom>
-        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #D3D3D3; -fx-border-color: #BDBDBD; -fx-border-width: 1 0 0 0;">
-            <padding>
-                <Insets bottom="10.0" left="15.0" right="25.0" top="10.0" />
-            </padding>
-            <children>
-                <Button fx:id="backButton" minHeight="30.0" minWidth="70.0" onAction="#handleBackButtonAction" style="-fx-font-size: 13px;" text="Quay Lại" />
-            </children>
-        </HBox>
-    </bottom>
-</BorderPane>
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                           <children>
+                              <Label text="Brand: " />
+                              <Label fx:id="brandLabel" text="Chi Vu" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                           <children>
+                              <Label text="Status: " />
+                              <Label fx:id="statusLabel" text="..." />
+                           </children>
+                        </HBox>
+                            <HBox alignment="CENTER_LEFT" spacing="5">
+                               <children>
+                                  <Label styleClass="product-price" text="SellingPrice:">
+                                     <font>
+                                        <Font name="System Bold" size="16.0" />
+                                     </font>
+                                  </Label>
+                                  <Label fx:id="sellingPriceLabel" styleClass="product-price" text="19.99">
+                                     <font>
+                                        <Font name="System Bold" size="16.0" />
+                                     </font>
+                                  </Label>
+                               </children>
+                            </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                           <children>
+                              <Label styleClass="product-price" text="PurchasePrice:">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="purchasePriceLabel" styleClass="product-price" text="19.99">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                            <Separator />
+                            <Label text="Description:" />
+                            <ScrollPane fitToWidth="true" prefHeight="150" VBox.vgrow="ALWAYS">
+                               <content>
+                                  <TextArea fx:id="descriptionArea" editable="false" prefRowCount="5" text="This is a detailed description of the book." wrapText="true" />
+                               </content>
+                            </ScrollPane>
+                            <Separator />
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                               <children>
+                                  <Label text="Quantitized Stock: " />
+                              <Label fx:id="quantityLabel" text="20" /> <!-- Xóa onAction -->
+                                  <Button fx:id="notifyButton" text="Notify When Available" visible="false" /> <!-- Xóa onAction -->
+                               </children>
+                            </HBox>
+                         </children>
+                      </VBox>
+                   </children>
+                </HBox>
+             </children>
+          </VBox>
+       </content>
+    </ScrollPane>

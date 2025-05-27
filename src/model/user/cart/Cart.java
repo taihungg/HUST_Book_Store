@@ -39,6 +39,7 @@ public class Cart {
      * @return true nếu sản phẩm được xóa, false nếu không tìm thấy.
      */
     public boolean removeItem(String productId) {
+        return false;
     }
     /**
      * Cập nhật số lượng của một mục đã có trong giỏ hàng.
@@ -59,6 +60,7 @@ public class Cart {
      * @return Tổng giá trị giỏ hàng.
      */
     public double calculateTotal(ProductManager productManager) {
+        return 0;
         
     }
 

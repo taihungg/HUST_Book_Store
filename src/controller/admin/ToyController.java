@@ -51,7 +51,7 @@ public class ToyController {
     @FXML
     public void initialize() {
         // Khởi tạo các thành phần nếu cần
-        statusComboBox.getItems().addAll("Available", "Out of Stock", "Discontinued");
+        statusComboBox.getItems().addAll("In Stock", "Out of Stock");
         productDataService = ProductDataService.getInstance(); 
     }
 
