@@ -13,20 +13,13 @@ import javafx.geometry.Insets;
 import model.manager.AppServiceManager;
 import model.product.Product;
 import model.product.interfaces.PhysicalProduct;
+import model.user.User;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
-interface SubController {
-    void setMainController(HomePageController mainController);
-}
+public class BrowseProductsController implements Initializable {
 
-public class BrowseProductsController implements SubController, Initializable {
-
-    //region FXML Components
     @FXML private TextField searchField;
     @FXML private Button searchButton;
     @FXML private TextField minPriceField;
@@ -40,53 +33,38 @@ public class BrowseProductsController implements SubController, Initializable {
     @FXML private CheckBox historyCheckBox;
     @FXML private CheckBox programmingCheckBox;
     @FXML private Label itemCountLabel;
-    //end region
 
-    //region Trạng thái nội bộ
-    private HomePageController mainController;
     private AppServiceManager appServiceManager;
+    private User currentUser;
     private ObservableList<Product> displayedProducts;
     private ObservableList<Product> filteredProducts;
-    //end region
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        setupEventHandlers();
         displayedProducts = FXCollections.observableArrayList();
         filteredProducts = FXCollections.observableArrayList();
-        System.out.println("BrowseProductsController initialized.");
-    }
-
-    @Override
-    public void setMainController(HomePageController mainController) {
-        this.mainController = mainController;
-        System.out.println("MainController set for BrowseProductsController.");
+        setupEventHandlers();
     }
 
     public void setAppServiceManager(AppServiceManager appServiceManager) {
         this.appServiceManager = appServiceManager;
+        this.currentUser = appServiceManager.getCurrentUser();
         loadInStockProducts();
     }
 
     private void loadInStockProducts() {
-        if (appServiceManager == null) {
-            System.err.println("AppServiceManager is not initialized.");
+        if (appServiceManager == null || currentUser == null) {
+            System.err.println("AppServiceManager or currentUser is not initialized.");
             return;
         }
         
-        ObservableList<Product> allProducts = appServiceManager.getProductManager().getAllProducts();
         displayedProducts.clear();
-        
-        for (Product product : allProducts) {
-            if ("In Stock".equalsIgnoreCase(product.getStatus())) {
-                displayedProducts.add(product);
-            }
-        }
-        
+        displayedProducts.addAll(appServiceManager.getProductManager().getAllProducts(currentUser));
         applyAllFiltersAndSort();
     }
 
     private void setupEventHandlers() {
+        // Search field enter key handler
         if (searchField != null) {
             searchField.setOnKeyPressed(e -> {
                 if (e.getCode().toString().equals("ENTER")) {
@@ -94,76 +72,33 @@ public class BrowseProductsController implements SubController, Initializable {
                 }
             });
         }
-        
-        if (fictionCheckBox != null) {
-            fictionCheckBox.setOnAction(_ -> {
-                if (fictionCheckBox.isSelected()) {
-                    filteredProducts.removeIf(product -> !product.getTitle().toLowerCase().contains("fiction"));
-                } else {
-                    loadInStockProducts(); // Tải lại danh sách gốc
-                }
-            });
-        }
-        
-        if (nonFictionCheckBox != null) {
-            nonFictionCheckBox.setOnAction(_ -> {
-                if (nonFictionCheckBox.isSelected()) {
-                    filteredProducts.removeIf(product -> !product.getTitle().toLowerCase().contains("non-fiction"));
-                } else {
-                    loadInStockProducts();
-                }
-            });
-        }
-        
-        if (scienceCheckBox != null) {
-            scienceCheckBox.setOnAction(_ -> {
-                if (scienceCheckBox.isSelected()) {
-                    filteredProducts.removeIf(product -> !product.getTitle().toLowerCase().contains("science"));
-                } else {
-                    loadInStockProducts();
-                }
-            });
-        }
-        
-        if (historyCheckBox != null) {
-            historyCheckBox.setOnAction(_ -> {
-                if (historyCheckBox.isSelected()) {
-                    filteredProducts.removeIf(product -> !product.getTitle().toLowerCase().contains("history"));
-                } else {
-                    loadInStockProducts();
-                }
-            });
-        }
-        
-        if (programmingCheckBox != null) {
-            programmingCheckBox.setOnAction(_ -> {
-                if (programmingCheckBox.isSelected()) {
-                    filteredProducts.removeIf(product -> !product.getTitle().toLowerCase().contains("programming"));
-                } else {
-                    loadInStockProducts();
-                }
-            });
-        }
 
+        // Category checkbox handlers
+        setupCategoryCheckbox(fictionCheckBox, "fiction");
+        setupCategoryCheckbox(nonFictionCheckBox, "non-fiction");
+        setupCategoryCheckbox(scienceCheckBox, "science");
+        setupCategoryCheckbox(historyCheckBox, "history");
+        setupCategoryCheckbox(programmingCheckBox, "programming");
+
+        // Sort group handler
         if (sortGroup != null) {
             sortGroup.selectedToggleProperty().addListener((_, oldToggle, newToggle) -> {
                 if (newToggle != null) {
-                    RadioButton selectedSort = (RadioButton) newToggle;
-                    String sortType = selectedSort.getText();
-                    
-                    FXCollections.sort(filteredProducts, (p1, p2) -> {
-                        switch (sortType) {
-                            case "Sort by Title":
-                                return p1.getTitle().compareTo(p2.getTitle());
-                            case "Sort by Cost":
-                                return Double.compare(p1.getSellingPrice(), p2.getSellingPrice());
-                            default:
-                                return 0;
-                        }
-                    });
-                    
-                    updateProductDisplay(filteredProducts);
+                    handleSort();
                 }
+            });
+        }
+    }
+
+    private void setupCategoryCheckbox(CheckBox checkBox, String category) {
+        if (checkBox != null) {
+            checkBox.setOnAction(_ -> {
+                if (checkBox.isSelected()) {
+                    filteredProducts.removeIf(product -> !product.getTitle().toLowerCase().contains(category));
+                } else {
+                    loadInStockProducts();
+                }
+                updateProductDisplay(filteredProducts);
             });
         }
     }
@@ -174,17 +109,11 @@ public class BrowseProductsController implements SubController, Initializable {
     }
 
     @FXML
-    private void handleCategoryFilter() {
-        applyAllFiltersAndSort();
-    }
-
-    @FXML
     private void handlePriceFilter() {
-        String minPriceText = minPriceField.getText().trim();
-        String maxPriceText = maxPriceField.getText().trim();
         try {
-            double minPrice = minPriceText.isEmpty() ? 0 : Double.parseDouble(minPriceText);
-            double maxPrice = maxPriceText.isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceText);
+            double minPrice = minPriceField.getText().isEmpty() ? 0 : Double.parseDouble(minPriceField.getText().trim());
+            double maxPrice = maxPriceField.getText().isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceField.getText().trim());
+            
             if (minPrice > maxPrice) {
                 showAlert("Error", "Minimum price cannot be greater than maximum price!");
                 return;
@@ -197,67 +126,69 @@ public class BrowseProductsController implements SubController, Initializable {
 
     @FXML
     private void handleSort() {
-        if (sortGroup.getSelectedToggle() == null) {
-            System.out.println("No sorting criteria selected.");
-            return;
-        }
-        applyAllFiltersAndSort();
+        if (sortGroup.getSelectedToggle() == null) return;
+        
+        RadioButton selectedSort = (RadioButton) sortGroup.getSelectedToggle();
+        String sortType = selectedSort.getText();
+        
+        FXCollections.sort(filteredProducts, (p1, p2) -> {
+            switch (sortType) {
+                case "Sort by Title":
+                    return p1.getTitle().compareTo(p2.getTitle());
+                case "Sort by Cost":
+                    return Double.compare(p1.getSellingPrice(), p2.getSellingPrice());
+                default:
+                    return 0;
+            }
+        });
+        
+        updateProductDisplay(filteredProducts);
     }
 
     private void applyAllFiltersAndSort() {
-        if (displayedProducts == null) {
-            return;
-        }
+        if (displayedProducts == null) return;
         
         filteredProducts.clear();
         filteredProducts.addAll(displayedProducts);
         
-        // Lọc theo tìm kiếm
-        String searchQuery = searchField != null ? searchField.getText().trim().toLowerCase() : "";
+        // Apply search filter
+        String searchQuery = searchField.getText().trim().toLowerCase();
         if (!searchQuery.isEmpty()) {
-            filteredProducts.removeIf(product -> !(product.getTitle().toLowerCase().contains(searchQuery) ||
-                                                  product.getId().toLowerCase().contains(searchQuery)));
+            filteredProducts.removeIf(product -> 
+                !product.getTitle().toLowerCase().contains(searchQuery) &&
+                !product.getId().toLowerCase().contains(searchQuery)
+            );
         }
         
-        // Lọc theo giá
-        String minPriceText = minPriceField != null ? minPriceField.getText().trim() : "";
-        String maxPriceText = maxPriceField != null ? maxPriceField.getText().trim() : "";
+        // Apply price filter
         try {
-            double minPrice = minPriceText.isEmpty() ? 0 : Double.parseDouble(minPriceText);
-            double maxPrice = maxPriceText.isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceText);
+            double minPrice = minPriceField.getText().isEmpty() ? 0 : Double.parseDouble(minPriceField.getText().trim());
+            double maxPrice = maxPriceField.getText().isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceField.getText().trim());
             if (minPrice <= maxPrice) {
-                filteredProducts.removeIf(product -> !(product.getSellingPrice() >= minPrice && product.getSellingPrice() <= maxPrice));
+                filteredProducts.removeIf(product -> 
+                    product.getSellingPrice() < minPrice || product.getSellingPrice() > maxPrice
+                );
             }
         } catch (NumberFormatException e) {
-            // Bỏ qua giá trị giá không hợp lệ
+            // Ignore invalid price values
         }
         
-        // Sắp xếp
-        if (sortGroup != null && sortGroup.getSelectedToggle() != null) {
-            RadioButton selectedSort = (RadioButton) sortGroup.getSelectedToggle();
-            String sortType = selectedSort.getText();
-            FXCollections.sort(filteredProducts, (p1, p2) -> {
-                switch (sortType) {
-                    case "Sort by Title":
-                        return p1.getTitle().compareTo(p2.getTitle());
-                    case "Sort by Cost":
-                        return Double.compare(p1.getSellingPrice(), p2.getSellingPrice());
-                    default:
-                        return 0;
-                }
-            });
-        }
+        // Apply sorting
+        handleSort();
         
+        // Update display
         updateProductDisplay(filteredProducts);
+        updateItemCount();
+    }
+
+    private void updateItemCount() {
         if (itemCountLabel != null) {
             itemCountLabel.setText(String.valueOf(filteredProducts.size()));
         }
     }
 
     private void updateProductDisplay(List<Product> products) {
-        if (productsGrid == null) {
-            return;
-        }
+        if (productsGrid == null) return;
         
         productsGrid.getChildren().clear();
         int row = 0;
@@ -276,113 +207,72 @@ public class BrowseProductsController implements SubController, Initializable {
     }
 
     private VBox createProductCard(Product product) {
-        VBox productCard = new VBox();
-        productCard.setAlignment(javafx.geometry.Pos.CENTER);
-        productCard.getStyleClass().add("product-card");
-        productCard.setPadding(new Insets(10));
-        productCard.setSpacing(5);
+        VBox card = new VBox(10);
+        card.setPadding(new Insets(10));
+        card.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5;");
         
-        // Hình ảnh
+        // Product Image
         ImageView imageView = new ImageView();
-        imageView.setFitHeight(160);
-        imageView.setFitWidth(120);
+        imageView.setFitHeight(150);
+        imageView.setFitWidth(100);
         imageView.setPreserveRatio(true);
         try {
             Image image = new Image(getClass().getResourceAsStream(product.getGalleryURL()));
-            imageView.setImage(image.isError() ? getPlaceholderImage() : image);
+            imageView.setImage(image);
         } catch (Exception e) {
-            System.err.println("Error loading image: " + product.getGalleryURL() + " - " + e.getMessage());
             imageView.setImage(getPlaceholderImage());
         }
-        imageView.setOnMouseClicked(e -> handleViewProductDetails(product));
-        imageView.setStyle("-fx-cursor: hand;");
         
-        // Tiêu đề
+        // Product Title
         Label titleLabel = new Label(product.getTitle());
-        titleLabel.getStyleClass().add("product-title");
         titleLabel.setWrapText(true);
-        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        titleLabel.setStyle("-fx-font-weight: bold;");
         
-        // Mô tả
-        Label descriptionLabel = new Label(product.getDescription());
-        descriptionLabel.getStyleClass().add("product-description");
-        descriptionLabel.setWrapText(true);
-        descriptionLabel.setMaxWidth(120);
+        // Product Price
+        Label priceLabel = new Label(String.format("$%.2f", product.getSellingPrice()));
+        priceLabel.setStyle("-fx-text-fill: #2ecc71; -fx-font-weight: bold;");
         
-        // Giá
-        Label priceLabel = new Label(String.format("%.2f USD", product.getSellingPrice()));
-        priceLabel.getStyleClass().add("product-price");
-        priceLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
-        
-        // Thông tin tồn kho cho sản phẩm vật lý
-        Label stockLabel = new Label();
-        if (product instanceof PhysicalProduct && appServiceManager != null) {
-            int quantity = appServiceManager.getProductManager().getProductQuantity(product.getId());
-            stockLabel.setText("Stock: " + quantity);
-            stockLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666;");
-        }
-        
-        // Nút thêm vào giỏ hàng
+        // Add to Cart Button
         Button addToCartBtn = new Button("Add to Cart");
         addToCartBtn.setOnAction(e -> handleAddToCart(product));
         
-        // Thêm tất cả thành phần vào card
-        productCard.getChildren().addAll(imageView, titleLabel, descriptionLabel, priceLabel);
-        if (product instanceof PhysicalProduct) {
-            productCard.getChildren().add(stockLabel);
-        }
-        productCard.getChildren().add(addToCartBtn);
+        // View Details Button
+        Button viewDetailsBtn = new Button("View Details");
+        viewDetailsBtn.setOnAction(e -> handleViewProductDetails(product));
         
-        return productCard;
+        card.getChildren().addAll(imageView, titleLabel, priceLabel, addToCartBtn, viewDetailsBtn);
+        return card;
     }
 
     private Image getPlaceholderImage() {
-        try {
-            return new Image(getClass().getResourceAsStream("/images/placeholder.png"));
-        } catch (Exception e) {
-            System.err.println("Placeholder image not found, returning empty image.");
-            return new Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=");
-        }
+        return new Image(getClass().getResourceAsStream("/images/placeholder.png"));
     }
 
     private void handleAddToCart(Product product) {
-        if (mainController == null || !mainController.isUserLoggedIn()) {
+        if (currentUser.getUsername().equals("guest")) {
             showAlert("Login Required", "Please log in to add products to cart!");
             return;
         }
         
-        // Kiểm tra tồn kho cho sản phẩm vật lý
-        if (product instanceof PhysicalProduct && appServiceManager != null) {
-            int availableStock = appServiceManager.getProductManager().getProductQuantity(product.getId());
-            if (availableStock <= 0) {
+        if (product instanceof PhysicalProduct) {
+            int stock = appServiceManager.getProductManager().getProductQuantity(product.getId());
+            if (stock <= 0) {
                 showAlert("Out of Stock", "This product is currently out of stock!");
                 return;
             }
         }
         
-        // Thêm vào giỏ hàng sử dụng OrderManager
-        if (appServiceManager != null) {
-            try {
-                appServiceManager.getOrderManager().addToCart(product.getId(), 1);
-                System.out.println("Added product '" + product.getTitle() + "' to cart.");
-                showAlert("Success", "Added product '" + product.getTitle() + "' to cart!");
-            } catch (Exception e) {
-                System.err.println("Error adding to cart: " + e.getMessage());
-                showAlert("Error", "Failed to add product to cart. Please try again.");
-            }
+        try {
+            appServiceManager.getOrderManager().addToCart(currentUser, product.getId(), 1);
+            showAlert("Success", "Product added to cart!");
+        } catch (Exception e) {
+            showAlert("Error", "Failed to add product to cart: " + e.getMessage());
         }
     }
 
     private void handleViewProductDetails(Product product) {
-        System.out.println("Viewing product details: " + product.getTitle());
-        if (mainController != null) {
-            try {
-                mainController.loadPageWithData("/view/customer/Store/ViewDetails/ViewBookDetails.fxml", product);
-            } catch (Exception e) {
-                System.err.println("Error loading product details: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
+        // TODO: Implement product details view
+        showAlert("Product Details", "Viewing details for: " + product.getTitle());
     }
 
     private void showAlert(String title, String message) {
@@ -391,21 +281,5 @@ public class BrowseProductsController implements SubController, Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    public void refreshPage() {
-        if (searchField != null) searchField.clear();
-        if (minPriceField != null) minPriceField.clear();
-        if (maxPriceField != null) maxPriceField.clear();
-        if (fictionCheckBox != null) fictionCheckBox.setSelected(false);
-        if (nonFictionCheckBox != null) nonFictionCheckBox.setSelected(false);
-        if (scienceCheckBox != null) scienceCheckBox.setSelected(false);
-        if (historyCheckBox != null) historyCheckBox.setSelected(false);
-        if (programmingCheckBox != null) programmingCheckBox.setSelected(false);
-        if (sortGroup != null && sortGroup.getSelectedToggle() != null) {
-            sortGroup.getSelectedToggle().setSelected(false);
-        }
-        loadInStockProducts();
-        System.out.println("Product data refreshed.");
     }
 }

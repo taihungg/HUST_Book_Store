@@ -10,6 +10,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
 import model.manager.AppServiceManager;
+import model.user.User;
+import model.user.customer.Customer;
 import java.io.IOException;
 import java.net.URL;
 
@@ -24,13 +26,15 @@ public class HomePageController {
     @FXML private MenuItem cartMenuItem;
     @FXML private StackPane contentArea;
 
-    private final SessionManager sessionManager = SessionManager.getInstance();
-    private final AppServiceManager appServiceManager = new AppServiceManager();
+    private AppServiceManager appServiceManager;
+    private User currentUser;
 
     @FXML
     public void initialize() {
-        sessionManager.login(); // Temporarily logged in as Customer
-        updateButtonsVisibility(sessionManager.isLoggedIn());
+        appServiceManager = new AppServiceManager();
+        // Khởi tạo với tài khoản khách
+        currentUser = new Customer("Guest", "guest@example.com", "N/A", "guest", "guest", "N/A");
+        updateButtonsVisibility(false);
         loadContentView("/view/customer/Store/BrowseProducts.fxml");
     }
 
@@ -40,7 +44,7 @@ public class HomePageController {
         }
         loginButton.setVisible(!isLoggedIn);
         logoutButton.setVisible(isLoggedIn);
-        menuBar.setVisible(true); // Always visible, but actions will check login status
+        menuBar.setVisible(true); // Luôn hiển thị, nhưng các hành động sẽ kiểm tra trạng thái đăng nhập
     }
 
     @FXML
@@ -51,17 +55,11 @@ public class HomePageController {
     @FXML
     private void handleLogout() {
         try {
-            // Xử lý đăng xuất thông qua UserManager
-            if (appServiceManager != null) {
-                appServiceManager.getUserManager().logout();
-            }
-            sessionManager.logout();
-            updateButtonsVisibility(false);
+            appServiceManager.logout();
+            currentUser = new Customer("Guest", "guest@example.com", "N/A", "guest", "guest", "N/A");
             loadContentView("/view/customer/Store/BrowseProducts.fxml");
-            System.out.println("User logged out successfully");
         } catch (Exception e) {
-            System.err.println("Error during logout: " + e.getMessage());
-            e.printStackTrace();
+            showError("Logout failed", e.getMessage());
         }
     }
 
@@ -70,102 +68,53 @@ public class HomePageController {
         MenuItem menuItem = (MenuItem) event.getSource();
         String fxmlPath;
         
-        // Check login status for certain menu items
-        if (!sessionManager.isLoggedIn() && !menuItem.getId().equals("browseProductsMenuItem")) {
+        // Kiểm tra trạng thái đăng nhập cho các menu item cụ thể
+        if (currentUser.getUsername().equals("guest") && !menuItem.getId().equals("browseProductsMenuItem")) {
             showAlert("Login Required", "Please log in to access this feature.");
             return;
         }
         
+        // Xử lý các menu item
         switch (menuItem.getId()) {
-            case "personalInfoMenuItem":
-                fxmlPath = "/view/customer/Account/SeePersonalInformation.fxml";
-                break;
-            case "orderHistoryMenuItem":
-                fxmlPath = "/view/customer/Account/OrderHistory.fxml";
-                break;
             case "browseProductsMenuItem":
                 fxmlPath = "/view/customer/Store/BrowseProducts.fxml";
                 break;
             case "cartMenuItem":
-                fxmlPath = "/view/customer/Store/SeeCart.fxml";
+                fxmlPath = "/view/customer/Cart/CartView.fxml";
+                break;
+            case "ordersMenuItem":
+                fxmlPath = "/view/customer/Order/OrderHistory.fxml";
+                break;
+            case "profileMenuItem":
+                fxmlPath = "/view/customer/Profile/ProfileView.fxml";
                 break;
             default:
-                System.err.println("Unsupported MenuItem: " + menuItem.getId());
                 return;
         }
         
-        Object subController = loadContentView(fxmlPath);
-        if (subController instanceof SubController) {
-            ((SubController) subController).setMainController(this);
-        }
+        loadContentView(fxmlPath);
     }
 
-    private Object loadContentView(String path) {
-        return loadPageWithData(path, null);
-    }
-
-    public Object loadPageWithData(String fxmlPath, Object data) {
+    private void loadContentView(String fxmlPath) {
         try {
-            URL location = getClass().getResource(fxmlPath);
-            if (location == null) {
-                System.err.println("Load Error: " + fxmlPath);
-                return null;
+            URL url = getClass().getResource(fxmlPath);
+            if (url == null) {
+                throw new IOException("Cannot find FXML file: " + fxmlPath);
             }
-            FXMLLoader loader = new FXMLLoader(location);
+            
+            FXMLLoader loader = new FXMLLoader(url);
             Parent content = loader.load();
-            Object controller = loader.getController();
             
-            if (controller == null) {
-                System.err.println("Controller not found for " + fxmlPath);
-                return null;
+            // Set AppServiceManager for controllers that need it
+            if (loader.getController() instanceof BrowseProductsController) {
+                ((BrowseProductsController) loader.getController()).setAppServiceManager(appServiceManager);
             }
             
-            if (controller instanceof SubController) {
-                ((SubController) controller).setMainController(this);
-            }
-            
-            // Pass AppServiceManager to BrowseProductsController
-            if (fxmlPath.contains("/view/customer/Store/BrowseProducts.fxml")) {
-                if (controller instanceof BrowseProductsController) {
-                    ((BrowseProductsController) controller).setAppServiceManager(appServiceManager);
-                }
-            }
-            
-            if (contentArea == null) {
-                System.err.println("contentArea not initialized!");
-                return null;
-            }
             contentArea.getChildren().clear();
             contentArea.getChildren().add(content);
-            return controller;
         } catch (IOException e) {
-            System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
-            e.printStackTrace();
-            return null;
+            showError("Error", "Failed to load view: " + e.getMessage());
         }
-    }
-
-    public void onLoginSuccess() {
-        if (appServiceManager != null) {
-            try {
-                // Xử lý đăng nhập thông qua UserManager
-                appServiceManager.getUserManager().login();
-                sessionManager.login();
-                updateButtonsVisibility(true);
-                loadContentView("/view/customer/Store/BrowseProducts.fxml");
-            } catch (Exception e) {
-                System.err.println("Error during login: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public boolean isUserLoggedIn() {
-        return sessionManager.isLoggedIn();
-    }
-
-    public AppServiceManager getAppServiceManager() {
-        return appServiceManager;
     }
 
     private void showAlert(String title, String message) {
@@ -176,26 +125,15 @@ public class HomePageController {
         alert.showAndWait();
     }
 
-    private static class SessionManager {
-        private static final SessionManager instance = new SessionManager();
-        private boolean isLoggedIn;
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
-        private SessionManager() {}
-
-        public static SessionManager getInstance() {
-            return instance;
-        }
-
-        public void login() {
-            isLoggedIn = true;
-        }
-
-        public void logout() {
-            isLoggedIn = false;
-        }
-
-        public boolean isLoggedIn() {
-            return isLoggedIn;
-        }
+    public User getCurrentUser() {
+        return currentUser;
     }
 }
