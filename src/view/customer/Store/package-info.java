@@ -1,1 +1,1 @@
-package view.customer.Store;
+package view.customer.store;
