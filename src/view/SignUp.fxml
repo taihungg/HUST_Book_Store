@@ -53,6 +53,18 @@
                         <TextField HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="180.0" spacing="10">
+                     <children>
+                        <Label minWidth="150" style="-fx-font-size: 18px;" text="Address" />
+                        <TextField HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="222.0" spacing="10">
+                     <children>
+                        <Label minWidth="150" style="-fx-font-size: 18px;" text="Email" />
+                        <TextField HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
                </children>
             </VBox>
             
