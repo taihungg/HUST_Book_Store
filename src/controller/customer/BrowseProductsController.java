@@ -43,28 +43,28 @@ public class BrowseProductsController implements SubController, Initializable {
     private CustomerMainController mainController;
     private List<Product> allProducts;
     private ObservableList<Product> displayedProducts;
-    private static final double USD_TO_VND_RATE = 25000.0; // Tỷ giá 1 USD = 25,000 VNĐ
+
     //end region
 
     //region Nested Classes (Product and CartItem)
     public static class Product {
         private String title;
         private String author;
-        private int price; // Giá bằng VNĐ
+        private double price;
         private String category;
         private String imagePath;
 
-        public Product(String title, String author, double priceUSD, String category, String imagePath) {
+        public Product(String title, String author, double price, String category, String imagePath) {
             this.title = title;
             this.author = author;
-            this.price = (int) Math.round(priceUSD * USD_TO_VND_RATE); // Chuyển USD sang VNĐ
+            this.price = price;
             this.category = category;
             this.imagePath = imagePath;
         }
 
         public String getTitle() { return title; }
         public String getAuthor() { return author; }
-        public int getPrice() { return price; }
+        public double getPrice() { return price; }
         public String getCategory() { return category; }
         public String getImagePath() { return imagePath; }
 
@@ -73,7 +73,7 @@ public class BrowseProductsController implements SubController, Initializable {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Product product = (Product) o;
-            return price == product.price &&
+            return Double.compare(product.price, price) == 0 &&
                    title.equals(product.title) &&
                    author.equals(product.author) &&
                    category.equals(product.category);
@@ -84,20 +84,20 @@ public class BrowseProductsController implements SubController, Initializable {
             int result = title.hashCode();
             result = 31 * result + author.hashCode();
             result = 31 * result + category.hashCode();
-            result = 31 * result + Integer.hashCode(price);
+            result = 31 * result + Double.hashCode(price);
             return result;
         }
 
         @Override
         public String toString() {
-            return "Product{title='" + title + "', author='" + author + "', price=" + price + " VNĐ}";
+            return "Product{title='" + title + "', author='" + author + "', price=" + price + "}";
         }
     }
 
     public static class CartItem {
         private Product product;
         private int quantity;
-        private int totalPrice;
+        private double totalPrice;
 
         public CartItem(Product product, int quantity) {
             this.product = product;
@@ -107,7 +107,7 @@ public class BrowseProductsController implements SubController, Initializable {
 
         public Product getProduct() { return product; }
         public int getQuantity() { return quantity; }
-        public int getTotalPrice() { return totalPrice; }
+        public double getTotalPrice() { return totalPrice; }
 
         public void setQuantity(int quantity) {
             this.quantity = quantity;
@@ -116,8 +116,8 @@ public class BrowseProductsController implements SubController, Initializable {
 
         @Override
         public String toString() {
-            return "CartItem{item='" + product.getTitle() + "', price=" + String.format("%d VNĐ", product.getPrice()) +
-                   ", quantity=" + quantity + ", total=" + String.format("%d VNĐ", totalPrice) + "}";
+            return "CartItem{item='" + product.getTitle() + "', price=" + String.format("%.2f", product.getPrice()) +
+                   ", quantity=" + quantity + ", total=" + String.format("%.2f", totalPrice) + "}";
         }
     }
     //end region
@@ -139,41 +139,41 @@ public class BrowseProductsController implements SubController, Initializable {
 
     private void initializeProductsList() {
         allProducts = new ArrayList<>();
-        // Giá bằng USD, chuyển sang VNĐ với tỷ giá 25,000 VNĐ/USD
-        allProducts.add(new Product("My Hero Academia", "Kohei Horikoshi", 1.16, "Fiction", "/images/book1.jpg")); // 1.16 USD → 29,000 VNĐ
-        allProducts.add(new Product("Dragon Ball Super", "Toyotarou", 0.96, "Fiction", "/images/book2.jpg")); // 0.96 USD → 24,000 VNĐ
-        allProducts.add(new Product("Rent A Girlfriend", "Miyajima Reiji", 0.76, "Fiction", "/images/book3.jpg")); // 0.76 USD → 19,000 VNĐ
-        allProducts.add(new Product("Harry Potter", "J.K.Rowling", 4.80, "Fiction", "/images/book4.jpg")); // 4.80 USD → 120,000 VNĐ
-        allProducts.add(new Product("Huyền Thoại Cổ Ngọc", "Ocean Nguyễn", 3.20, "Fiction", "/images/book5.jpg")); // 3.20 USD → 80,000 VNĐ
-        allProducts.add(new Product("Thiên Long Bát Bộ", "Kim Dung", 4.00, "Fiction", "/images/book6.jpg")); // 4.00 USD → 100,000 VNĐ
-        allProducts.add(new Product("Sapiens: A Brief History of Humankind", "Yuval Noah Harari", 0.60, "Non-Fiction", "/images/book7.jpg")); // 0.60 USD → 15,000 VNĐ
-        allProducts.add(new Product("Cosmos", "Carl Sagan", 0.80, "Science", "/images/book8.jpg")); // 0.80 USD → 20,000 VNĐ
-        allProducts.add(new Product("Clean Code", "Robert C. Martin", 1.60, "Programming", "/images/book9.jpg")); // 1.60 USD → 40,000 VNĐ
-        allProducts.add(new Product("The Guns of August", "Barbara W. Tuchman", 0.80, "History", "/images/book10.jpg")); // 0.80 USD → 20,000 VNĐ
-        allProducts.add(new Product("Becoming", "Michelle Obama", 1.00, "Non-Fiction", "/images/book11.jpg")); // 1.00 USD → 25,000 VNĐ
+        allProducts.add(new Product("My Hero Academia", "Kohei Horikoshi", 29.99, "Fiction", "/images/book1.jpg"));
+        allProducts.add(new Product("Dragon Ball Super", "Toyotarou", 24.99, "Fiction", "/images/book2.jpg"));
+        allProducts.add(new Product("Rent A Girlfriend", "Miyajima Reiji", 19.99, "Fiction", "/images/book3.jpg"));
+        allProducts.add(new Product("Harry Potter", "J.K.Rowling", 34.99, "Fiction", "/images/book4.jpg"));
+        allProducts.add(new Product("Huyền Thoại Cổ Ngọc", "Ocean Nguyễn", 22.99, "Fiction", "/images/book5.jpg"));
+        allProducts.add(new Product("Thiên Long Bát Bộ", "Kim Dung", 39.99, "Fiction", "/images/book6.jpg"));
+        allProducts.add(new Product("Sapiens: A Brief History of Humankind", "Yuval Noah Harari", 18.50, "Non-Fiction", "/images/book7.jpg"));
+        allProducts.add(new Product("Cosmos", "Carl Sagan", 15.00, "Science", "/images/book8.jpg"));
+        allProducts.add(new Product("Clean Code", "Robert C. Martin", 40.00, "Programming", "/images/book9.jpg"));
+        allProducts.add(new Product("The Guns of August", "Barbara W. Tuchman", 20.00, "History", "/images/book10.jpg"));
+        allProducts.add(new Product("Becoming", "Michelle Obama", 25.00, "Non-Fiction", "/images/book11.jpg"));
+
     }
 
     private void setupEventHandlers() {
-        if (searchField != null) {
-            searchField.setOnKeyPressed(e -> {
-                if (e.getCode().toString().equals("ENTER")) {
-                    handleSearch();
-                }
-            });
-        }
-        if (fictionCheckBox != null) fictionCheckBox.setOnAction(e -> handleCategoryFilter());
-        if (nonFictionCheckBox != null) nonFictionCheckBox.setOnAction(e -> handleCategoryFilter());
-        if (scienceCheckBox != null) scienceCheckBox.setOnAction(e -> handleCategoryFilter());
-        if (historyCheckBox != null) historyCheckBox.setOnAction(e -> handleCategoryFilter());
-        if (programmingCheckBox != null) programmingCheckBox.setOnAction(e -> handleCategoryFilter());
+        searchField.setOnKeyPressed(e -> {
+            if (e.getCode().toString().equals("ENTER")) {
+                handleSearch();
+            }
+        });
+        fictionCheckBox.setOnAction(e -> handleCategoryFilter());
+        nonFictionCheckBox.setOnAction(e -> handleCategoryFilter());
+        scienceCheckBox.setOnAction(e -> handleCategoryFilter());
+        historyCheckBox.setOnAction(e -> handleCategoryFilter());
+        programmingCheckBox.setOnAction(e -> handleCategoryFilter());
+
+
         if (sortGroup != null) {
             sortGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
                 if (newToggle != null) {
                     handleSort();
                 }
             });
-        } else {
-            System.err.println("sortGroup is null, check FXML configuration.");
+
+
         }
     }
 
@@ -192,8 +192,8 @@ public class BrowseProductsController implements SubController, Initializable {
         String minPriceText = minPriceField.getText().trim();
         String maxPriceText = maxPriceField.getText().trim();
         try {
-            int minPrice = minPriceText.isEmpty() ? 0 : Integer.parseInt(minPriceText);
-            int maxPrice = maxPriceText.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(maxPriceText);
+            double minPrice = minPriceText.isEmpty() ? 0 : Double.parseDouble(minPriceText);
+            double maxPrice = maxPriceText.isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceText);
             if (minPrice > maxPrice) {
                 showAlert("Lỗi", "Giá tối thiểu không thể lớn hơn giá tối đa!");
                 return;
@@ -221,26 +221,26 @@ public class BrowseProductsController implements SubController, Initializable {
                                                   product.getAuthor().toLowerCase().contains(searchQuery)));
         }
         List<String> selectedCategories = new ArrayList<>();
-        if (fictionCheckBox != null && fictionCheckBox.isSelected()) selectedCategories.add("Fiction");
-        if (nonFictionCheckBox != null && nonFictionCheckBox.isSelected()) selectedCategories.add("Non-Fiction");
-        if (scienceCheckBox != null && scienceCheckBox.isSelected()) selectedCategories.add("Science");
-        if (historyCheckBox != null && historyCheckBox.isSelected()) selectedCategories.add("History");
-        if (programmingCheckBox != null && programmingCheckBox.isSelected()) selectedCategories.add("Programming");
+        if (fictionCheckBox.isSelected()) selectedCategories.add("Fiction");
+        if (nonFictionCheckBox.isSelected()) selectedCategories.add("Non-Fiction");
+        if (scienceCheckBox.isSelected()) selectedCategories.add("Science");
+        if (historyCheckBox.isSelected()) selectedCategories.add("History");
+        if (programmingCheckBox.isSelected()) selectedCategories.add("Programming");
         if (!selectedCategories.isEmpty()) {
             currentProducts.removeIf(product -> !selectedCategories.contains(product.getCategory()));
         }
         String minPriceText = minPriceField.getText().trim();
         String maxPriceText = maxPriceField.getText().trim();
         try {
-            int minPrice = minPriceText.isEmpty() ? 0 : Integer.parseInt(minPriceText);
-            int maxPrice = maxPriceText.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(maxPriceText);
+            double minPrice = minPriceText.isEmpty() ? 0 : Double.parseDouble(minPriceText);
+            double maxPrice = maxPriceText.isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceText);
             if (minPrice <= maxPrice) {
                 currentProducts.removeIf(product -> !(product.getPrice() >= minPrice && product.getPrice() <= maxPrice));
             }
         } catch (NumberFormatException e) {
             showAlert("Lỗi", "Vui lòng nhập số hợp lệ cho giá!");
         }
-        if (sortGroup != null && sortGroup.getSelectedToggle() != null) {
+        if (sortGroup.getSelectedToggle() != null) {
             RadioButton selectedSort = (RadioButton) sortGroup.getSelectedToggle();
             String sortType = selectedSort.getText();
             switch (sortType) {
@@ -298,7 +298,7 @@ public class BrowseProductsController implements SubController, Initializable {
         titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
         Label authorLabel = new Label("by " + product.getAuthor());
         authorLabel.getStyleClass().add("product-author");
-        Label priceLabel = new Label(String.format("%,d VNĐ", product.getPrice())); // Định dạng giá VNĐ
+        Label priceLabel = new Label(String.format("%.2f USD", product.getPrice()));
         priceLabel.getStyleClass().add("product-price");
         priceLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
         Button addToCartBtn = new Button("Add to Cart");
@@ -356,18 +356,20 @@ public class BrowseProductsController implements SubController, Initializable {
     }
 
     public void refreshPage() {
-        if (searchField != null) searchField.clear();
-        if (minPriceField != null) minPriceField.clear();
-        if (maxPriceField != null) maxPriceField.clear();
+        searchField.clear();
+        minPriceField.clear();
+        maxPriceField.clear();
         if (fictionCheckBox != null) fictionCheckBox.setSelected(false);
         if (nonFictionCheckBox != null) nonFictionCheckBox.setSelected(false);
         if (scienceCheckBox != null) scienceCheckBox.setSelected(false);
         if (historyCheckBox != null) historyCheckBox.setSelected(false);
-        if (programmingCheckBox != null) programmingCheckBox.setSelected(false);
+        if (programmingCheckBox != null) {
+            programmingCheckBox.setSelected(false);
+        }
         if (sortGroup != null && sortGroup.getSelectedToggle() != null) {
             sortGroup.getSelectedToggle().setSelected(false);
         }
         applyAllFiltersAndSort();
-        System.out.println("Đã làm mới toàn bộ dữ liệu sản phẩm.");
+        System.out.println("Đã làm mới toàn bộ dữ liệu sản phẩm:");
     }
 }
