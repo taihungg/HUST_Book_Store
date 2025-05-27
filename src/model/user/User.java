@@ -1,8 +1,6 @@
 package model.user;
 
 public abstract class User {
-	private static int index = 0;
-	private String id;
 	private String name;
 	private String email;
 	private String phone;
@@ -10,23 +8,11 @@ public abstract class User {
 	private String password;
 	public User(String name, String email, String phone, String username, String password) {
 		super();
-		this.id = genId();
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
 		this.username = username;
 		this.password = password;
-	}
-	private String genId() {
-		index++;
-		String tempId = new String();
-		if(index < 10) tempId = "USER00" + index;
-		else if(index >= 10 && index < 100) tempId = "USER0" + index;
-		else if(index >= 100 && index < 1000) tempId = "USER" + index;
-		return tempId;
-	}
-	public String getId() {
-		return id;
 	}
 	public String getName() {
 		return name;

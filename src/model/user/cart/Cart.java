@@ -32,39 +32,34 @@ public class Cart {
         	System.out.println("New quantity must be positive.");
         	return false;
         }
-    	int availableStock = productManager.getProductQuantity(productId);
         Product product = productManager.getProductById(productId);
-        for (CartItem item : items) {
-            if (item.getProductId().equals(productId)) { // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
-            	int newQuantityForCart = item.getQuantity() + quantity;
-                // Kiểm tra tồn kho cho PhysicalProduct
-                if (product instanceof PhysicalProduct) {
-                    if (newQuantityForCart > availableStock) {
-                    	System.out.println("Not enough stock for " + product.getTitle() + ". Available: " + availableStock);
-                    	return false;
-                    } else {
-                    	item.setQuantity(newQuantityForCart);
-                    	return true;
+        if(product instanceof PhysicalProduct) {
+            int availableStock = productManager.getProductQuantity(productId);
+            for (CartItem item : items) {
+                if(item.getProductId().equals(productId)) { // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
+                    int newQuantityForCart = item.getQuantity() + quantity;
+                    if(newQuantityForCart > availableStock) {
+                        System.out.println("Not enough stock for " + product.getTitle() + ". Available: " + availableStock);
+                        return false;
                     }
-                } else { // DigitalProduct
+                    else {
+                        item.setQuantity(newQuantityForCart);
+                        return true;
+                    }
+                }
+            }
+            items.add(new CartItem(productId, quantity));
+            return true;
+        }
+        else {
+            for (CartItem item : items) {
+                if(item.getProductId().equals(productId)) { // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
+                    item.setQuantity(1); // DigitalProduct chỉ được mua 1 bản quyền
                     return true;
                 }
             }
-        }
-        // Nếu sản phẩm không tồn tại trong giỏ hàng, thêm mới
-        // Kiểm tra tồn kho ban đầu cho PhysicalProduct
-        if (product instanceof PhysicalProduct) {
-        	if (quantity > availableStock) {
-            	System.out.println("Not enough stock for " + product.getTitle() + ". Available: " + availableStock);
-            	return false;
-            }
-        	else {
-            	items.add(new CartItem(productId, quantity));
-            	return true;
-            }
-        } else {
-        	items.add(new CartItem(productId, 1));
-        	return true;
+            items.add(new CartItem(productId, 1));
+            return true;
         }
     }
 
@@ -104,7 +99,7 @@ public class Cart {
                         }
                     }
                     else { // DigitalProduct
-                        if (newQuantity > 1) { // Nếu quy định chỉ mua 1 bản quyền DigitalProduct
+                        if (newQuantity != 1) { // Nếu quy định chỉ mua 1 bản quyền DigitalProduct
                             System.out.println("Warning: Digital product " + product.getTitle() + " typically allows only one copy. Updating to more than 1.");
                             return false;
                         }
