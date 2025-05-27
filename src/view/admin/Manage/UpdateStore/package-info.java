@@ -1,1 +1,1 @@
-package view.admin.Manage.UpdateStore;
+package view.admin.manage.UpdateStore;

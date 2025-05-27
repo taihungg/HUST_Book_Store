@@ -1,1 +1,1 @@
-package view.admin.Manage;
+package view.admin.manage;

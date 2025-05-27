@@ -1,1 +1,1 @@
-package view.admin.SeeOrders;
+package view.admin.seeorders;
