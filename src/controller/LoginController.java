@@ -54,7 +54,7 @@ public class LoginController {
             showAlert(AlertType.ERROR, "Lỗi", "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.");
             return;
         }
-        User authenticatedUser = Main.userManager.getUserByUsername(username, Main.currentUser);
+        User authenticatedUser = Main.userManager.getUserByUsername(username);
         // Kiểm tra tài khoản
         
         if (authenticatedUser == null ) {

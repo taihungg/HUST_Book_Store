@@ -3,6 +3,7 @@ package controller.admin;
 import java.time.LocalDateTime;
 
 import controller.Main;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -102,7 +103,7 @@ public class OrderManagementController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/SeeOrders/OrderDetail_fixed.fxml"));
                 Parent root = loader.load();
                 OrderDetailsController controller = loader.getController();
-                controller.setOrder(selectedOrder);
+                //controller.setOrder(selectedOrder);
                 Stage stage = new Stage();
                 stage.setTitle("Order Details");
                 stage.setScene(new Scene(root));
@@ -122,7 +123,8 @@ public class OrderManagementController {
         orderTable.setItems(Main.appServiceManager.getOrderManager().getAllOrders(Main.currentUser));
        }
        else{
-        orderTable.setItems(Main.appServiceManager.getOrderManager().getOrderById(searchText, Main.currentUser));
+        Order order = Main.appServiceManager.getOrderManager().getOrderById(searchText);
+        orderTable.setItems(FXCollections.observableArrayList(order));
        }
     }
 

@@ -46,25 +46,7 @@ public class OrderDetailsController {
 
     // Phương thức để nhận dữ liệu từ OrderManagement
     public void setOrderId(Order order) {
-            orderIdLabel.setText(order.getOrderId());
-            customerUsernameLabel.setText(order.getCustomerUsername());
-            orderDateLabel.setText(order.getOrderDate().toString());
-            shippingAddressLabel.setText(order.getShippingAddress());
-            paymentMethodLabel.setText(order.getPaymentMethod());
-            orderStatusLabel.setText(order.getOrderStatus());
-            totalAmountLabel.setText(String.valueOf(order.getTotalAmount()));
-            orderItemsListView.setItems(order.getOrderItems());
-            orderItemsListView.setCellFactory(listView -> new ListCell<CartItem>() {
-                @Override
-                protected void updateItem(CartItem item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item == null || empty) {
-                        setText(null);
-                    } else {
-                        setText(item.getProduct().getName() + " x " + item.getQuantity());
-                    }
-                }
-            });
+            
             
             
 
@@ -72,8 +54,7 @@ public class OrderDetailsController {
 
     @FXML
     private void handleSearchOrder(ActionEvent event) {
-        String id = searchOrderIdField.getText();
-        System.out.println("Search for Order ID in detail: " + id);
+        
         // Có thể thêm logic truy xuất DB để load chi tiết vào các field
     }
 
@@ -89,7 +70,7 @@ public class OrderDetailsController {
 
     @FXML
     private void handleExit(ActionEvent event) {
-        ((Stage) orderIdField.getScene().getWindow()).close();
+        ((Stage) exitButton.getScene().getWindow()).close();
     }
 }
 
