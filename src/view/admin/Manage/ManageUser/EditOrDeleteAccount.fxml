@@ -9,38 +9,38 @@
 <?import javafx.scene.text.Font?>
 
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.EditOrDeleteAccountController">
    <children>
       <Label alignment="CENTER" layoutX="207.0" layoutY="4.0" text="USER MANAGEMENT SYSTEM">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <TableView layoutX="215.0" layoutY="71.0" prefHeight="225.0" prefWidth="378.0">
+      <TableView layoutX="215.0" layoutY="71.0" prefHeight="225.0" prefWidth="378.0" fx:id="userTable">
         <columns>
-          <TableColumn prefWidth="75.0" text="ID" />
-          <TableColumn prefWidth="75.0" text="Name" />
-            <TableColumn prefWidth="75.0" text="User name" />
-            <TableColumn prefWidth="75.0" text="Password" />
-            <TableColumn prefWidth="75.0" text="Telephone" />
+          <TableColumn prefWidth="75.0" text="ID" fx:id="idColumn" />
+          <TableColumn prefWidth="75.0" text="Name" fx:id="nameColumn" />
+            <TableColumn prefWidth="75.0" text="User name" fx:id="usernameColumn" />
+            <TableColumn prefWidth="75.0" text="Password" fx:id="passwordColumn" />
+            <TableColumn prefWidth="75.0" text="Telephone" fx:id="telephoneColumn" />
         </columns>
       </TableView>
-      <Button layoutX="534.0" layoutY="33.0" mnemonicParsing="false" text="SEARCH" />
-      <TextField layoutX="30.0" layoutY="67.0" prefHeight="25.0" prefWidth="105.0" />
-      <TextField layoutX="30.0" layoutY="114.0" />
-      <TextField layoutX="30.0" layoutY="217.0" />
-      <TextField layoutX="30.0" layoutY="165.0" />
-      <TextField layoutX="30.0" layoutY="271.0" />
-      <TextField layoutX="379.0" layoutY="33.0" />
+      <Button layoutX="534.0" layoutY="33.0" mnemonicParsing="false" text="SEARCH" fx:id="searchButton" />
+      <TextField layoutX="30.0" layoutY="67.0" prefHeight="25.0" prefWidth="105.0" fx:id="idField" />
+      <TextField layoutX="30.0" layoutY="114.0" fx:id="nameField" />
+      <TextField layoutX="30.0" layoutY="217.0" fx:id="passwordField" />
+      <TextField layoutX="30.0" layoutY="165.0" fx:id="usernameField" />
+      <TextField layoutX="30.0" layoutY="271.0" fx:id="telephoneField" />
+      <TextField layoutX="379.0" layoutY="33.0" fx:id="searchField" />
       <Label layoutX="14.0" layoutY="50.0" text="ID" />
       <Label layoutX="14.0" layoutY="97.0" text="Name" />
       <Label layoutX="14.0" layoutY="148.0" text="User name" />
       <Label layoutX="17.0" layoutY="200.0" text="Password" />
       <Label layoutX="14.0" layoutY="251.0" text="Telephone" />
       <Label layoutX="404.0" layoutY="313.0" text="ID" />
-      <TextField layoutX="423.0" layoutY="309.0" prefHeight="25.0" prefWidth="105.0" />
-      <Button layoutX="536.0" layoutY="309.0" mnemonicParsing="false" text="DELETE" />
-      <Button layoutX="16.0" layoutY="309.0" mnemonicParsing="false" text="MODIFY" />
-      <Button layoutX="281.0" layoutY="361.0" mnemonicParsing="false" text="EXIT" />
+      <TextField layoutX="423.0" layoutY="309.0" prefHeight="25.0" prefWidth="105.0" fx:id="deleteIdField" />
+      <Button layoutX="536.0" layoutY="309.0" mnemonicParsing="false" text="DELETE" fx:id="deleteButton" />
+      <Button layoutX="16.0" layoutY="309.0" mnemonicParsing="false" text="MODIFY" fx:id="modifyButton" />
+      <Button layoutX="281.0" layoutY="361.0" mnemonicParsing="false" text="EXIT" fx:id="exitButton" />
    </children>
 </Pane>
