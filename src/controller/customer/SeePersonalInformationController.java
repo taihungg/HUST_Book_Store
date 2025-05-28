@@ -11,7 +11,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-public class SeePersonalInformationController implements SubController, Initializable {
+public class SeePersonalInformationController implements Initializable {
 
     @FXML private TextField fullNameField;
     @FXML private TextField emailField;
@@ -24,7 +24,7 @@ public class SeePersonalInformationController implements SubController, Initiali
     @FXML private Button cancelButton;
     @FXML private Button backButton;
 
-    private CustomerMainController mainController;
+    private HomePageController mainController;
     private static final String USER_DATA_FILE = "user_data.properties";
     private Properties userData;
     private Properties originalData; // Lưu thông tin gốc để phục hồi khi cancel
@@ -48,7 +48,7 @@ public class SeePersonalInformationController implements SubController, Initiali
     }
 
     @Override
-    public void setMainController(CustomerMainController mainController) {
+    public void setMainController(HomePageController mainController) {
         this.mainController = mainController;
     }
 

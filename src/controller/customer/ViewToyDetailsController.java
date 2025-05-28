@@ -11,19 +11,18 @@ import model.user.User;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ViewBookDetailsController implements Initializable {
+public class ViewToyDetailsController implements Initializable {
 
-    @FXML private ImageView bookImage;
+    @FXML private ImageView toyImage;
     @FXML private Label titleLabel;
     @FXML private Label authorLabel;
-    @FXML private Label categoryLabel;
-    @FXML private Label priceLabel;
+    @FXML private Label ageLabel;
+    @FXML private Label brandLabel;
     @FXML private Label statusLabel;
     @FXML private TextArea descriptionArea;
     @FXML private Spinner<Integer> quantitySpinner;
     @FXML private Button addToCartButton;
     @FXML private Button backButton;
-    @FXML private Button readDemoButton;
 
     private AppServiceManager appServiceManager;
     private User currentUser;
@@ -34,7 +33,6 @@ public class ViewBookDetailsController implements Initializable {
         quantitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 99, 1));
         addToCartButton.setOnAction(e -> handleAddToCart());
         backButton.setOnAction(e -> handleBackToProducts());
-        readDemoButton.setOnAction(e -> handleReadDemo());
     }
 
     public void setAppServiceManager(AppServiceManager appServiceManager) {
@@ -59,18 +57,18 @@ public class ViewBookDetailsController implements Initializable {
 
         // Cập nhật thông tin cơ bản
         titleLabel.setText(currentProduct.getTitle());
-        authorLabel.setText("by " + currentProduct.getAuthor());
-        categoryLabel.setText(currentProduct.getCategory());
-        priceLabel.setText(String.format("%.2f USD", currentProduct.getSellingPrice()));
+        authorLabel.setText(currentProduct.getAuthor());
+        ageLabel.setText(currentProduct.getAgeRange());
+        brandLabel.setText(currentProduct.getBrand());
         descriptionArea.setText(currentProduct.getDescription());
 
         // Cập nhật hình ảnh
         try {
             Image image = new Image(getClass().getResourceAsStream(currentProduct.getGalleryURL()));
-            bookImage.setImage(image.isError() ? getPlaceholderImage() : image);
+            toyImage.setImage(image.isError() ? getPlaceholderImage() : image);
         } catch (Exception e) {
             System.err.println("Lỗi khi tải hình ảnh: " + currentProduct.getGalleryURL());
-            bookImage.setImage(getPlaceholderImage());
+            toyImage.setImage(getPlaceholderImage());
         }
 
         // Cập nhật trạng thái và nút thêm vào giỏ hàng
@@ -84,7 +82,6 @@ public class ViewBookDetailsController implements Initializable {
         if (stock > 0) {
             statusLabel.setText("In Stock (" + stock + " items)");
             addToCartButton.setVisible(true);
-            quantitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, stock, 1));
         } else {
             statusLabel.setText("Out of Stock");
             addToCartButton.setVisible(false);
@@ -112,13 +109,19 @@ public class ViewBookDetailsController implements Initializable {
     }
 
     private void handleBackToProducts() {
-        // TODO: Implement navigation back to products page
-        // This should be handled by the parent controller
-    }
-
-    private void handleReadDemo() {
-        if (currentProduct == null) return;
-        showAlert("Notification", "Reading demo for product: " + currentProduct.getTitle());
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/view/customer/Store/BrowseProducts.fxml"));
+            javafx.scene.Parent view = loader.load();
+            HomePageController controller = loader.getController();
+            controller.setAppServiceManager(appServiceManager);
+            
+            javafx.scene.Scene scene = view.getScene();
+            if (scene != null) {
+                scene.setRoot(view);
+            }
+        } catch (Exception e) {
+            showAlert("Error", "Failed to return to products: " + e.getMessage());
+        }
     }
 
     private Image getPlaceholderImage() {
@@ -137,4 +140,4 @@ public class ViewBookDetailsController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
-}
+} 

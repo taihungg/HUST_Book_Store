@@ -11,7 +11,7 @@ import javafx.util.converter.IntegerStringConverter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SeeCartController implements Initializable, SubController {
+public class SeeCartController implements Initializable {
 
     @FXML private TableView<BrowseProductsController.CartItem> cartTable;
     @FXML private TableColumn<BrowseProductsController.CartItem, BrowseProductsController.Product> itemColumn;
@@ -81,10 +81,10 @@ public class SeeCartController implements Initializable, SubController {
         if (quantityColumn != null) {
             quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
             quantityColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-            quantityColumn.setOnEditCommit(event -> {
-                BrowseProductsController.CartItem item = event.getRowValue();
+            quantityColumn.setOnEditCommit(e -> {
+                BrowseProductsController.CartItem item = e.getRowValue();
                 int oldQuantity = item.getQuantity();
-                int newQuantity = event.getNewValue();
+                int newQuantity = e.getNewValue();
                 if (newQuantity > 0) {
                     item.setQuantity(newQuantity);
                 } else {
