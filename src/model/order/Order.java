@@ -1,13 +1,14 @@
 package model.order;
 
-import controller.customer.BrowseProductsController.CartItem; // Để lưu thời gian đặt hàng
 import java.time.LocalDateTime;          // Để lưu danh sách các mặt hàng
 import java.util.List;       // Để kiểm tra null
 import java.util.Objects;
+import model.user.cart.CartItem;
 
 public class Order {
+    private static int index = 0;
     private final String orderId; // ID duy nhất của đơn hàng (final vì không thay đổi)
-    private final String customerId; // ID của khách hàng đã đặt đơn hàng (final)
+    private final String customerUsername; // ID của khách hàng đã đặt đơn hàng (final)
     private final LocalDateTime orderDate; // Thời điểm đơn hàng được đặt (final)
     private final List<CartItem> orderItems; // Danh sách các mặt hàng trong đơn hàng (final)
     private double totalAmount; // Tổng giá trị của đơn hàng
@@ -28,13 +29,12 @@ public class Order {
      * @throws NullPointerException nếu các tham số bắt buộc là null.
      * @throws IllegalArgumentException nếu totalAmount âm.
      */
-    public Order(String orderId, String customerId, List<CartItem> orderItems,
+    public Order(String username, List<CartItem> orderItems,
                  double totalAmount, String shippingAddress, String paymentMethod) {
-        this.orderId = Objects.requireNonNull(orderId, "Order ID cannot be null.");
-        this.customerId = Objects.requireNonNull(customerId, "Customer ID cannot be null.");
+        this.orderId = generateOrderId();
+        this.customerUsername = Objects.requireNonNull(customerUsername, "Customer username cannot be null.");
         this.orderDate = LocalDateTime.now(); // <<-- Tự động lấy thời gian hiện tại
         this.orderItems = Objects.requireNonNull(orderItems, "Order items cannot be null."); // Lưu bản sao item
-        
         if (totalAmount < 0) {
             throw new IllegalArgumentException("Total amount cannot be negative.");
         }
@@ -45,20 +45,40 @@ public class Order {
         this.paymentMethod = Objects.requireNonNull(paymentMethod, "Payment method cannot be null.");
     }
 
-    // --- Getters ---
-    // Các thuộc tính final chỉ có getter (không có setter)
-    public String getOrderId() { return orderId; }
-    public String getCustomerId() { return customerId; }
-    public LocalDateTime getOrderDate() { return orderDate; }
-    public List<CartItem> getOrderItems() { return orderItems; }
-
-    // Các thuộc tính có thể thay đổi thì có cả getter và setter
-    public double getTotalAmount() { return totalAmount; }
-    public String getOrderStatus() { return orderStatus; }
-    public String getShippingAddress() { return shippingAddress; }
-    public String getPaymentMethod() { return paymentMethod; }
-
-    // --- Setters ---
+    private static String generateOrderId() {
+        String tempId = new String();
+        if(index == 0 && index < 10) tempId = "OD000" + (++index);
+        else if(index >= 10 && index < 100) tempId = "OD00" + (++index);
+        else if(index >= 100 && index < 1000) tempId = "OD0" + (++index);
+        else if(index >= 1000 && index < 10000) tempId = "OD" + (++index);
+        else tempId = "OD" + (++index);
+        return tempId;
+    }
+    public String getOrderId() {
+        return orderId;
+    }
+    public String getCustomerUsername() {
+        return customerUsername;
+    }
+    public LocalDateTime getOrderDate() {
+        return orderDate;
+    }
+    public List<CartItem> getOrderItems() {
+        return orderItems;
+    }
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+    
     public void setTotalAmount(double totalAmount) {
         if (totalAmount < 0) {
             throw new IllegalArgumentException("Total amount cannot be negative.");
@@ -89,10 +109,10 @@ public class Order {
     public String toString() {
         return "Order{" +
                "orderId='" + orderId + '\'' +
-               ", customerId='" + customerId + '\'' +
+               ", customerUsername='" + customerUsername + '\'' +
                ", orderDate=" + orderDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + // Định dạng hiển thị
                ", totalAmount=" + String.format("%.2f", totalAmount) + // Định dạng 2 chữ số thập phân
-               ", orderStatus=" + orderStatus + // Lấy tên hiển thị từ enum
+               ", orderStatus=" + orderStatus + 
                ", itemsCount=" + orderItems.size() +
                '}';
     }

@@ -5,8 +5,6 @@ import model.manager.product.ProductManager;
 import model.manager.statistics.StatisticsManager;
 import model.manager.user.UserManager;
 import model.user.User;
-import model.user.interfaces.Manager;
-import model.user.manager.Admin;
 
 public class AppServiceManager {
     private final ProductManager productManager;
@@ -17,7 +15,7 @@ public class AppServiceManager {
 
     public AppServiceManager() {
         this.productManager = new ProductManager();
-        this.orderManager = new OrderManager();
+        this.orderManager = new OrderManager(this.productManager);
         this.userManager = new UserManager();
         this.statisticsManager = new StatisticsManager();
         this.currentUser = null;
