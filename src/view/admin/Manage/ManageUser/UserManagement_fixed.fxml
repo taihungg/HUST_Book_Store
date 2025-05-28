@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.UserManagementController">
    <top>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
@@ -25,15 +25,15 @@
             </Label>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
-                  <TextField>
+                  <TextField fx:id="searchField">
                      <HBox.margin>
                         <Insets bottom="40.0" left="20.0" />
                      </HBox.margin></TextField>
-                  <Button mnemonicParsing="false" text="SEARCH">
+                  <Button mnemonicParsing="false" text="SEARCH" fx:id="searchButton">
                      <HBox.margin>
                         <Insets bottom="40.0" />
                      </HBox.margin></Button>
-                  <Button alignment="TOP_RIGHT" mnemonicParsing="false" prefHeight="26.0" prefWidth="96.0" text="DISPLAY ALL">
+                  <Button alignment="TOP_RIGHT" mnemonicParsing="false" text="DISPLAY ALL" fx:id="displayAllButton">
                      <HBox.margin>
                         <Insets bottom="40.0" left="245.0" />
                      </HBox.margin></Button>
@@ -43,13 +43,13 @@
       </VBox>
    </top>
    <center>
-      <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" fx:id="userTable">
         <columns>
-          <TableColumn prefWidth="54.4000244140625" text="ID" />
-          <TableColumn prefWidth="120.79998779296875" text="Name" />
-            <TableColumn prefWidth="143.20001220703125" text="User name" />
-            <TableColumn prefWidth="133.5999755859375" text="Password" />
-            <TableColumn prefWidth="109.5999755859375" text="Telephone" />
+          <TableColumn prefWidth="54.4000244140625" text="ID" fx:id="idColumn" />
+          <TableColumn prefWidth="120.79998779296875" text="Name" fx:id="nameColumn" />
+            <TableColumn prefWidth="143.20001220703125" text="User name" fx:id="usernameColumn" />
+            <TableColumn prefWidth="133.5999755859375" text="Password" fx:id="passwordColumn" />
+            <TableColumn prefWidth="109.5999755859375" text="Telephone" fx:id="telephoneColumn" />
         </columns>
          <BorderPane.margin>
             <Insets bottom="-50.0" left="20.0" right="20.0" top="-110.0" />
@@ -59,17 +59,17 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="15.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="ADD">
+            <Button mnemonicParsing="false" text="ADD" fx:id="addButton">
                <HBox.margin>
                   <Insets bottom="10.0" top="60.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="EDIT/DELETE">
+            <Button mnemonicParsing="false" text="EDIT/DELETE" fx:id="editDeleteButton">
                <HBox.margin>
                   <Insets bottom="10.0" top="60.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="EXIT">
+            <Button mnemonicParsing="false" text="EXIT" fx:id="exitButton">
                <HBox.margin>
                   <Insets bottom="10.0" top="60.0" />
                </HBox.margin>
