@@ -122,7 +122,7 @@ public class OrderManagementController {
         orderTable.setItems(Main.appServiceManager.getOrderManager().getAllOrders(Main.currentUser));
        }
        else{
-        orderTable.setItems(Main.appServiceManager.getOrderManager().getOrderById(searchText));
+        orderTable.setItems(Main.appServiceManager.getOrderManager().getOrderById(searchText, Main.currentUser));
        }
     }
 

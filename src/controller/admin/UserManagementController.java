@@ -100,7 +100,7 @@ public class UserManagementController {
     private void handleDeleteButtonAction(ActionEvent event) throws IOException {
         User user = userTable.getSelectionModel().getSelectedItem();
         if (user != null) {
-            userManager.deleteUser(user.getUsername(), Main.currentUser);
+            userManager.deleteUser(user, Main.currentUser);
             userTable.setItems(userManager.getAllUsers(Main.currentUser));
         }
     }
