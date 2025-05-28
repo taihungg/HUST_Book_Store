@@ -37,7 +37,7 @@ public class UserManagementController {
     @FXML private Button exitButton;
 
 
-    private UserManager userManager = Main.userManager;
+    private UserManager userManager = Main.appServiceManager.getUserManager();
     private AppServiceManager appServiceManager = Main.appServiceManager;
     @FXML
     private void initialize() {

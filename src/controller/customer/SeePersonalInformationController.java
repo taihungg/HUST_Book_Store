@@ -5,11 +5,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import model.user.customer.Customer;
 
 import java.io.*;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
+
+import controller.Main;
 
 public class SeePersonalInformationController implements Initializable {
 
@@ -24,91 +27,37 @@ public class SeePersonalInformationController implements Initializable {
     @FXML private Button cancelButton;
     @FXML private Button backButton;
 
-    private HomePageController mainController;
-    private static final String USER_DATA_FILE = "user_data.properties";
+   
     private Properties userData;
     private Properties originalData; // Lưu thông tin gốc để phục hồi khi cancel
+    private Customer currentUser = (Customer)Main.appServiceManager.getCurrentUser();
 
     // Thông tin mặc định
-    private static final String DEFAULT_FULLNAME = "Nguyen Van A";
-    private static final String DEFAULT_EMAIL = "nguyenvana@example.com";
-    private static final String DEFAULT_PHONE = "0123456789";
-    private static final String DEFAULT_ADDRESS = "123 Nguyen Trai Street, District 1, Ho Chi Minh City";
-    private static final String DEFAULT_USERNAME = "nguyenvana";
-    private static final String DEFAULT_PASSWORD = "********";
+    
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        userData = new Properties();
-        originalData = new Properties();
-        loadUserData();
+        fullNameField.setText(currentUser.getName());
+        emailField.setText(currentUser.getEmail());
+        phoneField.setText(currentUser.getPhone());
+        addressField.setText(currentUser.getAddress());
+        usernameField.setText(currentUser.getUsername());
+        passwordField.setText(currentUser.getPassword());
+        
         setFieldsEditable(false);
         updateButtonVisibility(false);
         System.out.println("SeePersonalInformationController initialized successfully");
     }
+    
 
-    @Override
-    public void setMainController(HomePageController mainController) {
-        this.mainController = mainController;
-    }
+    
 
-    private void loadUserData() {
-        File file = new File(USER_DATA_FILE);
-        
-        if (file.exists()) {
-            try (FileInputStream fis = new FileInputStream(file)) {
-                userData.load(fis);
-            } catch (IOException e) {
-                System.err.println("Error loading user data: " + e.getMessage());
-                setDefaultUserData();
-            }
-        } else {
-            setDefaultUserData();
-            saveUserData(); // Tạo file với dữ liệu mặc định
-        }
-        
-        populateFields();
-        backupOriginalData();
-    }
 
-    private void setDefaultUserData() {
-        userData.setProperty("fullName", DEFAULT_FULLNAME);
-        userData.setProperty("email", DEFAULT_EMAIL);
-        userData.setProperty("phone", DEFAULT_PHONE);
-        userData.setProperty("address", DEFAULT_ADDRESS);
-        userData.setProperty("username", DEFAULT_USERNAME);
-        userData.setProperty("password", DEFAULT_PASSWORD);
-    }
+   
 
-    private void populateFields() {
-        fullNameField.setText(userData.getProperty("fullName", DEFAULT_FULLNAME));
-        emailField.setText(userData.getProperty("email", DEFAULT_EMAIL));
-        phoneField.setText(userData.getProperty("phone", DEFAULT_PHONE));
-        addressField.setText(userData.getProperty("address", DEFAULT_ADDRESS));
-        usernameField.setText(userData.getProperty("username", DEFAULT_USERNAME));
-        passwordField.setText(userData.getProperty("password", DEFAULT_PASSWORD));
-    }
+   
 
-    private void backupOriginalData() {
-        originalData.clear();
-        originalData.putAll(userData);
-    }
-
-    private void restoreOriginalData() {
-        userData.clear();
-        userData.putAll(originalData);
-        populateFields();
-    }
-
-    private void saveUserData() {
-        try (FileOutputStream fos = new FileOutputStream(USER_DATA_FILE)) {
-            userData.store(fos, "User Personal Information");
-            System.out.println("User data saved successfully");
-        } catch (IOException e) {
-            System.err.println("Error saving user data: " + e.getMessage());
-            showAlert("Error", "Failed to save user data: " + e.getMessage());
-        }
-    }
+   
 
     private void setFieldsEditable(boolean editable) {
         // Basic Information fields được edit
@@ -166,16 +115,14 @@ public class SeePersonalInformationController implements Initializable {
         }
 
         // Update userData with new values
-        userData.setProperty("fullName", fullNameField.getText().trim());
-        userData.setProperty("email", emailField.getText().trim());
-        userData.setProperty("phone", phoneField.getText().trim());
-        userData.setProperty("address", addressField.getText().trim());
+        currentUser.setName(fullNameField.getText().trim());
+        currentUser.setEmail(emailField.getText().trim());
+        currentUser.setPhone(phoneField.getText().trim());
+        currentUser.setAddress(addressField.getText().trim());
 
         // Save to file
-        saveUserData();
         
         // Update backup with new data
-        backupOriginalData();
         
         setFieldsEditable(false);
         updateButtonVisibility(false);
@@ -184,7 +131,6 @@ public class SeePersonalInformationController implements Initializable {
 
     @FXML
     private void handleCancel() {
-        restoreOriginalData();
         setFieldsEditable(false);
         updateButtonVisibility(false);
         showAlert("Info", "Changes have been cancelled.");
@@ -192,14 +138,7 @@ public class SeePersonalInformationController implements Initializable {
 
     @FXML
     private void handleBack() {
-        if (saveButton.isVisible()) {
-            // Nếu đang trong chế độ edit, restore về original data
-            restoreOriginalData();
-        }
         
-        if (mainController != null) {
-            mainController.loadPageWithData("/view/customer/Store/BrowseProducts.fxml", null);
-        }
     }
 
     private boolean isValidEmail(String email) {

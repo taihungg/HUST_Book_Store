@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox alignment="CENTER" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SignUpController">
+<HBox alignment="CENTER" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SignUpController">
    <children>
       <VBox alignment="CENTER" maxWidth="2000.0" style="-fx-background-color: #E0E0E0;" HBox.hgrow="ALWAYS">
          <padding>
@@ -22,47 +22,47 @@
                   <HBox alignment="CENTER_LEFT" spacing="10">
                      <children>
                         <Label minWidth="150" style="-fx-font-size: 18px;" text="Full Name" />
-                        <TextField HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="fullName" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   
                   <HBox alignment="CENTER_LEFT" spacing="10">
                      <children>
                         <Label minWidth="150" style="-fx-font-size: 18px;" text="Phone Number" />
-                        <TextField HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="phone" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   
                   <HBox alignment="CENTER_LEFT" spacing="10">
                      <children>
                         <Label minWidth="150" style="-fx-font-size: 18px;" text="Username" />
-                        <TextField HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="username" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   
                   <HBox alignment="CENTER_LEFT" spacing="10">
                      <children>
                         <Label minWidth="150" style="-fx-font-size: 18px;" text="Password" />
-                        <TextField HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="password" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   
                   <HBox alignment="CENTER_LEFT" spacing="10">
                      <children>
                         <Label minWidth="150" style="-fx-font-size: 18px;" text="Confirm Password" />
-                        <TextField HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="cfpw" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="180.0" spacing="10">
                      <children>
                         <Label minWidth="150" style="-fx-font-size: 18px;" text="Address" />
-                        <TextField HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="address" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="222.0" spacing="10">
                      <children>
                         <Label minWidth="150" style="-fx-font-size: 18px;" text="Email" />
-                        <TextField HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="email" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                </children>

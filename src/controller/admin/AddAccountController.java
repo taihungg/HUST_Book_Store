@@ -69,7 +69,7 @@ public class AddAccountController {
         
         Employee newEmployee = new Employee(name, email, phone, username, password, Double.parseDouble(salary));
 
-        Main.userManager.addUser(newEmployee, Main.currentUser);
+        Main.appServiceManager.getUserManager().addUser(newEmployee, Main.currentUser);
 
         Parent root = FXMLLoader.load(getClass().getResource("/view/admin/Manage/ManageUser/UserManagement_fixed.fxml"));
         Stage stage = (Stage) addEmployeeButton.getScene().getWindow();

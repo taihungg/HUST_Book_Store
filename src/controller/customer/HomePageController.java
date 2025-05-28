@@ -90,15 +90,15 @@ public class HomePageController {
     @FXML private CheckBox bandaiCheckBox;
     @FXML private CheckBox hasbroCheckBox;
 
-    public static final AppServiceManager appServiceManager = new AppServiceManager();
-    private User currentUser;
+    public static final AppServiceManager appServiceManager = Main.appServiceManager;
+    private User currentUser = Main.currentUser;
     private ObservableList<Product> availableProducts;
     private ObservableList<Product> filteredProducts = FXCollections.observableArrayList();
     private boolean sortAscending = true; // Default sort direction
 
     @FXML
     public void initialize() {
-        currentUser = null; 
+        
         updateButtonsVisibility(currentUser != null);
         setupEventHandlers();
 
@@ -581,22 +581,19 @@ public class HomePageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
             Parent loginView = loader.load();
-
             Stage loginStage = new Stage();
             loginStage.setTitle("Login");
-            loginStage.initModality(Modality.APPLICATION_MODAL);
+            loginStage.initModality(Modality.APPLICATION_MODAL); // Quan trọng: Chặn tương tác với cửa sổ khác
             loginStage.setScene(new Scene(loginView));
-            loginStage.showAndWait(); 
 
-            User loggedInUser = appServiceManager.getCurrentUser(); 
-            if (loggedInUser != null) {
-                this.currentUser = loggedInUser;
-                updateButtonsVisibility(true);
-                refreshProductView();
-                if (!(currentUser instanceof Customer)) { 
-                     loadContentView("/view/admin/HomePageAdmin.fxml"); 
-                }
-            }
+            loginStage.show();
+            Stage currentStage = (Stage) loginButton.getScene().getWindow();
+            currentStage.close();
+
+            
+            
+
+            
         } catch (IOException e) {
             showError("Login Error", "Failed to open login window: " + e.getMessage());
             e.printStackTrace();
@@ -617,7 +614,7 @@ public class HomePageController {
     }
 
     @FXML
-    private void handleMenuItemAction(ActionEvent event) {
+    private void handleMenuItemAction(ActionEvent event) throws IOException {
         MenuItem menuItem = (MenuItem) event.getSource();
         String fxmlPath = null; 
 
@@ -632,13 +629,20 @@ public class HomePageController {
                 refreshProductView(); 
                 return; 
             case "cartMenuItem":
-                fxmlPath = "/view/customer/Cart/CartView.fxml";
+                fxmlPath = "/view/customer/Store/SeeCart.fxml";
                 break;
-            case "ordersMenuItem": 
-                fxmlPath = "/view/customer/Order/OrderHistory.fxml";
+            case "orderHistoryMenuItem": 
+                fxmlPath = "/view/customer/Account/BookOrderHistoryApp.fxml";
                 break;
-            case "profileMenuItem": 
-                fxmlPath = "/view/customer/Profile/ProfileView.fxml";
+            case "personalInfoMenuItem": 
+                fxmlPath = "/view/customer/Account/SeePersonalInformation.fxml";
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+                Parent personalInfoView = loader.load();
+                Stage personalInfoStage = new Stage();
+                personalInfoStage.setTitle("Personal Information");
+                personalInfoStage.initModality(Modality.APPLICATION_MODAL);
+                personalInfoStage.setScene(new Scene(personalInfoView));
+                personalInfoStage.showAndWait();
                 break;
             default:
                 System.err.println("Unsupported MenuItem ID: " + menuItem.getId());
