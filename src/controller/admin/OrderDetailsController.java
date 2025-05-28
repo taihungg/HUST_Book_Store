@@ -1,42 +1,73 @@
 package controller.admin;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+
+import java.lang.classfile.Label;
+
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
+import model.order.Order;
+import model.user.cart.CartItem;
+import model.manager.order.OrderManager;
+
 
 public class OrderDetailsController {
 
     @FXML
-    private TextField orderIdField;
+    private Label customerUsernameLabel;
 
     @FXML
-    private TextField userIdField;
+    private Button exitButton;
 
     @FXML
-    private TextField nameField;
+    private Label orderDateLabel;
 
     @FXML
-    private TextField productIdField;
+    private Label orderIdLabel;
 
     @FXML
-    private TextField billField;
+    private ListView<CartItem> orderItemsListView;
 
     @FXML
-    private TextField timeField;
+    private Label orderStatusLabel;
 
     @FXML
-    private TextField dateField;
+    private Label paymentMethodLabel;
 
     @FXML
-    private TextField statusField;
+    private Label shippingAddressLabel;
 
     @FXML
-    private TextField searchOrderIdField;
+    private Label totalAmountLabel;
 
     // Phương thức để nhận dữ liệu từ OrderManagement
-    public void setOrderId(String orderId) {
-        orderIdField.setText(orderId);
+    public void setOrderId(Order order) {
+            orderIdLabel.setText(order.getOrderId());
+            customerUsernameLabel.setText(order.getCustomerUsername());
+            orderDateLabel.setText(order.getOrderDate().toString());
+            shippingAddressLabel.setText(order.getShippingAddress());
+            paymentMethodLabel.setText(order.getPaymentMethod());
+            orderStatusLabel.setText(order.getOrderStatus());
+            totalAmountLabel.setText(String.valueOf(order.getTotalAmount()));
+            orderItemsListView.setItems(order.getOrderItems());
+            orderItemsListView.setCellFactory(listView -> new ListCell<CartItem>() {
+                @Override
+                protected void updateItem(CartItem item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        setText(item.getProduct().getName() + " x " + item.getQuantity());
+                    }
+                }
+            });
+            
+            
+
     }
 
     @FXML
