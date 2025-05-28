@@ -11,7 +11,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import controller.Main;
 import model.manager.AppServiceManager;
@@ -40,51 +39,36 @@ public class LoginController {
     private AppServiceManager appServiceManager = Main.appServiceManager;
     
     // Class để lưu thông tin tài khoản
-    private Admin accountAdmin;
-    private Customer accountCustomer;
     
-    private UserManager userManager = appServiceManager.getUserManager();
+    
 
     @FXML
     void btnLoginclicked(ActionEvent event) {
+
         String username = usernameField.getText().trim();
         String password = passwordField.getText();
+
         
         // Kiểm tra input rỗng
         if (username.isEmpty() || password.isEmpty()) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Invalid Credentials");
-            alert.setContentText("Please check your username and password.");
-            alert.showAndWait();
+            showAlert(AlertType.ERROR, "Lỗi", "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.");
             return;
         }
-        
+        User authenticatedUser = Main.userManager.getUserByUsername(username);
         // Kiểm tra tài khoản
         
-        if (accountAdmin == null || !accountAdmin.getPassword().equals(password) || accountCustomer == null || !accountCustomer.getPassword().equals(password)) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Invalid Credentials");
-            alert.setContentText("Please check your username and password.");
-            alert.showAndWait();
+        if (authenticatedUser == null ) {
+            showAlert(AlertType.ERROR, "Lỗi Đăng Nhập", "Tên đăng nhập hoặc mật khẩu không đúng!");
             return;
         }
+
+        Main.currentUser = authenticatedUser;
+        System.out.println("Main.currentUser đã được cập nhật");
         
         // Chuyển trang theo role
         try {
-            if (username.equals(accountAdmin.getUsername())&&password.equals(accountAdmin.getPassword())) {
+            if (authenticatedUser.getUsername().equals(username) && authenticatedUser.getPassword().equals(password)) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/HomePageAdmin.fxml"));
-                Parent root = loader.load();
-                Scene scene = new Scene(root);
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setScene(scene);
-                stage.show();
-
-                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                currentStage.close();
-            } else if (username.equals(accountCustomer.getUsername())&&password.equals(accountCustomer.getPassword())) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/customer/CustomerMain.fxml"));
                 Parent root = loader.load();
                 Scene scene = new Scene(root);
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -138,6 +122,13 @@ public class LoginController {
             alert.setContentText("Please check your username and password.");
             alert.showAndWait();
         }
+    }
+    private void showAlert(AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 }

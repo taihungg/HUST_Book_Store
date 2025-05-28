@@ -17,8 +17,9 @@ import model.user.User;
 
 public class Main extends Application {
 
-    private static AppServiceManager appServiceManager ;
-    
+    public static AppServiceManager appServiceManager = new AppServiceManager();
+    public static UserManager userManager = appServiceManager.getUserManager();
+    public static User currentUser ;
     public static void main(String[] args) {
                 launch(args);
             }
@@ -26,7 +27,7 @@ public class Main extends Application {
             @Override
             public void start(Stage primaryStage) {
                 try{
-                    Parent root = FXMLLoader.load(this.getClass().getResource("/view/admin/HomePageAdmin.fxml"));
+                    Parent root = FXMLLoader.load(this.getClass().getResource("/view/Login.fxml"));
                     Scene scene = new Scene(root);
                     primaryStage.setScene(scene);
                     primaryStage.show();

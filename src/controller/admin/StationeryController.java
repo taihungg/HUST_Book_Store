@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.manager.AppServiceManager;
 import model.product.Stationery;
+import model.user.User;
 
 public class StationeryController {
     @FXML
@@ -47,6 +48,7 @@ public class StationeryController {
     
     @FXML
     private TextField quantityField;
+    private User currentUser = Main.currentUser;
     
 
 
@@ -105,7 +107,7 @@ public class StationeryController {
             );
 
             
-            appServiceManager.getProductManager().addProduct(newStationery,quantity,appServiceManager.getCurrentUser());
+            appServiceManager.getProductManager().addProduct(newStationery,quantity,currentUser);
 
             Alert alert = new Alert (Alert.AlertType.INFORMATION);
             alert.setTitle("Thông báo");

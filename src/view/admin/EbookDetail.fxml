@@ -141,12 +141,7 @@
                                    </HBox>
                                 </children>
                              </VBox>
-                  <HBox alignment="CENTER_LEFT" spacing="5">
-                     <children>
-                        <Label text="Weight: " />
-                        <Label fx:id="weightLabel1" text="...." />
-                     </children>
-                  </HBox>
+                  <HBox alignment="CENTER_LEFT" spacing="5" />
                           </children>
                        </HBox>
                     </children>

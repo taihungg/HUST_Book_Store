@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.manager.AppServiceManager;
 import model.product.Toy;
+import model.user.User;
 public class ToyController {
     @FXML
     private TextField titleField;
@@ -51,6 +52,7 @@ public class ToyController {
     private TextField purchasepriceField;
 
     private AppServiceManager   appServiceManager = Main.appServiceManager;
+    private User currentUser = Main.currentUser;
    
 
     @FXML
@@ -106,7 +108,7 @@ public class ToyController {
    purchasePrice, 0, 10,  status,
     brand,  suitableAge);
 
-   appServiceManager.getProductManager().addProduct(newToy, quantity,appServiceManager.getCurrentUser());
+   appServiceManager.getProductManager().addProduct(newToy, quantity,currentUser);
 
    Alert alert = new Alert (Alert.AlertType.INFORMATION);
    alert.setTitle("Thông báo");

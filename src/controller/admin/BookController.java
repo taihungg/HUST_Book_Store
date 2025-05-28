@@ -23,6 +23,7 @@ import model.product.book.Ebook;
 import model.product.book.Audiobook;
 import model.product.book.Printbook;
 // Import service quản lý dữ liệu
+import model.user.User;
 
 
 public class BookController {
@@ -96,6 +97,7 @@ public class BookController {
 
     @FXML
     private TextField titleField;
+    private User currentUser = Main.currentUser;
 
     //</editor-fold>
 
@@ -285,7 +287,7 @@ public class BookController {
 
         // 4. Thêm sản phẩm vào DataService
         if (productToAdd != null) {
-            appServiceManager.getProductManager().addProduct(productToAdd,quantityDefault,appServiceManager.getCurrentUser());
+            appServiceManager.getProductManager().addProduct(productToAdd,quantityDefault,currentUser);
             showAlert(AlertType.INFORMATION, "Thành Công", "Đã thêm sách '" + title + "' vào hệ thống.");
             clearFormFields(); 
             try{

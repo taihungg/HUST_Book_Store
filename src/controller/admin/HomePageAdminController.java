@@ -1,11 +1,13 @@
 package controller.admin;
 
+import controller.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import model.user.User;
 
 public class HomePageAdminController {
     @FXML
@@ -21,7 +23,7 @@ public class HomePageAdminController {
     private Button manageButton;
 
 
-
+    private User currentUser = Main.currentUser;
     @FXML
     public void initialize() {
         // Initialize any necessary setup
@@ -54,8 +56,25 @@ public class HomePageAdminController {
 
     @FXML
     private void handleLogout() {
-        Stage stage = (Stage) logoutButton.getScene().getWindow();
-        stage.close();
+
+        try {
+            // Load the SeeOrdersView.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
+            Parent root = loader.load();
+            
+            // Create a new stage for the see orders page
+            Stage stage = new Stage();
+            stage.setTitle("Login");
+            stage.setScene(new Scene(root));
+            
+            // Show the see orders window
+            stage.show();
+
+            Stage curreStage = (Stage)logoutButton.getScene().getWindow();
+            curreStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
