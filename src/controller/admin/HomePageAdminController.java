@@ -81,7 +81,7 @@ public class HomePageAdminController {
     private void handleSeeOrders() {
         try {
             // Load the SeeOrdersView.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/SeeOrders/SeeOrdersView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/SeeOrders/OrderManagement.fxml"));
             Parent root = loader.load();
             
             // Create a new stage for the see orders page

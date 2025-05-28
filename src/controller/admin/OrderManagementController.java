@@ -1,60 +1,147 @@
 package controller.admin;
 
+import java.time.LocalDateTime;
+
+import controller.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import model.order.Order;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.LocalDateTimeStringConverter;
+import controller.admin.OrderDetailsController;
 
 public class OrderManagementController {
 
+    
     @FXML
-    private TextField inputOrderId;
+    private TableColumn<Order, String> addressCol;
+
+    @FXML
+    private TableColumn<Order, Double> amoutCol;
+
+    @FXML
+    private TableColumn<Order, LocalDateTime> dateCol;
+
+    @FXML
+    private Button exitButton;
+
+    @FXML
+    private TableView<Order> orderTable;
+
+    @FXML
+    private TableColumn<Order, String> orderidCol;
+
+    @FXML
+    private TableColumn<Order, String> payCol;
 
     @FXML
     private TextField searchField;
 
-    // Bấm nút "View"
+    @FXML
+    private TableColumn<Order, String> statusCol;
+
+    @FXML
+    private TableColumn<Order, String> usernameCol;
+
+    
+    @FXML
+    void intialize(){
+        orderTable.setEditable(true);
+
+        orderidCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderId"));
+        addressCol.setCellValueFactory(new PropertyValueFactory<Order, String>("shippingAddress"));
+        amoutCol.setCellValueFactory(new PropertyValueFactory<Order, Double>("totalAmount"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<Order, LocalDateTime>("orderDate"));
+        payCol.setCellValueFactory(new PropertyValueFactory<Order, String>("paymentMethod"));
+        statusCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderStatus"));
+        usernameCol.setCellValueFactory(new PropertyValueFactory<Order, String>("customerUsername"));
+        orderidCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        addressCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        amoutCol.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        dateCol.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateTimeStringConverter()));
+        payCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        statusCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        usernameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        addressCol.setOnEditCommit((CellEditEvent<Order, String> event) -> {
+            Order order = event.getRowValue();
+            order.setShippingAddress(event.getNewValue());
+        });
+        amoutCol.setOnEditCommit((CellEditEvent<Order, Double> event) -> {
+            Order order = event.getRowValue();
+            order.setTotalAmount(event.getNewValue());
+        });
+       
+        payCol.setOnEditCommit((CellEditEvent<Order, String> event) -> {
+            Order order = event.getRowValue();
+            order.setPaymentMethod(event.getNewValue());
+        });
+
+        statusCol.setOnEditCommit((CellEditEvent<Order, String> event) -> {
+            Order order = event.getRowValue();
+            order.setOrderStatus(event.getNewValue());
+        });
+        
+        orderTable.setItems(Main.appServiceManager.getOrderManager().getAllOrders(Main.currentUser));
+    }
     @FXML
     private void handleViewDetail(ActionEvent event) {
-        try {
-            String orderId = inputOrderId.getText();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/SeeOrders/OrderDetail_fixed.fxml"));
-            Parent root = loader.load();
-
-            // Truy cập controller của OrderDetail
-            OrderDetailsController controller = loader.getController();
-            controller.setOrderId(orderId); // truyền dữ liệu
-
-            // Tạo và chuyển scene
-            Stage stage = new Stage();
-            stage.setTitle("Order Detail");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-            // Đóng cửa sổ hiện tại
-            ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        Order selectedOrder = orderTable.getSelectionModel().getSelectedItem();
+        if (selectedOrder != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/SeeOrders/OrderDetail_fixed.fxml"));
+                Parent root = loader.load();
+                OrderDetailsController controller = loader.getController();
+                controller.setOrder(selectedOrder);
+                Stage stage = new Stage();
+                stage.setTitle("Order Details");
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    @FXML
-    private void handleSearch(ActionEvent event) {
-        System.out.println("Searching for: " + searchField.getText());
-    }
+    
 
     @FXML
-    private void handleDisplayAll(ActionEvent event) {
-        System.out.println("Display all orders.");
+    private void handleSearch(ActionEvent event) {
+       String searchText = searchField.getText();
+       if(searchText.isEmpty()){
+        orderTable.setItems(Main.appServiceManager.getOrderManager().getAllOrders(Main.currentUser));
+       }
+       else{
+        orderTable.setItems(Main.appServiceManager.getOrderManager().getOrderById(searchText, Main.currentUser));
+       }
     }
+
+    
 
     @FXML
     private void handleExit(ActionEvent event) {
-        ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/HomePageAdmin.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Home Page");
+            stage.setScene(new Scene(root));
+            stage.show();
+            Stage currentStage = (Stage) exitButton.getScene().getWindow();
+            currentStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

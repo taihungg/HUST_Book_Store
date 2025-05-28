@@ -18,9 +18,13 @@ import javafx.geometry.Insets;
 import model.manager.AppServiceManager;
 import model.product.Product;
 import model.product.Toy;
+import model.product.book.Audiobook;
+import model.product.book.Ebook;
+import model.product.book.Printbook;
 import model.product.Stationery;
 import model.product.interfaces.PhysicalProduct;
 import model.user.User;
+import model.user.cart.Cart;
 import model.user.customer.Customer;
 import java.io.IOException;
 import java.net.URL;
@@ -71,29 +75,68 @@ public class HomePageController implements Initializable {
 
     private AppServiceManager appServiceManager;
     private User currentUser;
-    private ObservableList<Product> displayedProducts;
-    private ObservableList<Product> filteredProducts;
+    private ObservableList<Product> availableProducts;
+    private ObservableList<Product> filteredProducts = FXCollections.observableArrayList();
     private boolean sortAscending = true;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        appServiceManager = new AppServiceManager();
         currentUser = null;
-        displayedProducts = FXCollections.observableArrayList();
-        filteredProducts = FXCollections.observableArrayList();
-        
         updateButtonsVisibility(false);
         setupEventHandlers();
-        loadInStockProducts();
+        
+        // Load products ngay sau khi initialize nếu AppServiceManager đã có
+        if (appServiceManager != null) {
+            loadAvailableProducts();
+        }
     }
-
+    
+    private void loadAvailableProducts() {
+        if (appServiceManager == null) {
+            System.err.println("AppServiceManager chưa được khởi tạo. Không thể tải sản phẩm.");
+            return;
+        }
+        
+        try {
+            // Gán trực tiếp availableProducts từ ProductManager
+            availableProducts = appServiceManager.getProductManager().getAvailableProductsForCustomer();
+            
+            if (availableProducts == null) {
+                availableProducts = FXCollections.observableArrayList();
+                System.err.println("Không có sản phẩm nào được trả về từ ProductManager");
+            } else {
+                System.out.println("Đã tải " + availableProducts.size() + " sản phẩm có sẵn.");
+            }
+            
+            // Đảm bảo availableProducts.size() > 0
+            if (availableProducts.isEmpty()) {
+                System.err.println("Danh sách sản phẩm trống. Kiểm tra dữ liệu trong ProductManager.");
+                // Có thể thêm một số sản phẩm mẫu hoặc thông báo lỗi
+            }
+            
+            applyAllFiltersAndSort();
+        } catch (Exception e) {
+            System.err.println("Lỗi khi tải sản phẩm: " + e.getMessage());
+            e.printStackTrace();
+            availableProducts = FXCollections.observableArrayList();
+        }
+    }
+    
+    
     public User getCurrentUser() {
         return currentUser;
     }
     
+    public AppServiceManager getAppServiceManager() {
+        return appServiceManager;
+    }
+    
     private void updateButtonsVisibility(boolean isLoggedIn) {
+        // Thêm kiểm tra null để đảm bảo các FXML component đã được inject
         if (loginButton == null || logoutButton == null || menuBar == null) {
-            throw new IllegalStateException("loginButton, logoutButton, or menuBar is not initialized");
+            // Không ném exception, chỉ in cảnh báo để ứng dụng vẫn có thể chạy
+            System.err.println("Cảnh báo: Một số thành phần UI chưa được khởi tạo trong updateButtonsVisibility.");
+            return; 
         }
         loginButton.setVisible(!isLoggedIn);
         logoutButton.setVisible(isLoggedIn);
@@ -111,17 +154,6 @@ public class HomePageController implements Initializable {
         }
     }    
 
-    private void loadInStockProducts() {
-        if (appServiceManager == null || currentUser == null) {
-            System.err.println("AppServiceManager or currentUser is not initialized.");
-            return;
-        }
-        
-        displayedProducts.clear();
-        displayedProducts.addAll(appServiceManager.getProductManager().searchProductsForCustomer(""));
-        applyAllFiltersAndSort();
-    }
-
     @FXML
     private void handleSearch() {
         applyAllFiltersAndSort();
@@ -130,8 +162,9 @@ public class HomePageController implements Initializable {
     @FXML
     private void handlePriceFilter() {
         try {
-            double minPrice = minPriceField.getText().isEmpty() ? 0 : Double.parseDouble(minPriceField.getText().trim());
-            double maxPrice = maxPriceField.getText().isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceField.getText().trim());
+            // Thêm kiểm tra null trước khi gọi getText()
+            double minPrice = (minPriceField != null && !minPriceField.getText().isEmpty()) ? Double.parseDouble(minPriceField.getText().trim()) : 0;
+            double maxPrice = (maxPriceField != null && !maxPriceField.getText().isEmpty()) ? Double.parseDouble(maxPriceField.getText().trim()) : Double.MAX_VALUE;
             
             if (minPrice > maxPrice) {
                 showAlert("Error", "Minimum price cannot be greater than maximum price!");
@@ -145,7 +178,11 @@ public class HomePageController implements Initializable {
 
     @FXML
     private void handleSort() {
-        if (sortGroup.getSelectedToggle() == null) return;
+        // Thêm kiểm tra null cho sortGroup
+        if (sortGroup == null || sortGroup.getSelectedToggle() == null) {
+            System.out.println("Không có tiêu chí sắp xếp nào được chọn hoặc sortGroup chưa được khởi tạo.");
+            return;
+        }
         
         RadioButton selectedSort = (RadioButton) sortGroup.getSelectedToggle();
         String sortType = selectedSort.getText();
@@ -165,26 +202,30 @@ public class HomePageController implements Initializable {
         
         sortAscending = !sortAscending;
         updateProductDisplay(filteredProducts);
+        updateItemCount(); // Cập nhật số lượng sau khi sắp xếp
     }
 
     private void applyAllFiltersAndSort() {
-        if (displayedProducts == null) return;
+        if (availableProducts == null) return;
         
         filteredProducts.clear();
-        filteredProducts.addAll(displayedProducts);
+        filteredProducts.addAll(availableProducts);
         
         // Lọc theo search query
-        String searchQuery = searchField.getText().trim();
+        // Đảm bảo searchField đã được inject trước khi sử dụng
+        String searchQuery = (searchField != null) ? searchField.getText().trim().toLowerCase() : "";
         if (!searchQuery.isEmpty()) {
-            filteredProducts.addAll(appServiceManager.getProductManager().searchProductsForCustomer(searchQuery));
-        } else {
-            filteredProducts.addAll(displayedProducts);
-        }
+            // Sử dụng removeIf để lọc trên filteredProducts hiện có
+            filteredProducts.removeIf(product -> !(product.getTitle().toLowerCase().contains(searchQuery) ||
+                                                  product.getId().toLowerCase().contains(searchQuery)));
+        } 
         
         // Lọc theo giá
         try {
-            double minPrice = minPriceField.getText().isEmpty() ? 0 : Double.parseDouble(minPriceField.getText().trim());
-            double maxPrice = maxPriceField.getText().isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceField.getText().trim());
+            // Thêm kiểm tra null trước khi gọi getText()
+            double minPrice = (minPriceField != null && !minPriceField.getText().isEmpty()) ? Double.parseDouble(minPriceField.getText().trim()) : 0;
+            double maxPrice = (maxPriceField != null && !maxPriceField.getText().isEmpty()) ? Double.parseDouble(maxPriceField.getText().trim()) : Double.MAX_VALUE;
+            
             if (minPrice <= maxPrice) {
                 filteredProducts.removeIf(product -> 
                     product.getSellingPrice() < minPrice || product.getSellingPrice() > maxPrice
@@ -193,10 +234,11 @@ public class HomePageController implements Initializable {
         } catch (NumberFormatException e) {
             // Ignore invalid price values
         }
-        
-        handleSort();
-        updateProductDisplay(filteredProducts);
-        updateItemCount();
+
+        // Sau khi lọc, gọi sắp xếp
+        handleSort(); 
+        // **Đã loại bỏ:** updateProductDisplay(filteredProducts); và updateItemCount();
+        // Vì handleSort() sẽ gọi chúng sau khi sắp xếp xong.
     }
 
     private void updateItemCount() {
@@ -249,12 +291,13 @@ public class HomePageController implements Initializable {
         
         // Thêm thông tin tùy theo loại sản phẩm
         Label infoLabel = new Label();
+        // **Cải thiện:** Chỉ cần một if-else if-else để xử lý các trường hợp cụ thể, tránh lặp lại.
         if (product instanceof model.product.book.Book) {
             infoLabel.setText("Author: " + ((model.product.book.Book) product).getAuthor());
-        } else if (product instanceof Toy || product instanceof Stationery) {
-            String brand = product instanceof Toy ? ((Toy) product).getBrand() : ((Stationery) product).getBrand();
-            String type = product instanceof Toy ? "Toy" : ((Stationery) product).getType();
-            infoLabel.setText("Brand: " + brand + "\nType: " + type);
+        } else if (product instanceof Toy) { // Sử dụng instanceof cụ thể hơn
+            infoLabel.setText("Brand: " + ((Toy) product).getBrand() + "\nType: Toy");
+        } else if (product instanceof Stationery) { // Sử dụng instanceof cụ thể hơn
+            infoLabel.setText("Brand: " + ((Stationery) product).getBrand() + "\nType: Stationery");
         }
         
         Button addToCartBtn = new Button("Add to Cart");
@@ -271,15 +314,30 @@ public class HomePageController implements Initializable {
     }
 
     private Image getPlaceholderImage() {
-        return new Image(getClass().getResourceAsStream("/images/placeholder.png"));
+        try {
+            return new Image(getClass().getResourceAsStream("/images/placeholder.png"));
+        } catch (Exception e) {
+            // Log lỗi nếu ảnh không tìm thấy nhưng không ném exception làm crash ứng dụng
+            System.err.println("Cảnh báo: Không tìm thấy ảnh placeholder. Sử dụng ảnh trống.");
+            // Trả về một ảnh trong suốt 1x1 pixel để tránh NullPointerException
+            return new Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=");
+        }
     }
 
     private void handleAddToCart(Product product) {
+        // Kiểm tra đăng nhập
         if (currentUser == null) {
             showAlert("Login Required", "Please log in to add products to cart!");
             return;
         }
-        
+
+        // Kiểm tra currentUser là Customer
+        if (!(currentUser instanceof Customer)) {
+            showAlert("Error", "Only customers can add products to cart!");
+            return;
+        }
+
+        // Kiểm tra tồn kho cho PhysicalProduct
         if (product instanceof PhysicalProduct) {
             int stock = appServiceManager.getProductManager().getProductQuantity(product.getId());
             if (stock <= 0) {
@@ -287,13 +345,34 @@ public class HomePageController implements Initializable {
                 return;
             }
         }
-        
+
         try {
-            // TODO: Implement addToCart method in OrderManager
-            // appServiceManager.getOrderManager().addToCart(currentUser, product.getId(), 1);
-            showAlert("Success", "Product added to cart!");
+            // Lấy giỏ hàng của khách hàng
+            Customer customer = (Customer) currentUser;
+            Cart customerCart = customer.getCart();
+            if (customerCart == null) {
+                showAlert("Error", "Customer cart is not initialized!");
+                return;
+            }
+
+            // Thêm sản phẩm vào giỏ hàng
+            boolean success = customerCart.addItem(
+                product.getId(), 1, // Số lượng mặc định là 1
+                appServiceManager.getProductManager()
+            );
+
+            if (success) {
+                showAlert("Success", "Product added to cart!");
+            } else {
+                showAlert("Error", "Failed to add product to cart. Check stock or product availability.");
+            }
+        } catch (IllegalArgumentException e) {
+            showAlert("Error", "Invalid input: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            showAlert("Error", "Not enough stock: " + e.getMessage());
         } catch (Exception e) {
             showAlert("Error", "Failed to add product to cart: " + e.getMessage());
+            e.printStackTrace(); // In stack trace để debug
         }
     }
 
@@ -306,28 +385,21 @@ public class HomePageController implements Initializable {
             return;
         }
 
-        String productType = detailedProduct.getProductType();
         String fxmlPath;
-        
-        switch (productType.toLowerCase()) {
-            case "printbook":
-            	fxmlPath = "/view/customer/Store/ViewDetails/ViewBookDetails.fxml";
-                break;
-            case "ebook":
-            	fxmlPath = "/view/customer/Store/ViewDetails/ViewBookDetails.fxml";
-                break;
-            case "audiobook":
-                fxmlPath = "/view/customer/Store/ViewDetails/ViewBookDetails.fxml";
-                break;
-            case "stationery":
-                fxmlPath = "/view/customer/Store/ViewDetails/ViewStationeryDetails.fxml";
-                break;
-            case "toy":
-                fxmlPath = "/view/customer/Store/ViewDetails/ViewToyDetails.fxml";
-                break;
-            default:
-                showAlert("Error", "Unknown product type!");
-                return;
+
+        if (detailedProduct instanceof Printbook) {
+            fxmlPath = "/view/customer/Store/ViewDetails/ViewBookDetails.fxml";
+        } else if (detailedProduct instanceof Ebook) {
+            fxmlPath = "/view/customer/Store/ViewDetails/ViewBookDetails.fxml";
+        } else if (detailedProduct instanceof Audiobook) {
+            fxmlPath = "/view/customer/Store/ViewDetails/ViewBookDetails.fxml";
+        } else if (detailedProduct instanceof Stationery) {
+            fxmlPath = "/view/customer/Store/ViewDetails/ViewStationeryDetails.fxml";
+        } else if (detailedProduct instanceof Toy) {
+            fxmlPath = "/view/customer/Store/ViewDetails/ViewToyDetails.fxml";
+        } else {
+            showAlert("Error", "Unknown product type!");
+            return;
         }
 
         try {
@@ -335,13 +407,14 @@ public class HomePageController implements Initializable {
             Parent view = loader.load();
             
             Object controller = loader.getController();
-            if (controller instanceof ViewBookDetailsController) {
+            // Đảm bảo rằng các controller details của bạn có các phương thức này
+            if (controller instanceof ViewBookDetailsController) { 
                 ((ViewBookDetailsController) controller).setAppServiceManager(appServiceManager);
                 ((ViewBookDetailsController) controller).setProductId(product.getId());
-            } else if (controller instanceof ViewStationeryDetailsController) {
+            } else if (controller instanceof ViewStationeryDetailsController) { 
                 ((ViewStationeryDetailsController) controller).setAppServiceManager(appServiceManager);
                 ((ViewStationeryDetailsController) controller).setProductId(product.getId());
-            } else if (controller instanceof ViewToyDetailsController) {
+            } else if (controller instanceof ViewToyDetailsController) { 
                 ((ViewToyDetailsController) controller).setAppServiceManager(appServiceManager);
                 ((ViewToyDetailsController) controller).setProductId(product.getId());
             }
@@ -353,6 +426,7 @@ public class HomePageController implements Initializable {
             stage.showAndWait();
         } catch (IOException e) {
             showAlert("Error", "Failed to load product details view: " + e.getMessage());
+            e.printStackTrace(); // In stack trace để debug
         }
     }
 
@@ -376,13 +450,14 @@ public class HomePageController implements Initializable {
                 updateButtonsVisibility(true);
                 
                 if (currentUser instanceof Customer) {
-                    loadInStockProducts();
+                    loadAvailableProducts();
                 } else {
                     loadContentView("/view/admin/HomePageAdmin.fxml");
                 }
             }
         } catch (IOException e) {
             showError("Error", "Failed to open login window: " + e.getMessage());
+            e.printStackTrace(); // In stack trace để debug
         }
     }
 
@@ -392,9 +467,10 @@ public class HomePageController implements Initializable {
             appServiceManager.logout();
             currentUser = null;
             updateButtonsVisibility(false);
-            loadInStockProducts();
+            loadAvailableProducts();
         } catch (Exception e) {
             showError("Logout failed", e.getMessage());
+            e.printStackTrace(); // In stack trace để debug
         }
     }
 
@@ -410,7 +486,7 @@ public class HomePageController implements Initializable {
         
         switch (menuItem.getId()) {
             case "browseProductsMenuItem":
-                loadInStockProducts();
+                loadAvailableProducts();
                 return;
             case "cartMenuItem":
                 fxmlPath = "/view/customer/Cart/CartView.fxml";
@@ -422,6 +498,8 @@ public class HomePageController implements Initializable {
                 fxmlPath = "/view/customer/Profile/ProfileView.fxml";
                 break;
             default:
+                // Log nếu có MenuItem không được xử lý
+                System.err.println("MenuItem không được hỗ trợ: " + menuItem.getId());
                 return;
         }
         
@@ -440,6 +518,7 @@ public class HomePageController implements Initializable {
             mainScrollPane.setContent(content);
         } catch (IOException e) {
             showError("Error", "Failed to load view: " + e.getMessage());
+            e.printStackTrace(); // In stack trace để debug
         }
     }
 
@@ -458,13 +537,4 @@ public class HomePageController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-
-    // TODO: Implement these methods
-    /*
-     * 1. Thêm phương thức getProductType() vào class Product để trả về loại sản phẩm
-     * 2. Thêm phương thức getAuthor(), getCategory(), getBrand(), getType() vào các class con của Product
-     * 3. Thêm phương thức addToCart() vào OrderManager để thêm sản phẩm vào giỏ hàng
-     * 4. Thêm phương thức setAppServiceManager() vào HomePageController để các controller con có thể truy cập
-     */
 }

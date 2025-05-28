@@ -102,12 +102,12 @@
                                             <content>
                                                 <VBox spacing="5">
                                                     <children>
-                                                        <RadioButton text="Sort by Title">
+                                                        <RadioButton fx:id="sortByTitle" text="Sort by Title">
                                                             <toggleGroup>
                                                                 <ToggleGroup fx:id="sortGroup" />
                                                             </toggleGroup>
                                                         </RadioButton>
-                                                        <RadioButton text="Sort by Cost" toggleGroup="$sortGroup" />
+                                                        <RadioButton fx:id="sortByCost" text="Sort by Cost" toggleGroup="$sortGroup" />
                                                     </children>
                                                 </VBox>
                                             </content>

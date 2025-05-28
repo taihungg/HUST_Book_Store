@@ -49,13 +49,16 @@ public class ManagePageController {
     @FXML
     private void handleManageUser() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/ManageUserView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/Manage/ManageUser/UserManagement_fixed.fxml"));
             Parent root = loader.load();
             
             Stage stage = new Stage();
             stage.setTitle("Quản lý người dùng");
             stage.setScene(new Scene(root));
             stage.show();
+
+            Stage currentStage = (Stage) manageUserButton.getScene().getWindow();
+            currentStage.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

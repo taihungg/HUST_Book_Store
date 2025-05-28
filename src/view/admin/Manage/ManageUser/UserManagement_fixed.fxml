@@ -11,70 +11,51 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.UserManagementController">
-   <top>
-      <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label alignment="TOP_CENTER" prefHeight="18.0" prefWidth="600.0" text="USER MANAGEMENT SYSTEM">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <VBox.margin>
-                  <Insets top="5.0" />
-               </VBox.margin>
-            </Label>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <TextField fx:id="searchField">
-                     <HBox.margin>
-                        <Insets bottom="40.0" left="20.0" />
-                     </HBox.margin></TextField>
-                  <Button mnemonicParsing="false" text="SEARCH" fx:id="searchButton">
-                     <HBox.margin>
-                        <Insets bottom="40.0" />
-                     </HBox.margin></Button>
-                  <Button alignment="TOP_RIGHT" mnemonicParsing="false" text="DISPLAY ALL" fx:id="displayAllButton">
-                     <HBox.margin>
-                        <Insets bottom="40.0" left="245.0" />
-                     </HBox.margin></Button>
-               </children>
-            </HBox>
-         </children>
-      </VBox>
-   </top>
-   <center>
-      <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" fx:id="userTable">
-        <columns>
-          <TableColumn prefWidth="54.4000244140625" text="ID" fx:id="idColumn" />
-          <TableColumn prefWidth="120.79998779296875" text="Name" fx:id="nameColumn" />
-            <TableColumn prefWidth="143.20001220703125" text="User name" fx:id="usernameColumn" />
-            <TableColumn prefWidth="133.5999755859375" text="Password" fx:id="passwordColumn" />
-            <TableColumn prefWidth="109.5999755859375" text="Telephone" fx:id="telephoneColumn" />
-        </columns>
-         <BorderPane.margin>
-            <Insets bottom="-50.0" left="20.0" right="20.0" top="-110.0" />
-         </BorderPane.margin>
-      </TableView>
-   </center>
-   <bottom>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="15.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button mnemonicParsing="false" text="ADD" fx:id="addButton">
-               <HBox.margin>
-                  <Insets bottom="10.0" top="60.0" />
-               </HBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" text="EDIT/DELETE" fx:id="editDeleteButton">
-               <HBox.margin>
-                  <Insets bottom="10.0" top="60.0" />
-               </HBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" text="EXIT" fx:id="exitButton">
-               <HBox.margin>
-                  <Insets bottom="10.0" top="60.0" />
-               </HBox.margin>
-            </Button>
-         </children>
-      </HBox>
-   </bottom>
-</BorderPane>
+<BorderPane prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.UserManagementController">
+      <top>
+         <VBox alignment="TOP_CENTER" spacing="15.0" BorderPane.alignment="CENTER">
+            <padding>
+               <Insets bottom="10.0" left="20.0" right="20.0" top="15.0" />
+            </padding>
+            <children>
+               <Label text="USER MANAGEMENT SYSTEM">
+                  <font>
+                     <Font name="System Bold" size="18.0" />
+                  </font>
+               </Label>
+               <HBox alignment="CENTER_LEFT" spacing="10.0">
+                  <children>
+                     <TextField fx:id="searchField" promptText="Enter username or name to search" HBox.hgrow="ALWAYS" />
+                     <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearchButtonAction" text="SEARCH" />
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+      </top>
+      <center>
+         <TableView fx:id="userTable" BorderPane.alignment="CENTER">
+           <columns>
+             <TableColumn fx:id="nameColumn" prefWidth="150.0" text="Name" />
+             <TableColumn fx:id="usernameColumn" prefWidth="120.0" text="Username" />
+             <TableColumn fx:id="passwordColumn" prefWidth="120.0" text="Password (Hidden)" /> <TableColumn fx:id="telephoneColumn" prefWidth="120.0" text="Telephone" />
+             <TableColumn fx:id="emailColumn" prefWidth="170.0" text="Email" /> </columns>
+            <BorderPane.margin>
+               <Insets bottom="10.0" left="20.0" right="20.0" />
+            </BorderPane.margin>
+            <columnResizePolicy>
+               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /> </columnResizePolicy>
+         </TableView>
+      </center>
+      <bottom>
+         <HBox alignment="CENTER_RIGHT" prefHeight="60.0" spacing="15.0" BorderPane.alignment="CENTER">
+            <padding>
+               <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+            </padding>
+            <children>
+               <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddButtonAction" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="ADD USER" />
+               <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteButtonAction" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="DELETE " />
+               <Button fx:id="exitButton" mnemonicParsing="false" onAction="#handleExitButtonAction" text="EXIT" />
+            </children>
+         </HBox>
+      </bottom>
+   </BorderPane>
