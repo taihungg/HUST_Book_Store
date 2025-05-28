@@ -122,18 +122,14 @@ public class UserManager {
      * @param username Tên đăng nhập của người dùng.
      * @return Đối tượng User nếu tìm thấy, null nếu không.
      */
-    public User getUserByUsername(String username, User currentUser) {
-        if (currentUser == null || !(currentUser instanceof Admin)) {
-            System.out.println("Access Denied: User does not have permission to view all users.");
-            return null;
-        } else {    
-            for (User user : userMap.values()) {
-                if (user.getUsername().equalsIgnoreCase(username)) {
-                    return user;
-                }
+    public User getUserByUsername(String username) {
+        for (User user : userMap.values()) {
+            if (user.getUsername().equalsIgnoreCase(username)) {
+                return user;
             }
-            return null;
         }
+        return null;
+        
     }
 
     /**
