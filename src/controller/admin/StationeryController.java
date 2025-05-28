@@ -1,5 +1,6 @@
 package controller.admin;
 
+import controller.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -56,7 +57,7 @@ public class StationeryController {
        
 
     }
-    private AppServiceManager appServiceManager = AppServiceManager.getInstance();
+    private AppServiceManager appServiceManager = Main.appServiceManager;
     
 
     @FXML

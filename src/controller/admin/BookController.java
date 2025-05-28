@@ -1,5 +1,6 @@
 package controller.admin;
 
+import controller.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -98,7 +99,7 @@ public class BookController {
 
     //</editor-fold>
 
-    private AppServiceManager appServiceManager = AppServiceManager.getInstance();
+    private AppServiceManager appServiceManager = Main.appServiceManager;
     @FXML
     public void initialize() {
         // Populate ComboBoxes

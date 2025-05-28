@@ -29,6 +29,7 @@ import model.product.book.Book;
 import model.product.book.Printbook;
 import java.io.IOException;
 
+import controller.Main;
 import model.manager.AppServiceManager;
 public class StoreController {
 
@@ -80,7 +81,7 @@ public class StoreController {
     @FXML
     public void initialize() {
 
-        appServiceManager = AppServiceManager.getInstance();
+        appServiceManager = Main.appServiceManager;
         productTableView.setEditable(true);
 
         // Thiết lập CellValueFactory cho các cột tương ứng với thuộc tính của Product
@@ -135,15 +136,15 @@ public class StoreController {
     
 
 
-        productTableView.setItems(appServiceManager.getProductManager().getAllProducts(appServiceManager.getCurrentUser()));
-        System.out.println("StoreController: Khởi tạo hoàn tất. Hiển thị " + appServiceManager.getProductManager().getAllProducts(appServiceManager.getCurrentUser()).size() + " sản phẩm từ service.");
+        productTableView.setItems(appServiceManager.getProductManager().getAllProductsForManager(appServiceManager.getCurrentUser()));
+        System.out.println("StoreController: Khởi tạo hoàn tất. Hiển thị " + appServiceManager.getProductManager().getAllProductsForManager(appServiceManager.getCurrentUser()).size() + " sản phẩm từ service.");
 
     }
 
     @FXML
     void handleDeleteAction(ActionEvent event) {
        if( appServiceManager.getProductManager().removeProduct( productTableView.getSelectionModel().getSelectedItem().getId(),appServiceManager.getCurrentUser())){
-        productTableView.setItems(appServiceManager.getProductManager().getAllProducts(appServiceManager.getCurrentUser()));
+        productTableView.setItems(appServiceManager.getProductManager().getAllProductsForManager(appServiceManager.getCurrentUser()));
        }
         
     }
@@ -172,12 +173,12 @@ public class StoreController {
     void handleSearchAction(ActionEvent event) {
         String searchText = searchField.getText().toLowerCase().trim();
         if (searchText.isEmpty()) {
-            productTableView.setItems(appServiceManager.getProductManager().getAllProducts(appServiceManager.getCurrentUser())); // Hiển thị lại toàn bộ danh sách nếu ô tìm kiếm rỗng
+            productTableView.setItems(appServiceManager.getProductManager().getAllProductsForManager(appServiceManager.getCurrentUser())); // Hiển thị lại toàn bộ danh sách nếu ô tìm kiếm rỗng
             return;
         }
 
         ObservableList<Product> filteredList = FXCollections.observableArrayList();
-        for (Product product :appServiceManager.getProductManager().getAllProducts(appServiceManager.getCurrentUser()  )) {
+        for (Product product :appServiceManager.getProductManager().getAllProductsForManager(appServiceManager.getCurrentUser()  )) {
             if (product.getTitle() != null && product.getTitle().equalsIgnoreCase(searchText)) {
                 filteredList.add(product);
             }

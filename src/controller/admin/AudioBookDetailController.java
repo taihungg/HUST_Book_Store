@@ -1,5 +1,6 @@
 package controller.admin;
 
+import controller.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -65,7 +66,7 @@ public class AudioBookDetailController {
     @FXML
     private Label weightLabel1;
 
-    private AppServiceManager appServiceManager = AppServiceManager.getInstance();
+    private AppServiceManager appServiceManager = Main.appServiceManager;
 
     @FXML
     void handleBackButton(ActionEvent event) {

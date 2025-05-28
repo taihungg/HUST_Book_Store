@@ -1,5 +1,6 @@
 package controller.admin;
 
+import controller.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -49,14 +50,13 @@ public class ToyController {
     @FXML
     private TextField purchasepriceField;
 
-    private AppServiceManager   appServiceManager ;
+    private AppServiceManager   appServiceManager = Main.appServiceManager;
    
 
     @FXML
     public void initialize() {
         // Khởi tạo các thành phần nếu cần
         statusComboBox.getItems().addAll("In Stock", "Out of Stock");
-        appServiceManager = AppServiceManager.getInstance();
     }
 
     @FXML

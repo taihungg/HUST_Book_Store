@@ -1,5 +1,6 @@
 package controller.admin;
 
+import controller.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -64,7 +65,7 @@ public class ToyDetailController {
     @FXML
     private ImageView toyImage;
 
-    private AppServiceManager appServiceManager = AppServiceManager.getInstance();
+    private AppServiceManager appServiceManager = Main.appServiceManager;
 
     
     public void setToy(Toy toy){
