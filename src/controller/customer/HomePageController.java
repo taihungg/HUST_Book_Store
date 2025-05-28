@@ -34,7 +34,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ResourceBundle; // Added for Initializable in ViewToyDetailsController
 import java.util.stream.Collectors;
+import controller.customer.ViewBookDetailsController;
+import controller.customer.ViewStationeryDetailsController;
+import controller.customer.ViewToyDetailsController;
 
 // Assuming Main class exists and has currentUser
 import controller.Main;
@@ -88,41 +92,30 @@ public class HomePageController {
 
     public static final AppServiceManager appServiceManager = new AppServiceManager();
     private User currentUser;
-    // Initialize availableProducts AFTER appServiceManager and potentially Main.currentUser is set.
-    // Made it non-final and initialize in initialize() for clarity if Main.currentUser is needed.
     private ObservableList<Product> availableProducts;
     private ObservableList<Product> filteredProducts = FXCollections.observableArrayList();
     private boolean sortAscending = true; // Default sort direction
 
     @FXML
     public void initialize() {
-        currentUser = null; // Or appServiceManager.getCurrentUser() if session persists
+        currentUser = null; 
         updateButtonsVisibility(currentUser != null);
         setupEventHandlers();
 
-        // Load available products
-        // Ensure Main.currentUser is appropriately set if getAllProductsForManager depends on it.
         try {
             availableProducts = appServiceManager.getProductManager().getAllProductsForManager(Main.currentUser);
             if (availableProducts == null) {
-                // This case should ideally be handled by ProductManager returning an empty list instead of null.
                 System.err.println("ProductManager returned null for availableProducts. Initializing as empty list.");
                 availableProducts = FXCollections.observableArrayList();
-                // Optionally, show an error to the user or log critical failure.
-                // showAlert("Data Error", "Could not load product catalog.");
             }
         } catch (Exception e) {
             System.err.println("Error initializing availableProducts: " + e.getMessage());
             e.printStackTrace();
-            availableProducts = FXCollections.observableArrayList(); // Fallback to empty list
+            availableProducts = FXCollections.observableArrayList(); 
             showAlert("Application Error", "Failed to load product data. Please try again later.");
         }
 
-
-        // Setup action handlers for filter checkboxes
         setupFilterCheckboxHandlers();
-
-        // Initial display of products
         refreshProductView();
     }
 
@@ -170,8 +163,6 @@ public class HomePageController {
         }
         loginButton.setVisible(!isLoggedIn);
         logoutButton.setVisible(isLoggedIn);
-        // menuBar visibility might depend on more than just login status (e.g. always visible)
-        // menuBar.setVisible(true); // Or based on your logic
     }
 
     private void setupEventHandlers() {
@@ -182,8 +173,6 @@ public class HomePageController {
                 }
             });
         }
-        // If searchButton is used, add its handler:
-        // if (searchButton != null) searchButton.setOnAction(event -> handleSearch());
     }
 
     @FXML
@@ -204,19 +193,16 @@ public class HomePageController {
 
             if (minPrice > maxPrice) {
                 showAlert("Input Error", "Minimum price cannot be greater than maximum price!");
-                return; // Do not refresh if input is invalid
+                return; 
             }
             refreshProductView();
         } catch (NumberFormatException e) {
             showAlert("Input Error", "Please enter valid numbers for price (e.g., 10.99)!");
-            // Do not refresh if input is invalid
         }
     }
 
     @FXML
     private void handleSort() {
-        // The actual sorting and sortAscending toggle is now done in refreshProductView.
-        // This handler just triggers the refresh.
         if (sortGroup == null || sortGroup.getSelectedToggle() == null) {
             System.out.println("Sort action ignored: No sort criteria selected or sortGroup not initialized.");
             return;
@@ -229,31 +215,27 @@ public class HomePageController {
             System.err.println("availableProducts is null in refreshProductView. Cannot proceed.");
             if (filteredProducts != null) filteredProducts.clear();
             else filteredProducts = FXCollections.observableArrayList();
-            updateProductDisplay(filteredProducts); // Update with empty list
+            updateProductDisplay(filteredProducts); 
             updateItemCount();
             return;
         }
-        if (filteredProducts == null) { // Should be initialized in constructor or field
+        if (filteredProducts == null) { 
             filteredProducts = FXCollections.observableArrayList();
         }
 
         List<Product> processingList;
         String searchQuery = (searchField != null && searchField.getText() != null) ? searchField.getText().trim().toLowerCase() : "";
 
-        // 1. Start with search results or all available products
         if (!searchQuery.isEmpty()) {
-            // Assuming searchProductsForCustomer searches globally or within a relevant context.
-            // It does not take a User object, unlike getAllProductsForManager.
             processingList = appServiceManager.getProductManager().searchProductsForCustomer(searchQuery);
-            if (processingList == null) { // Robustness for null return
+            if (processingList == null) { 
                 System.err.println("Warning: productManager.searchProductsForCustomer returned null for query: " + searchQuery);
                 processingList = new ArrayList<>();
             }
         } else {
-            processingList = new ArrayList<>(availableProducts); // Make a mutable copy
+            processingList = new ArrayList<>(availableProducts); 
         }
 
-        // 2. Apply Price Filter
         try {
             double minPrice = (minPriceField != null && minPriceField.getText() != null && !minPriceField.getText().isEmpty())
                                 ? Double.parseDouble(minPriceField.getText().trim()) : 0;
@@ -261,23 +243,16 @@ public class HomePageController {
                                 ? Double.parseDouble(maxPriceField.getText().trim()) : Double.MAX_VALUE;
 
             if (minPrice <= maxPrice) {
-                final double finalMinPrice = minPrice; // For lambda
-                final double finalMaxPrice = maxPrice; // For lambda
+                final double finalMinPrice = minPrice; 
+                final double finalMaxPrice = maxPrice; 
                 processingList.removeIf(product ->
                     product.getSellingPrice() < finalMinPrice || product.getSellingPrice() > finalMaxPrice
                 );
             }
-            // If minPrice > maxPrice, error is shown by handlePriceFilter, and refresh might not even be called.
-            // If called directly, this step is skipped for invalid range.
         } catch (NumberFormatException e) {
-            // This case is usually caught by handlePriceFilter.
-            // If refreshProductView is called with unvalidated text fields, this log helps.
             System.out.println("Price filter skipped in refreshProductView due to NumberFormatException: " + e.getMessage());
         }
 
-        // 3. Apply Type, Category, and Brand Filters
-
-        // Product Type Filter
         List<Class<? extends Product>> selectedProductTypes = new ArrayList<>();
         if (printBookCheckBox != null && printBookCheckBox.isSelected()) selectedProductTypes.add(Printbook.class);
         if (eBookCheckBox != null && eBookCheckBox.isSelected()) selectedProductTypes.add(Ebook.class);
@@ -294,13 +269,11 @@ public class HomePageController {
                         break;
                     }
                 }
-                return !match; // Remove if not an instance of any selected type
+                return !match; 
             });
         }
         
-        // Category Filter (Applied to Book instances)
         List<String> selectedCategories = new ArrayList<>();
-        // Ensure category names match exactly what product.getCategory() would return for a Book
         if (vanHocCheckBox != null && vanHocCheckBox.isSelected()) selectedCategories.add("Văn học");
         if (khoaHocCheckBox != null && khoaHocCheckBox.isSelected()) selectedCategories.add("Khoa học");
         if (lichSuCheckBox != null && lichSuCheckBox.isSelected()) selectedCategories.add("Lịch sử");
@@ -311,23 +284,18 @@ public class HomePageController {
 
 
         if (!selectedCategories.isEmpty()) {
-            final List<String> finalSelectedCategories = selectedCategories; // For lambda
+            final List<String> finalSelectedCategories = selectedCategories; 
             processingList.removeIf(product -> {
                 if (product instanceof Book) {
                     Book book = (Book) product;
-                    // ASSUMPTION: Book class has getCategory() method returning a String.
                     String productCategory = book.getCategory();
                     return productCategory == null || !finalSelectedCategories.contains(productCategory);
                 }
-                // If category filters are active, and this product is not a book, remove it.
-                // This means selecting a book category implies you only want to see books matching that category.
                 return true; 
             });
         }
 
-        // Brand Filter (Applied to Toy and Stationery instances)
         List<String> selectedBrands = new ArrayList<>();
-        // Ensure brand names match exactly what product.getBrand() would return
         if (thienLongCheckBox != null && thienLongCheckBox.isSelected()) selectedBrands.add("Thiên Long");
         if (plusCheckBox != null && plusCheckBox.isSelected()) selectedBrands.add("Plus");
         if (colgateCheckBox != null && colgateCheckBox.isSelected()) selectedBrands.add("Colgate");
@@ -337,7 +305,7 @@ public class HomePageController {
         if (hasbroCheckBox != null && hasbroCheckBox.isSelected()) selectedBrands.add("Hasbro");
 
         if (!selectedBrands.isEmpty()) {
-            final List<String> finalSelectedBrands = selectedBrands; // For lambda
+            final List<String> finalSelectedBrands = selectedBrands; 
             processingList.removeIf(product -> {
                 String brand = null;
                 if (product instanceof Toy) {
@@ -346,16 +314,13 @@ public class HomePageController {
                     brand = ((Stationery) product).getBrand();
                 }
 
-                if (brand != null) { // If it's a Toy or Stationery with a brand
-                    return !finalSelectedBrands.contains(brand); // Remove if brand not selected
+                if (brand != null) { 
+                    return !finalSelectedBrands.contains(brand); 
                 }
-                // If it's not a Toy or Stationery, or brand filters are active, remove it.
-                // This means selecting a brand implies you only want to see products of that brand.
                 return true; 
             });
         }
 
-        // 4. Apply Sort
         if (sortGroup != null && sortGroup.getSelectedToggle() != null) {
             RadioButton selectedSortRadio = (RadioButton) sortGroup.getSelectedToggle();
             String sortType = selectedSortRadio.getText();
@@ -363,10 +328,10 @@ public class HomePageController {
             Comparator<Product> comparator = (p1, p2) -> {
                 int comparison = 0;
                 switch (sortType) {
-                    case "Sort by Title": // Ensure this text matches your RadioButton's text
+                    case "Sort by Title": 
                         comparison = p1.getTitle().compareTo(p2.getTitle());
                         break;
-                    case "Sort by Cost": // Ensure this text matches your RadioButton's text
+                    case "Sort by Cost": 
                         comparison = Double.compare(p1.getSellingPrice(), p2.getSellingPrice());
                         break;
                     default:
@@ -376,28 +341,21 @@ public class HomePageController {
                 return sortAscending ? comparison : -comparison;
             };
             try {
-                // Use List.sort() or Collections.sort() for java.util.List
                 processingList.sort(comparator); 
             } catch (UnsupportedOperationException e) {
-                // This can happen if processingList is unmodifiable (e.g., from Arrays.asList).
-                // Ensure it's a mutable list (e.g., ArrayList, which it is in this case)
                 System.err.println("Error sorting products: " + e.getMessage() + ". Attempting to sort a copy.");
-                // Fallback: create a new sorted list (though processingList should be mutable here)
                 List<Product> tempList = new ArrayList<>(processingList);
                 tempList.sort(comparator);
                 processingList = tempList;
             }
            
-            sortAscending = !sortAscending; // Toggle for the next sort operation
+            sortAscending = !sortAscending; 
         } else {
-            // Optional: if no sort selected, apply a default sort (e.g., by title ascending)
-            // Or leave unsorted (as per current availableProducts order after filtering)
             System.out.println("Không có tiêu chí sắp xếp nào được chọn hoặc sortGroup chưa được khởi tạo.");
         }
 
-        // 5. Update UI
         filteredProducts.setAll(processingList);
-        updateProductDisplay(filteredProducts); // This re-populates the GridPane
+        updateProductDisplay(filteredProducts); 
         updateItemCount();
     }
 
@@ -417,7 +375,7 @@ public class HomePageController {
         productsGrid.getChildren().clear();
         int row = 0;
         int col = 0;
-        final int maxCols = 5; // Define how many columns you want in the grid
+        final int maxCols = 5; 
 
         if (products == null) return;
 
@@ -432,19 +390,18 @@ public class HomePageController {
         }
     }
 
+
     private VBox createProductCard(Product product) {
-        VBox card = new VBox(10); // Spacing between elements in VBox
-        card.setPadding(new Insets(10)); // Padding around the card
-        card.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5;"); // Basic styling
+        VBox card = new VBox(10); 
+        card.setPadding(new Insets(10)); 
+        card.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5;"); 
 
         ImageView imageView = new ImageView();
-        imageView.setFitHeight(150); // Standard height for product image
-        imageView.setFitWidth(100);  // Standard width for product image
+        imageView.setFitHeight(150); 
+        imageView.setFitWidth(100);  
         imageView.setPreserveRatio(true);
 
         try {
-            // Ensure product.getGalleryURL() returns a valid path relative to resources
-            // e.g., "/images/products/myproduct.png"
             String imagePath = product.getGalleryURL();
             if (imagePath == null || imagePath.isEmpty()) {
                 throw new NullPointerException("Image path is null or empty for product: " + product.getTitle());
@@ -456,23 +413,23 @@ public class HomePageController {
             } else {
                 imageView.setImage(image);
             }
-        } catch (NullPointerException | IllegalArgumentException e) { // Catch common issues with paths
+        } catch (NullPointerException | IllegalArgumentException e) { 
             System.err.println("Failed to load product image for " + product.getTitle() + ": " + e.getMessage());
-            imageView.setImage(getPlaceholderImage()); // Fallback to placeholder
+            imageView.setImage(getPlaceholderImage()); 
         }
 
 
         Label titleLabel = new Label(product.getTitle());
-        titleLabel.setWrapText(true); // Allow text to wrap
+        titleLabel.setWrapText(true); 
         titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
         Label priceLabel = new Label(String.format("$%.2f", product.getSellingPrice()));
         priceLabel.setStyle("-fx-text-fill: #2ecc71; -fx-font-weight: bold; -fx-font-size: 13px;");
 
-        Label infoLabel = new Label(); // Additional info (author, brand, etc.)
+        Label infoLabel = new Label(); 
         infoLabel.setWrapText(true);
         infoLabel.setStyle("-fx-font-size: 11px;");
-        if (product instanceof Book) { // Use instanceof model.product.book.Book if that's the specific class
+        if (product instanceof Book) { 
             infoLabel.setText("Author: " + ((Book) product).getAuthor());
         } else if (product instanceof Toy) {
             infoLabel.setText("Brand: " + ((Toy) product).getBrand() + "\nType: Toy");
@@ -485,11 +442,10 @@ public class HomePageController {
         addToCartBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;");
         addToCartBtn.setOnAction(e -> handleAddToCart(product));
 
-        // Make image and title clickable to view details
         imageView.setOnMouseClicked(e -> handleViewProductDetails(product));
         titleLabel.setOnMouseClicked(e -> handleViewProductDetails(product));
-        imageView.setStyle(imageView.getStyle() + "-fx-cursor: hand;"); // Add hand cursor
-        titleLabel.setStyle(titleLabel.getStyle() + "-fx-cursor: hand; -fx-text-fill: #2980b9;"); // Make title look like a link
+        imageView.setStyle(imageView.getStyle() + "-fx-cursor: hand;"); 
+        titleLabel.setStyle(titleLabel.getStyle() + "-fx-cursor: hand; -fx-text-fill: #2980b9;"); 
 
         card.getChildren().addAll(imageView, titleLabel, infoLabel, priceLabel, addToCartBtn);
         return card;
@@ -497,11 +453,9 @@ public class HomePageController {
 
     private Image getPlaceholderImage() {
         try {
-            // Ensure placeholder.png is in the specified path in your resources
             return new Image(getClass().getResourceAsStream("/images/placeholder.png"));
         } catch (Exception e) {
             System.err.println("Critical: Placeholder image not found. Using blank image. " + e.getMessage());
-            // Return a 1x1 transparent pixel as an absolute fallback
             return new Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=");
         }
     }
@@ -517,7 +471,6 @@ public class HomePageController {
             return;
         }
 
-        // Check stock for physical products
         if (product instanceof PhysicalProduct) {
             int stock = appServiceManager.getProductManager().getProductQuantity(product.getId());
             if (stock <= 0) {
@@ -528,89 +481,98 @@ public class HomePageController {
 
         try {
             Customer customer = (Customer) currentUser;
-            Cart customerCart = customer.getCart(); // Ensure cart is initialized for the customer upon login/creation
+            Cart customerCart = customer.getCart(); 
             if (customerCart == null) {
-                // This should ideally not happen if customer objects are managed correctly.
                 showAlert("Cart Error", "Your shopping cart is not available. Please try logging out and back in.");
                 return;
             }
 
             boolean success = customerCart.addItem(
-                product.getId(), 1, // Adding one item at a time
-                appServiceManager.getProductManager() // Pass manager for stock checks if addItem needs it
+                product.getId(), 1, 
+                appServiceManager.getProductManager() 
             );
 
             if (success) {
                 showAlert("Success!", product.getTitle() + " has been added to your cart.");
             } else {
-                // addItem might return false for various reasons (e.g., internal stock check failed again)
                 showAlert("Failed", "Could not add " + product.getTitle() + " to cart. It might be unavailable.");
             }
         } catch (IllegalArgumentException e) {
             showAlert("Invalid Action", "Could not add to cart: " + e.getMessage());
-        } catch (IllegalStateException e) { // e.g. for not enough stock if checked inside cart.addItem
+        } catch (IllegalStateException e) { 
             showAlert("Stock Issue", "Could not add to cart: " + e.getMessage());
-        } catch (Exception e) { // Catch-all for unexpected errors
+        } catch (Exception e) { 
             showAlert("Error", "An unexpected error occurred while adding to cart: " + e.getMessage());
-            e.printStackTrace(); // Log for debugging
+            e.printStackTrace(); 
         }
     }
 
-    private void handleViewProductDetails(Product product) {
-        if (product == null) return;
+    // REMOVED: public static Product detailedProduct; 
 
-        // Fetch the most up-to-date product details
-        Product detailedProduct = appServiceManager.getProductManager().getProductById(product.getId());
-        if (detailedProduct == null) {
+    private void handleViewProductDetails(Product product) {
+        if (product == null) { // Check the product passed to this method
             showAlert("Product Not Found", "The selected product could not be found.");
             return;
         }
 
+        // Fetch the most up-to-date product details by ID, as the 'product' instance from the grid might be stale
+        // However, for simplicity and if your availableProducts list is the source of truth and updated,
+        // you can directly use the passed 'product'. If not, re-fetching by ID is safer.
+        // For this fix, we'll assume 'product' passed in is sufficient if it's an instance of Toy, Book, etc.
+        // Product detailedProductFromManager = appServiceManager.getProductManager().getProductById(product.getId());
+        // if (detailedProductFromManager == null) {
+        //     showAlert("Product Not Found", "The selected product could not be found in the system.");
+        //     return;
+        // }
+
         String fxmlPath;
-        // Determine FXML path based on product type
-        if (detailedProduct instanceof Printbook || detailedProduct instanceof Ebook || detailedProduct instanceof Audiobook) {
-            fxmlPath = "/view/customer/Store/ViewDetails/ViewBookDetails.fxml";
-        } else if (detailedProduct instanceof Stationery) {
-            fxmlPath = "/view/customer/Store/ViewDetails/ViewStationeryDetails.fxml";
-        } else if (detailedProduct instanceof Toy) {
-            fxmlPath = "/view/customer/Store/ViewDetails/ViewToyDetails.fxml";
-        } else {
-            showAlert("Unknown Product", "Details view is not available for this product type.");
-            return;
-        }
+        Object controllerInstance = null; // To hold the specific controller
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent view = loader.load();
+            FXMLLoader loader;
+            Parent view;
 
-            // Pass data to the details controller (Example, adjust as per your detail controller methods)
-            // This part was commented out in your original code, uncomment and adapt if needed.
-            
-            Object controller = loader.getController();
-            if (controller instanceof ViewBookDetailsController) {
-                ((ViewBookDetailsController) controller).setAppServiceManager(appServiceManager);
-                ((ViewBookDetailsController) controller).setProductId(detailedProduct.getId());
-                // ((ViewBookDetailsController) controller).loadProductDetails(); // if you have such a method
-            } else if (controller instanceof ViewStationeryDetailsController) {
-                ((ViewStationeryDetailsController) controller).setAppServiceManager(appServiceManager);
-                ((ViewStationeryDetailsController) controller).setProductId(detailedProduct.getId());
-                // ((ViewStationeryDetailsController) controller).loadProductDetails();
-            } else if (controller instanceof ViewToyDetailsController) {
-                ((ViewToyDetailsController) controller).setAppServiceManager(appServiceManager);
-                ((ViewToyDetailsController) controller).setProductId(detailedProduct.getId());
-                // ((ViewToyDetailsController) controller).loadProductDetails();
+            if (product instanceof Printbook || product instanceof Ebook || product instanceof Audiobook) {
+                fxmlPath = "/view/customer/Store/ViewDetails/ViewBookDetails.fxml";
+                loader = new FXMLLoader(getClass().getResource(fxmlPath));
+                view = loader.load();
+                ViewBookDetailsController bookController = loader.getController();
+                bookController.setAppServiceManager(appServiceManager); // Pass AppServiceManager
+                bookController.updateUIforBook((Book) product); // Pass the specific book
+                controllerInstance = bookController;
+            } else if (product instanceof Stationery) {
+                fxmlPath = "/view/customer/Store/ViewDetails/ViewStationeryDetails.fxml";
+                loader = new FXMLLoader(getClass().getResource(fxmlPath));
+                view = loader.load();
+                ViewStationeryDetailsController stationeryController = loader.getController();
+                stationeryController.setAppServiceManager(appServiceManager);
+                stationeryController.updateUIforStationery((Stationery) product);
+                controllerInstance = stationeryController;
+            } else if (product instanceof Toy) {
+                fxmlPath = "/view/customer/Store/ViewDetails/ViewToyDetails.fxml";
+                loader = new FXMLLoader(getClass().getResource(fxmlPath));
+                view = loader.load();
+                ViewToyDetailsController toyController = loader.getController();
+                toyController.setAppServiceManager(appServiceManager); // Pass AppServiceManager first
+                toyController.updateUIforToy((Toy) product); // Then pass the specific Toy
+                controllerInstance = toyController;
+            } else {
+                showAlert("Unknown Product", "Details view is not available for this product type.");
+                return;
             }
-            
 
             Stage stage = new Stage();
-            stage.setTitle(detailedProduct.getTitle() + " - Details");
-            stage.initModality(Modality.APPLICATION_MODAL); // Block interaction with other windows
+            stage.setTitle(product.getTitle() + " - Details"); // Use the actual product's title
+            stage.initModality(Modality.APPLICATION_MODAL); 
             stage.setScene(new Scene(view));
-            stage.showAndWait(); // Show and wait for it to be closed
+            stage.showAndWait(); 
 
         } catch (IOException e) {
             showAlert("Load Error", "Failed to load product details view: " + e.getMessage());
             e.printStackTrace();
+        } catch (ClassCastException cce) {
+            showAlert("Data Error", "There was an issue with the product data type: " + cce.getMessage());
+            cce.printStackTrace();
         }
     }
 
@@ -624,17 +586,15 @@ public class HomePageController {
             loginStage.setTitle("Login");
             loginStage.initModality(Modality.APPLICATION_MODAL);
             loginStage.setScene(new Scene(loginView));
-            loginStage.showAndWait(); // Wait for login window to close
+            loginStage.showAndWait(); 
 
-            // After login window closes, check if user logged in successfully
-            User loggedInUser = appServiceManager.getCurrentUser(); // Assuming AppServiceManager tracks current user
+            User loggedInUser = appServiceManager.getCurrentUser(); 
             if (loggedInUser != null) {
                 this.currentUser = loggedInUser;
                 updateButtonsVisibility(true);
-                // Refresh product view, as available products or cart might change
                 refreshProductView();
-                if (!(currentUser instanceof Customer)) { // e.g. Admin user
-                     loadContentView("/view/admin/HomePageAdmin.fxml"); // Or relevant admin view
+                if (!(currentUser instanceof Customer)) { 
+                     loadContentView("/view/admin/HomePageAdmin.fxml"); 
                 }
             }
         } catch (IOException e) {
@@ -646,13 +606,10 @@ public class HomePageController {
     @FXML
     private void handleLogout() {
         try {
-            appServiceManager.logout(); // Perform logout operations
+            appServiceManager.logout(); 
             this.currentUser = null;
             updateButtonsVisibility(false);
-            // Refresh product view for logged-out state
             refreshProductView();
-            // Optionally, load a default view or clear current content
-            // loadContentView("/view/customer/Store/BrowseProducts.fxml"); // Or similar if you want to reset view
         } catch (Exception e) {
             showError("Logout Failed", "An error occurred during logout: " + e.getMessage());
             e.printStackTrace();
@@ -662,10 +619,9 @@ public class HomePageController {
     @FXML
     private void handleMenuItemAction(ActionEvent event) {
         MenuItem menuItem = (MenuItem) event.getSource();
-        String fxmlPath = null; // Initialize to null
+        String fxmlPath = null; 
 
-        // Check for login requirement for restricted menu items
-        boolean loginRequired = !(menuItem.getId().equals("browseProductsMenuItem")); // Example: browse is public
+        boolean loginRequired = !(menuItem.getId().equals("browseProductsMenuItem")); 
         if (loginRequired && currentUser == null) {
             showAlert("Login Required", "Please log in to access this feature.");
             return;
@@ -673,19 +629,15 @@ public class HomePageController {
 
         switch (menuItem.getId()) {
             case "browseProductsMenuItem":
-                // If already on browse view, just refresh. If not, load it.
-                // Assuming mainScrollPane shows product grid or a wrapper.
-                // If current content IS the product browser, refreshProductView is enough.
-                // If it could be something else, you might need to load the product browser FXML.
-                refreshProductView(); // Simplest: just refresh current view's data
-                return; // Exit after handling
+                refreshProductView(); 
+                return; 
             case "cartMenuItem":
                 fxmlPath = "/view/customer/Cart/CartView.fxml";
                 break;
-            case "ordersMenuItem": // Ensure FXML ID matches "ordersMenuItem"
+            case "ordersMenuItem": 
                 fxmlPath = "/view/customer/Order/OrderHistory.fxml";
                 break;
-            case "profileMenuItem": // Ensure FXML ID matches "profileMenuItem"
+            case "profileMenuItem": 
                 fxmlPath = "/view/customer/Profile/ProfileView.fxml";
                 break;
             default:
@@ -708,7 +660,7 @@ public class HomePageController {
 
             FXMLLoader loader = new FXMLLoader(url);
             Parent content = loader.load();
-            mainScrollPane.setContent(content); // Load new content into the ScrollPane
+            mainScrollPane.setContent(content); 
         } catch (IOException e) {
             showError("Navigation Error", "Failed to load view: '" + fxmlPath + "'. " + e.getMessage());
             e.printStackTrace();
@@ -716,9 +668,9 @@ public class HomePageController {
     }
 
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION); // Use INFORMATION for general messages/success
+        Alert alert = new Alert(Alert.AlertType.INFORMATION); 
         alert.setTitle(title);
-        alert.setHeaderText(null); // No header text for simpler alerts
+        alert.setHeaderText(null); 
         alert.setContentText(message);
         alert.showAndWait();
     }

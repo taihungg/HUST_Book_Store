@@ -1,15 +1,24 @@
 package controller.customer;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import model.manager.AppServiceManager;
 import model.product.Product;
+import model.product.book.Book;
 import model.user.User;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import model.user.cart.Cart;
+import model.user.customer.Customer;
 
 public class ViewBookDetailsController implements Initializable {
 
@@ -27,7 +36,7 @@ public class ViewBookDetailsController implements Initializable {
 
     private AppServiceManager appServiceManager;
     private User currentUser;
-    private Product currentProduct;
+    private Book currentProduct;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -42,22 +51,11 @@ public class ViewBookDetailsController implements Initializable {
         this.currentUser = appServiceManager.getCurrentUser();
     }
 
-    public void setProductId(String productId) {
-        if (appServiceManager == null) {
-            System.err.println("AppServiceManager chưa được khởi tạo");
-            return;
-        }
-        
-        currentProduct = appServiceManager.getProductManager().getProductById(productId);
-        if (currentProduct != null) {
-            updateUI();
-        }
-    }
+    
 
-    private void updateUI() {
-        if (currentProduct == null) return;
+    public void updateUIforBook(Book book) {
 
-        // Cập nhật thông tin cơ bản
+        currentProduct = book;
         titleLabel.setText(currentProduct.getTitle());
         authorLabel.setText("by " + currentProduct.getAuthor());
         categoryLabel.setText(currentProduct.getCategory());
@@ -74,12 +72,6 @@ public class ViewBookDetailsController implements Initializable {
         }
 
         // Cập nhật trạng thái và nút thêm vào giỏ hàng
-        updateProductStatus();
-    }
-
-    private void updateProductStatus() {
-        if (currentProduct == null) return;
-
         int stock = appServiceManager.getProductManager().getProductQuantity(currentProduct.getId());
         if (stock > 0) {
             statusLabel.setText("In Stock (" + stock + " items)");
@@ -90,6 +82,8 @@ public class ViewBookDetailsController implements Initializable {
             addToCartButton.setVisible(false);
         }
     }
+
+   
 
     private void handleAddToCart() {
         if (currentUser == null) {
@@ -104,7 +98,8 @@ public class ViewBookDetailsController implements Initializable {
 
         try {
             int quantity = quantitySpinner.getValue();
-            appServiceManager.getOrderManager().addToCart(currentUser, currentProduct.getId(), quantity);
+            Customer customer = (Customer) appServiceManager.getCurrentUser();
+            customer.getCart().addItem(currentProduct.getId(), quantity, appServiceManager.getProductManager());
             showAlert("Success", "Added " + quantity + " '" + currentProduct.getTitle() + "' to cart!");
         } catch (Exception e) {
             showAlert("Error", "Failed to add to cart: " + e.getMessage());
@@ -112,8 +107,12 @@ public class ViewBookDetailsController implements Initializable {
     }
 
     private void handleBackToProducts() {
-        // TODO: Implement navigation back to products page
-        // This should be handled by the parent controller
+      
+
+            Stage currentStage = (Stage) backButton.getScene().getWindow();
+            currentStage.close();
+       
+        
     }
 
     private void handleReadDemo() {

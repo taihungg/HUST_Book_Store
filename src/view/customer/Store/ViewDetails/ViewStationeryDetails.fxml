@@ -21,7 +21,7 @@
                  <children>
                     <HBox alignment="CENTER_LEFT" spacing="10">
                        <children>
-                          <Button fx:id="backButton" text="&lt; Back to Products" /> <!-- Xóa onAction -->
+                          <Button fx:id="backButton" onAction="#handleBackToProducts" text="&lt; Back to Products" /> <!-- Xóa onAction -->
                           <Label styleClass="section-header" text="Product Details">
                              <font>
                                 <Font name="System Bold" size="18.0" />
@@ -47,18 +47,6 @@
                                       <Font name="System Bold" size="24.0" />
                                    </font>
                                 </Label>
-                                <HBox alignment="CENTER_LEFT" spacing="5">
-                                   <children>
-                                      <Label text="Author:" />
-                                      <Label fx:id="authorLabel" text="Tran Chi Vu" />
-                                   </children>
-                                </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="5">
-                               <children>
-                                  <Label text="Suitable Age: " />
-                                  <Label fx:id="ageLabel" text="20" />
-                               </children>
-                            </HBox>
                             <HBox alignment="CENTER_LEFT" spacing="5">
                                <children>
                                   <Label text="Brand: " />
@@ -103,7 +91,7 @@
                            <children>
                               <Label text="Quantity:" />
                               <Spinner fx:id="quantitySpinner" editable="true" initialValue="1" max="99" min="1" prefWidth="70" />
-                              <Button fx:id="addToCartButton" defaultButton="true" text="Add to Cart" />
+                              <Button fx:id="addToCartButton" defaultButton="true" onAction="#handleAddToCart" text="Add to Cart" />
                               <Button fx:id="notifyButton1" text="Notify When Available" visible="false" />
                            </children>
                         </HBox>

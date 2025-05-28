@@ -47,12 +47,6 @@
                                   <Font name="System Bold" size="24.0" />
                                </font>
                             </Label>
-                            <HBox alignment="CENTER_LEFT" spacing="5">
-                               <children>
-                                  <Label text="Author:" />
-                                  <Label fx:id="authorLabel" text="Tran Chi Vu" />
-                               </children>
-                            </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="5">
                            <children>
                               <Label text="Suitable Age: " />
@@ -97,7 +91,7 @@
                            <children>
                               <Label text="Quantity:" />
                               <Spinner fx:id="quantitySpinner" initialValue="1" max="99" min="1" prefWidth="70" />
-                              <Button fx:id="addToCartButton" defaultButton="true" text="Add to Cart" />
+                              <Button fx:id="addToCartButton" defaultButton="true" onAction="#handleAddToCart" text="Add to Cart" />
                               <Button fx:id="notifyButton1" text="Notify When Available" visible="false" />
                            </children>
                         </HBox>

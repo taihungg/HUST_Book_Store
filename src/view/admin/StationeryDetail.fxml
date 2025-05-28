@@ -46,18 +46,6 @@
                                       <Font name="System Bold" size="24.0" />
                                    </font>
                                 </Label>
-                                <HBox alignment="CENTER_LEFT" spacing="5">
-                                   <children>
-                                      <Label text="Author:" />
-                                      <Label fx:id="authorLabel" text="Tran Chi Vu" />
-                                   </children>
-                                </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="5">
-                               <children>
-                                  <Label text="Suitable Age: " />
-                                  <Label fx:id="ageLabel" text="20" />
-                               </children>
-                            </HBox>
                             <HBox alignment="CENTER_LEFT" spacing="5">
                                <children>
                                   <Label text="Brand: " />
