@@ -104,7 +104,7 @@ public class StationeryController {
             );
 
             
-            appServiceManager.getProductManager().addProduct(newStationery,quantity);
+            appServiceManager.getProductManager().addProduct(newStationery,quantity,appServiceManager.getCurrentUser());
 
             Alert alert = new Alert (Alert.AlertType.INFORMATION);
             alert.setTitle("Thông báo");

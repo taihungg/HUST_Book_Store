@@ -127,7 +127,7 @@ public class StoreController {
          quantityCol.setOnEditCommit((CellEditEvent<Product, Integer> event) -> {
             Product product = event.getRowValue();
             if (event.getNewValue() != null && product != null) {
-                appServiceManager.getProductManager().setProductQuantity(product.getId(), event.getNewValue());
+                appServiceManager.getProductManager().setProductQuantity(product.getId(), event.getNewValue(),appServiceManager.getCurrentUser());
                 System.out.println("Đã cập nhật Quantity cho " + product.getTitle() + " thành: " + event.getNewValue());
                 productTableView.refresh(); 
             }
@@ -135,15 +135,15 @@ public class StoreController {
     
 
 
-        productTableView.setItems(appServiceManager.getProductManager().getAllProducts());
-        System.out.println("StoreController: Khởi tạo hoàn tất. Hiển thị " + appServiceManager.getProductManager().getAllProducts().size() + " sản phẩm từ service.");
+        productTableView.setItems(appServiceManager.getProductManager().getAllProducts(appServiceManager.getCurrentUser()));
+        System.out.println("StoreController: Khởi tạo hoàn tất. Hiển thị " + appServiceManager.getProductManager().getAllProducts(appServiceManager.getCurrentUser()).size() + " sản phẩm từ service.");
 
     }
 
     @FXML
     void handleDeleteAction(ActionEvent event) {
-       if( appServiceManager.getProductManager().removeProduct( productTableView.getSelectionModel().getSelectedItem().getId())){
-        productTableView.setItems(appServiceManager.getProductManager().getAllProducts());
+       if( appServiceManager.getProductManager().removeProduct( productTableView.getSelectionModel().getSelectedItem().getId(),appServiceManager.getCurrentUser())){
+        productTableView.setItems(appServiceManager.getProductManager().getAllProducts(appServiceManager.getCurrentUser()));
        }
         
     }
@@ -172,12 +172,12 @@ public class StoreController {
     void handleSearchAction(ActionEvent event) {
         String searchText = searchField.getText().toLowerCase().trim();
         if (searchText.isEmpty()) {
-            productTableView.setItems(appServiceManager.getProductManager().getAllProducts()); // Hiển thị lại toàn bộ danh sách nếu ô tìm kiếm rỗng
+            productTableView.setItems(appServiceManager.getProductManager().getAllProducts(appServiceManager.getCurrentUser())); // Hiển thị lại toàn bộ danh sách nếu ô tìm kiếm rỗng
             return;
         }
 
         ObservableList<Product> filteredList = FXCollections.observableArrayList();
-        for (Product product :appServiceManager.getProductManager().getAllProducts()) {
+        for (Product product :appServiceManager.getProductManager().getAllProducts(appServiceManager.getCurrentUser()  )) {
             if (product.getTitle() != null && product.getTitle().equalsIgnoreCase(searchText)) {
                 filteredList.add(product);
             }

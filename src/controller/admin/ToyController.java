@@ -106,7 +106,7 @@ public class ToyController {
    purchasePrice, 0, 10,  status,
     brand,  suitableAge);
 
-   appServiceManager.getProductManager().addProduct(newToy, quantity);
+   appServiceManager.getProductManager().addProduct(newToy, quantity,appServiceManager.getCurrentUser());
 
    Alert alert = new Alert (Alert.AlertType.INFORMATION);
    alert.setTitle("Thông báo");

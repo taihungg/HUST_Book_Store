@@ -284,7 +284,7 @@ public class BookController {
 
         // 4. Thêm sản phẩm vào DataService
         if (productToAdd != null) {
-            appServiceManager.getProductManager().addProduct(productToAdd,quantityDefault);
+            appServiceManager.getProductManager().addProduct(productToAdd,quantityDefault,appServiceManager.getCurrentUser());
             showAlert(AlertType.INFORMATION, "Thành Công", "Đã thêm sách '" + title + "' vào hệ thống.");
             clearFormFields(); 
             try{

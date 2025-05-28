@@ -77,8 +77,9 @@ public class Main extends Application {
         );
         System.out.println("Đã tạo Toy: " + sampleToy.getTitle());
 
-        appServiceManager.getProductManager().addProduct(sampleStationery, 10);
-        appServiceManager.getProductManager().addProduct(sampleToy, 10);
+        appServiceManager.getProductManager().addProduct(sampleStationery, 10,appServiceManager.getCurrentUser());
+        appServiceManager.getProductManager().addProduct(sampleToy, 10,appServiceManager.getCurrentUser());
+        System.out.println(appServiceManager.getCurrentUser());
     }
 
 
