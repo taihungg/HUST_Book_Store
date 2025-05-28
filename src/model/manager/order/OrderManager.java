@@ -184,7 +184,7 @@ public class OrderManager {
         for (CartItem item : orderToCancel.getOrderItems()) {
             Product product = productManager.getProductById(item.getProductId());
             if (product != null && product instanceof PhysicalProduct) {
-                productManager.increaseProductStock(item.getProductId(), item.getQuantity());
+                productManager.increaseProductStock(item.getProductId(), item.getQuantity(), currentUser);
             }
         }
         System.out.println("Order " + orderId + " cancelled by " + currentUser.getUsername() + ".");
