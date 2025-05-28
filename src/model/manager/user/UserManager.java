@@ -19,6 +19,7 @@ public class UserManager {
     public UserManager() {
         userList = FXCollections.observableArrayList();
         userMap = new HashMap<>();
+        loadInitialUsersInMemory();
     }
 
     /**
@@ -88,7 +89,7 @@ public class UserManager {
         }
         Customer newCustomer = new Customer(name, email, phone, username, password, address);
         userList.add(newCustomer);
-        userMap.put(newCustomer.getUsername(), newCustomer);
+        userMap.put(username, newCustomer);
         System.out.println("New customer '" + username + "' registered successfully.");
         return newCustomer;
     }
@@ -208,5 +209,15 @@ public class UserManager {
         }
         System.out.println("Authentication failed for user: " + username + " (Invalid username or password).");
         return null;
+    }
+
+    private void loadInitialUsersInMemory() {
+        System.out.println("UserManager: Loading initial admin...");
+
+        // --- TẠO ADMIN ĐẦU TIÊN TẠI ĐÂY ---
+        Admin adminUser = new Admin("Trung TT (PHD)", "trung.tt20239999", "0123456789", "admin", "12345678");
+        userList.add(adminUser);
+        userMap.put(adminUser.getUsername(), adminUser);
+        System.out.println("UserManager: Initial Admin user created: " + adminUser.getName());
     }
 }
