@@ -3,10 +3,8 @@ package model.manager.order;
 import java.time.LocalDate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -84,7 +82,7 @@ public class OrderManager {
             Product productInCart = productManager.getProductById(item.getProductId());
             if (productInCart != null && productInCart instanceof PhysicalProduct) {
                 // Giảm tồn kho, không cần actingUser ở đây vì quyền đã được kiểm tra ở cấp OrderManager.placeOrder
-                productManager.decreaseProductStock(item.getProductId(), item.getQuantity());
+                productManager.decreaseProductStock(item.getProductId(), item.getQuantity(), currentUser);
             }
         }
 

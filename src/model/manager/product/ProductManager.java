@@ -1,11 +1,18 @@
 package model.manager.product;
 
+import static java.lang.Math.random;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Random;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.product.Product;
+import model.product.Stationery;
+import model.product.Toy;
+import model.product.book.Audiobook;
+import model.product.book.Ebook;
+import model.product.book.Printbook;
 import model.product.interfaces.PhysicalProduct;
 import model.user.User;
 import model.user.interfaces.Manager;
@@ -14,10 +21,23 @@ public class ProductManager {
 	private final ObservableList<Product> productList;
 	private final Map<String, Product> productMap;
 	private final Map<String, Integer> productQuantity;
+
+    // Sample data
+	private final Random random = new Random();
+    private final String[] COMMON_AUTHORS = {"Nguyễn Nhật Ánh", "J.K. Rowling", "Stephen King", "Yuval Noah Harari", "Haruki Murakami", "Nguyễn Du", "Tô Hoài", "Marc Levy", "Dan Brown"};
+    private final String[] COMMON_PUBLISHERS = {"NXB Trẻ", "NXB Kim Đồng", "Penguin Random House", "HarperCollins", "NXB Văn Học", "Fahasa"};
+    private final String[] COMMON_CATEGORIES_BOOK = {"Văn học", "Khoa học", "Lịch sử", "Trinh thám", "Kinh tế", "Thiếu nhi", "Self-help"};
+    private final String[] COMMON_LANGUAGES = {"Tiếng Việt", "English", "French", "Japanese"};
+    private final String[] COMMON_BRANDS_STATIONERY_TOY = {"Thiên Long", "Plus", "Colgate", "Biti's", "Lego", "Bandai", "Hasbro"};
+    private final String[] STATIONERY_TYPES = {"Bút bi", "Sổ tay", "Tẩy", "Hộp bút", "Kẹp giấy", "Bút chì", "Thước kẻ"};
+    private final String[] TOY_TYPES = {"Đồ chơi xếp hình", "Mô hình", "Búp bê", "Xe đồ chơi", "Thú bông", "Đồ chơi giáo dục"};
+    private final String[] STATUS_OPTIONS = {"In Stock", "Available", "Low Stock", "New Arrival"};
+
 	public ProductManager() {
 		this.productList = FXCollections.observableArrayList();
 		this.productMap = new HashMap<>();
 		this.productQuantity = new HashMap<>();
+		loadInitialProducts();
 	}
 
 	/**
@@ -224,4 +244,141 @@ public class ProductManager {
 		}
 		return filteredList;
 	}
+
+    // Phương thức loadInitialProducts sẽ chứa các câu lệnh khởi tạo trực tiếp
+    protected void loadInitialProducts() {
+        System.out.println("Generating sample products...");
+
+        // --- 1. Tạo 100 Printbook Samples ---
+        for (int i = 0; i < 100; i++) {
+            String id = "PB" + (1000 + i);
+            String title = "Sách In - Tiêu đề " + (i + 1) + " (Tập " + (i % 5 + 1) + ")";
+            String description = "Mô tả chi tiết cho cuốn sách in " + title + ". Đây là một cuốn sách hấp dẫn với nhiều nội dung giá trị.";
+            String galleryURL = "https://example.com/images/pb" + (i + 1) + ".jpg";
+            double sellingPrice = 50000.0 + random.nextDouble() * 150000.0; // 50k - 200k VND
+            double purchasePrice = sellingPrice * (0.6 + random.nextDouble() * 0.1); // 60-70% giá bán
+            double averageRating = 3.5 + random.nextDouble() * 1.5; // 3.5 - 5.0
+            int numberOfReviews = random.nextInt(500);
+            String status = STATUS_OPTIONS[random.nextInt(STATUS_OPTIONS.length)];
+            String isbn = "978-604-0-" + String.format("%04d", i) + "-X";
+            String author = COMMON_AUTHORS[random.nextInt(COMMON_AUTHORS.length)];
+            String publisher = COMMON_PUBLISHERS[random.nextInt(COMMON_PUBLISHERS.length)];
+            String category = COMMON_CATEGORIES_BOOK[random.nextInt(COMMON_CATEGORIES_BOOK.length)];
+            String language = COMMON_LANGUAGES[random.nextInt(COMMON_LANGUAGES.length)];
+            int numberOfPages = 150 + random.nextInt(600); // 150 - 750 trang
+            int weight = 300 + random.nextInt(1000); // 300 - 1300 gram
+
+            Printbook printbook = new Printbook(
+                id, title, description, galleryURL, sellingPrice, purchasePrice,
+                averageRating, numberOfReviews, status, isbn, author, publisher,
+                category, language, numberOfPages, weight
+            );
+            productList.add(printbook);
+            productMap.put(id, printbook);
+            productQuantity.put(id, 10 + random.nextInt(40)); // 10-50 bản tồn kho
+        }
+
+        // --- 2. Tạo 100 Ebook Samples ---
+        for (int i = 0; i < 100; i++) {
+            String id = "EB" + (1000 + i);
+            String title = "Ebook - Tiêu đề " + (i + 1) + " (Series " + (i % 3 + 1) + ")";
+            String description = "Mô tả chi tiết cho ebook " + title + ". Đọc mọi lúc mọi nơi trên thiết bị của bạn.";
+            String galleryURL = "https://example.com/images/eb" + (i + 1) + ".jpg";
+            double sellingPrice = 30000.0 + random.nextDouble() * 100000.0; // 30k - 130k VND
+            double purchasePrice = sellingPrice * (0.4 + random.nextDouble() * 0.1); // 40-50% giá bán
+            double averageRating = 3.0 + random.nextDouble() * 2.0;
+            int numberOfReviews = random.nextInt(300);
+            String status = "Available Online";
+            String isbn = "978-999-0-" + String.format("%04d", i) + "-Y";
+            String author = COMMON_AUTHORS[random.nextInt(COMMON_AUTHORS.length)];
+            String publisher = COMMON_PUBLISHERS[random.nextInt(COMMON_PUBLISHERS.length)];
+            String category = COMMON_CATEGORIES_BOOK[random.nextInt(COMMON_CATEGORIES_BOOK.length)];
+            String language = COMMON_LANGUAGES[random.nextInt(COMMON_LANGUAGES.length)];
+            int numberOfPages = 80 + random.nextInt(500);
+            String downloadURL = "https://downloads.example.com/ebook" + (i + 1) + ".pdf";
+
+            Ebook ebook = new Ebook(
+                id, title, description, galleryURL, sellingPrice, purchasePrice,
+                averageRating, numberOfReviews, status, isbn, author, publisher,
+                category, language, numberOfPages, downloadURL
+            );
+            productList.add(ebook);
+            productMap.put(id, ebook);
+            productQuantity.put(id, 0); // Ebook không có tồn kho vật lý
+        }
+
+        // --- 3. Tạo 100 Audiobook Samples ---
+        for (int i = 0; i < 100; i++) {
+            String id = "AB" + (1000 + i);
+            String title = "Sách Nói - Tiêu đề " + (i + 1) + " (Chương " + (i % 7 + 1) + ")";
+            String description = "Mô tả chi tiết cho sách nói " + title + ". Nghe sách mọi lúc mọi nơi.";
+            String galleryURL = "https://example.com/images/ab" + (i + 1) + ".jpg";
+            double sellingPrice = 40000.0 + random.nextDouble() * 120000.0; // 40k - 160k VND
+            double purchasePrice = sellingPrice * (0.5 + random.nextDouble() * 0.1); // 50-60% giá bán
+            double averageRating = 3.8 + random.nextDouble() * 1.2;
+            int numberOfReviews = random.nextInt(250);
+            String status = "Streaming Available";
+            String isbn = "978-000-0-" + String.format("%04d", i) + "-Z";
+            String author = COMMON_AUTHORS[random.nextInt(COMMON_AUTHORS.length)];
+            String publisher = COMMON_PUBLISHERS[random.nextInt(COMMON_PUBLISHERS.length)];
+            String category = COMMON_CATEGORIES_BOOK[random.nextInt(COMMON_CATEGORIES_BOOK.length)];
+            String language = COMMON_LANGUAGES[random.nextInt(COMMON_LANGUAGES.length)];
+            String downloadURL = "https://downloads.example.com/audiobook" + (i + 1) + ".mp3";
+
+            Audiobook audiobook = new Audiobook(
+                id, title, description, galleryURL, sellingPrice, purchasePrice,
+                averageRating, numberOfReviews, status, isbn, author, publisher,
+                category, language, downloadURL
+            );
+            productList.add(audiobook);
+            productMap.put(id, audiobook);
+            productQuantity.put(id, 0); // Audiobook không có tồn kho vật lý
+        }
+
+        // --- 4. Tạo 100 Stationery Samples ---
+        for (int i = 0; i < 100; i++) {
+            String id = "ST" + (1000 + i);
+            String title = STATIONERY_TYPES[random.nextInt(STATIONERY_TYPES.length)] + " " + (i + 1);
+            String description = "Sản phẩm văn phòng phẩm chất lượng cao: " + title + ".";
+            String galleryURL = "https://example.com/images/st" + (i + 1) + ".jpg";
+            double sellingPrice = 5000.0 + random.nextDouble() * 45000.0; // 5k - 50k VND
+            double purchasePrice = sellingPrice * (0.3 + random.nextDouble() * 0.2); // 30-50% giá bán
+            double averageRating = 3.0 + random.nextDouble() * 2.0;
+            int numberOfReviews = random.nextInt(120);
+            String status = STATUS_OPTIONS[random.nextInt(STATUS_OPTIONS.length)];
+            String brand = COMMON_BRANDS_STATIONERY_TOY[random.nextInt(COMMON_BRANDS_STATIONERY_TOY.length)];
+            String type = STATIONERY_TYPES[random.nextInt(STATIONERY_TYPES.length)];
+
+            Stationery stationery = new Stationery(
+                id, title, description, galleryURL, sellingPrice, purchasePrice,
+                averageRating, numberOfReviews, status, brand, type
+            );
+            productList.add(stationery);
+            productMap.put(id, stationery);
+            productQuantity.put(id, 20 + random.nextInt(80)); // 20-100 bản tồn kho
+        }
+
+        // --- 5. Tạo 100 Toy Samples ---
+        for (int i = 0; i < 100; i++) {
+            String id = "TOY" + (1000 + i);
+            String title = TOY_TYPES[random.nextInt(TOY_TYPES.length)] + " " + (i + 1);
+            String description = "Đồ chơi vui nhộn và bổ ích cho bé yêu: " + title + ".";
+            String galleryURL = "https://example.com/images/toy" + (i + 1) + ".jpg";
+            double sellingPrice = 100000.0 + random.nextDouble() * 400000.0; // 100k - 500k VND
+            double purchasePrice = sellingPrice * (0.5 + random.nextDouble() * 0.15); // 50-65% giá bán
+            double averageRating = 4.0 + random.nextDouble() * 1.0; // 4.0 - 5.0
+            int numberOfReviews = random.nextInt(300);
+            String status = STATUS_OPTIONS[random.nextInt(STATUS_OPTIONS.length)];
+            String brand = COMMON_BRANDS_STATIONERY_TOY[random.nextInt(COMMON_BRANDS_STATIONERY_TOY.length)];
+            int suitableAge = 2 + random.nextInt(10); // 2 - 11 tuổi
+
+            Toy toy = new Toy(
+                id, title, description, galleryURL, sellingPrice, purchasePrice,
+                averageRating, numberOfReviews, status, brand, suitableAge
+            );
+            productList.add(toy);
+            productMap.put(id, toy);
+            productQuantity.put(id, 5 + random.nextInt(20)); // 5-25 bản tồn kho
+        }
+    }
 }

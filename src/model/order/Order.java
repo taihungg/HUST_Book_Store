@@ -29,7 +29,7 @@ public class Order {
      * @throws NullPointerException nếu các tham số bắt buộc là null.
      * @throws IllegalArgumentException nếu totalAmount âm.
      */
-    public Order(String username, List<CartItem> orderItems,
+    public Order(String customerUsername, List<CartItem> orderItems,
                  double totalAmount, String shippingAddress, String paymentMethod) {
         this.orderId = generateOrderId();
         this.customerUsername = Objects.requireNonNull(customerUsername, "Customer username cannot be null.");

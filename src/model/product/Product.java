@@ -30,6 +30,7 @@ public abstract class Product {
 		this.averageRating = new SimpleDoubleProperty(averageRating);
 		this.numberOfReviews = new SimpleIntegerProperty(numberOfReviews);
 		this.status = new SimpleStringProperty(status);
+		System.out.println("Product " + getTitle() + " has been created.");
 	}
 
 

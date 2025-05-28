@@ -2,9 +2,7 @@ package model.manager.user;
 
 import model.user.User;
 import model.user.manager.Admin;
-import model.user.manager.Manager;
 import model.user.customer.Customer;
-import model.user.employee.Employee;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +18,7 @@ public class UserManager {
 
     public UserManager() {
         userList = FXCollections.observableArrayList();
-        userMap = new HashMap<>()
+        userMap = new HashMap<>();
     }
 
     /**
@@ -90,7 +88,7 @@ public class UserManager {
         }
         Customer newCustomer = new Customer(name, email, phone, username, password, address);
         userList.add(newCustomer);
-        userMap.put(newCustomerId, newCustomer);
+        userMap.put(username, newCustomer);
         System.out.println("New customer '" + username + "' registered successfully.");
         return newCustomer;
     }
