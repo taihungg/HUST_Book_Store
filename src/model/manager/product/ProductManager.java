@@ -1,18 +1,20 @@
 package model.manager.product;
 
-import static java.lang.Math.random;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.function.Predicate;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import model.product.Product;
 import model.product.Stationery;
 import model.product.Toy;
 import model.product.book.Audiobook;
 import model.product.book.Ebook;
 import model.product.book.Printbook;
+import model.product.interfaces.DigitalProduct;
 import model.product.interfaces.PhysicalProduct;
 import model.user.User;
 import model.user.interfaces.Manager;
@@ -21,6 +23,7 @@ public class ProductManager {
 	private final ObservableList<Product> productList;
 	private final Map<String, Product> productMap;
 	private final Map<String, Integer> productQuantity;
+    private final FilteredList<Product> availableProductsFilteredList;
 
     // Sample data
 	private final Random random = new Random();
@@ -37,8 +40,41 @@ public class ProductManager {
 		this.productList = FXCollections.observableArrayList();
 		this.productMap = new HashMap<>();
 		this.productQuantity = new HashMap<>();
+        this.availableProductsFilteredList = new FilteredList<>(productList, createAvailableProductPredicate());    
 		loadInitialProducts();
 	}
+
+    // --- Phương thức tạo Predicate (điều kiện lọc) ---
+    private Predicate<Product> createAvailableProductPredicate() {
+        return p -> {
+            // Đảm bảo Product có method getStatus() trả về StringProperty
+            String status = p.getStatus(); 
+            boolean isAvailableStatus = status.equalsIgnoreCase("Available") ||
+                                        status.equalsIgnoreCase("In Stock") ||
+                                        status.equalsIgnoreCase("New Arrival");
+            
+            if (p instanceof PhysicalProduct) {
+                // Sửa lỗi: dùng p.getUserId() -> p.getProductId()
+                return isAvailableStatus && getProductQuantity(p.getId()) > 0;
+            } else { // DigitalProduct
+                return isAvailableStatus; // Digital products always available if status is good
+            }
+        };
+    }
+
+    // --- Phương thức hỗ trợ kích hoạt cập nhật cho FilteredList ---
+    // (Cần thiết khi một thuộc tính không phải Property của Product thay đổi, ví dụ: quantity trong Map riêng)
+    private void updateProductAvailability(String productId) {
+        // Lấy lại Predicate hiện tại
+        Predicate<Product> currentPredicate = availableProductsFilteredList.getPredicate();
+        // Set lại cùng một Predicate. Điều này buộc FilteredList phải chạy lại bộ lọc của nó
+        // và kiểm tra lại tất cả các phần tử.
+        // Đây là cách để thông báo cho FilteredList rằng dữ liệu CƠ BẢN mà nó dựa vào (quantity)
+        // đã thay đổi, ngay cả khi đối tượng Product không thay đổi Properties của nó.
+        availableProductsFilteredList.setPredicate(currentPredicate);
+        // Hoặc bạn có thể tạo lại Predicate nếu nó có trạng thái thay đổi
+        // availableProductsFilteredList.setPredicate(createAvailableProductPredicate());
+    }
 
 	/**
      * Thêm một sản phẩm mới vào danh sách và map quản lý.
@@ -58,17 +94,25 @@ public class ProductManager {
                 System.out.println("Error: Product with ID " + product.getId() + " already exists.");
                 return false;
             }
-            productList.add(product); // Thêm vào ObservableList -> UI cập nhật
-            productMap.put(product.getId(), product); // Thêm vào Map để tra cứu nhanh
 
             if (product instanceof PhysicalProduct) {
                 if (initialQuantity < 0) {
                     throw new IllegalArgumentException("Initial quantity cannot be negative for physical product.");
                 }
+                productList.add(product); // Thêm vào ObservableList -> UI cập nhật
+                productMap.put(product.getId(), product); // Thêm vào Map để tra cứu nhanh
                 productQuantity.put(product.getId(), initialQuantity); // Lưu số lượng tồn kho
+                updateProductAvailability(product.getId());
+                System.out.println("Product added: " + product.getTitle() + " (ID: " + product.getId() + ")");
+                return true;
             }
-            System.out.println("Product added: " + product.getTitle() + " (ID: " + product.getId() + ")");
-            return true;
+            else if(product instanceof DigitalProduct) {
+                productList.add(product); // Thêm vào ObservableList -> UI cập nhật
+                productMap.put(product.getId(), product); // Thêm vào Map để tra cứu nhanh
+                updateProductAvailability(product.getId());
+                System.out.println("Product added: " + product.getTitle() + " (ID: " + product.getId() + ")");
+                return true;
+            }
         }
     }
 
@@ -93,7 +137,7 @@ public class ProductManager {
             //     // Rất hiếm khi xảy ra nếu logic thêm/xóa đúng
             //     System.err.println("Product updated in map but not found in list (ID: " + updatedProduct.getProductId() + ")");
             // }
-
+            updateProductAvailability(updatedProduct.getId());
             System.out.println("Product updated in memory: " + updatedProduct.getTitle() + " (ID: " + updatedProduct.getId() + ")");
             return true;
         }
@@ -120,6 +164,7 @@ public class ProductManager {
                 if (productToRemove instanceof PhysicalProduct) {
                     productQuantity.remove(productId); // Xóa số lượng tồn kho nếu là PhysicalProduct
                 }
+                updateProductAvailability(productId);
                 System.out.println("Product removed: " + productToRemove.getTitle() + " (ID: " + productId + ")");
                 return true;
             }
@@ -158,6 +203,7 @@ public class ProductManager {
                 return false;
             }
             productQuantity.put(productId, currentQuantity - amount);
+            updateProductAvailability(productId);
             System.out.println("Decreased stock for " + product.getTitle() + " by " + amount + ". New stock: " + productQuantity.get(productId));
             return true;
         }
@@ -169,23 +215,30 @@ public class ProductManager {
      * @param amount Số lượng cần tăng. Phải là số dương.
      * @return true nếu tăng thành công, false nếu sản phẩm không tìm thấy hoặc không phải vật lý.
      */
-    public boolean increaseProductStock(String productId, int amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Increase amount must be positive.");
-        }
-        Product p = productMap.get(productId);
-        if (p == null) {
-            System.out.println("Error: Product with ID " + productId + " not found.");
+    public boolean increaseProductStock(String productId, int amount, User currentUser) {
+        if(!(currentUser instanceof Manager)) {
+            System.out.println("Error: Only managers can increase product stock.");
             return false;
         }
-        if (!(p instanceof PhysicalProduct)) {
-            System.out.println("Error: Product " + p.getTitle() + " (ID: " + productId + ") is a digital product and cannot have physical stock increased.");
-            return false;
+        else {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("Increase amount must be positive.");
+            }
+            Product p = productMap.get(productId);
+            if (p == null) {
+                System.out.println("Error: Product with ID " + productId + " not found.");
+                return false;
+            }
+            if (!(p instanceof PhysicalProduct)) {
+                System.out.println("Error: Product " + p.getTitle() + " (ID: " + productId + ") is a digital product and cannot have physical stock increased.");
+                return false;
+            }
+                int currentQuantity = productQuantity.getOrDefault(productId, 0);
+                productQuantity.put(productId, currentQuantity + amount);
+                updateProductAvailability(productId);
+                System.out.println("Increased stock for " + p.getTitle() + " by " + amount + ". New stock: " + productQuantity.get(productId));
+                return true;
         }
-        int currentQuantity = productQuantity.getOrDefault(productId, 0);
-        productQuantity.put(productId, currentQuantity + amount);
-        System.out.println("Increased stock for " + p.getTitle() + " by " + amount + ". New stock: " + productQuantity.get(productId));
-        return true;
     }
 
 	/**
@@ -213,6 +266,7 @@ public class ProductManager {
                 return false;
             }
             productQuantity.put(productId, newQuantity);
+            updateProductAvailability(productId);
             System.out.println("Set new stock for " + product.getTitle() + " (ID: " + productId + ") to: " + newQuantity);
             return true;
         }
@@ -225,8 +279,16 @@ public class ProductManager {
 	public int getProductQuantity(String productId) {
 		return productQuantity.getOrDefault(productId, 0);
 	}
-    
-	public ObservableList<Product> getAllProducts(User currentUser) {
+
+    // --- Phương thức lấy danh sách sản phẩm cho khách hàng (Store Front) ---
+    public ObservableList<Product> getAvailableProductsForCustomer() {
+        // TRẢ VỀ CÙNG MỘT INSTANCE của SortedList/FilteredList
+        // UI sẽ bind vào đây và tự động cập nhật
+        return availableProductsFilteredList; // Hoặc availableProductsFilteredList nếu không cần sắp xếp
+    }
+
+    //chỗ lấy tất cả sản phẩm trong store của manager thì gọi hàm này
+	public ObservableList<Product> getAllProductsForManager(User currentUser) {
 		if(!(currentUser instanceof Manager)) {
             System.out.println("Error: Only managers can get all products.");
             return null;
@@ -234,15 +296,33 @@ public class ProductManager {
 		else return productList;
 	}
 
-	public ObservableList<Product> searchProducts(String keyword) {
+    //chỗ search trong store của customer thì gọi hàm này
+	public ObservableList<Product> searchProductsForCustomer(String keyword) {
 		ObservableList<Product> filteredList = FXCollections.observableArrayList();
-		for (Product product : productList) {
+		for (Product product : availableProductsFilteredList) {
 			if (product.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
 				product.getId().toLowerCase().contains(keyword.toLowerCase())) {
 				filteredList.add(product);
 			}
 		}
 		return filteredList;
+	}
+
+    //chỗ search trong store của manager thì gọi hàm này
+    public ObservableList<Product> searchProductsForManager(String keyword, User currentUser) {
+		if(!(currentUser instanceof Manager)) {
+            System.out.println("Error: Only managers can search products.");
+            return null;
+        }else {
+            ObservableList<Product> filteredList = FXCollections.observableArrayList();
+            for (Product product : productList) {
+			if (product.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
+				product.getId().toLowerCase().contains(keyword.toLowerCase())) {
+				filteredList.add(product);
+				}
+			}
+			return filteredList;
+		}
 	}
 
     // Phương thức loadInitialProducts sẽ chứa các câu lệnh khởi tạo trực tiếp
