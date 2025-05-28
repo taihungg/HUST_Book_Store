@@ -47,14 +47,12 @@ public class ProductManager {
     // --- Phương thức tạo Predicate (điều kiện lọc) ---
     private Predicate<Product> createAvailableProductPredicate() {
         return p -> {
-            // Đảm bảo Product có method getStatus() trả về StringProperty
             String status = p.getStatus(); 
             boolean isAvailableStatus = status.equalsIgnoreCase("Available") ||
                                         status.equalsIgnoreCase("In Stock") ||
                                         status.equalsIgnoreCase("New Arrival");
             
             if (p instanceof PhysicalProduct) {
-                // Sửa lỗi: dùng p.getUserId() -> p.getProductId()
                 return isAvailableStatus && getProductQuantity(p.getId()) > 0;
             } else { // DigitalProduct
                 return isAvailableStatus; // Digital products always available if status is good
@@ -66,7 +64,7 @@ public class ProductManager {
     // (Cần thiết khi một thuộc tính không phải Property của Product thay đổi, ví dụ: quantity trong Map riêng)
     private void updateProductAvailability(String productId) {
         // Lấy lại Predicate hiện tại
-        Predicate<Product> currentPredicate = availableProductsFilteredList.getPredicate();
+        Predicate<Product> currentPredicate = (Predicate<Product>) availableProductsFilteredList.getPredicate();
         // Set lại cùng một Predicate. Điều này buộc FilteredList phải chạy lại bộ lọc của nó
         // và kiểm tra lại tất cả các phần tử.
         // Đây là cách để thông báo cho FilteredList rằng dữ liệu CƠ BẢN mà nó dựa vào (quantity)
@@ -106,7 +104,7 @@ public class ProductManager {
                 System.out.println("Product added: " + product.getTitle() + " (ID: " + product.getId() + ")");
                 return true;
             }
-            else if(product instanceof DigitalProduct) {
+            else {
                 productList.add(product); // Thêm vào ObservableList -> UI cập nhật
                 productMap.put(product.getId(), product); // Thêm vào Map để tra cứu nhanh
                 updateProductAvailability(product.getId());
