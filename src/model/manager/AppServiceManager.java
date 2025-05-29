@@ -17,7 +17,7 @@ public class AppServiceManager {
         this.productManager = new ProductManager();
         this.orderManager = new OrderManager(this.productManager);
         this.userManager = new UserManager();
-        this.statisticsManager = new StatisticsManager();
+        this.statisticsManager = new StatisticsManager(this.productManager, this.orderManager);
         this.currentUser = null;
     }
     /* 

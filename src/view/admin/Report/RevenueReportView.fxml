@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -14,20 +20,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.RevenueReportController">
-          <content>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.RevenueReportController">
+   <children>
              <VBox spacing="20.0" style="-fx-background-color: #f4f4f4;">
                 <padding>
                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                 </padding>
                 <children>
-                   <Label alignment="CENTER" maxWidth="Infinity" text="BÁO CÁO DOANH THU VÀ LỢI NHUẬN HIỆU SÁCH" HBox.hgrow="ALWAYS">
+                   <Label alignment="CENTER" maxWidth="Infinity" text="STATISTICS" HBox.hgrow="ALWAYS">
                       <font>
                          <Font name="System Bold" size="24.0" />
                       </font>
                    </Label>
        
-                   <GridPane hgap="10.0" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;" vgap="10.0">
+                               <GridPane hgap="10.0" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;" vgap="10.0">
                      <columnConstraints>
                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
@@ -44,16 +51,16 @@
                          <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" />
                          <Label text="Đến ngày:" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
                          <DatePicker fx:id="endDatePicker" GridPane.columnIndex="3" />
-                         <Button fx:id="generateReportButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Xem báo cáo" GridPane.columnIndex="4" />
-                         <Label text="Hoặc chọn nhanh:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                         <ComboBox fx:id="predefinedDateRangeComboBox" prefWidth="200.0" promptText="-- Chọn khoảng thời gian --" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                         <Button fx:id="generateReportButton" mnemonicParsing="false" onAction="#handleGenerateReport" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Xem báo cáo" GridPane.columnIndex="4" />
+                         <Label text="Chọn nhanh" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                         <ComboBox fx:id="predefinedDateRangeComboBox" prefWidth="200.0" promptText="-Khoảng thời gian-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                       </children>
                       <VBox.margin>
                          <Insets bottom="10.0" />
                       </VBox.margin>
                    </GridPane>
        
-                   <GridPane hgap="20.0" prefHeight="200.0" style="-fx-background-color: white; -fx-padding: 20; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;" vgap="15.0">
+                               <GridPane hgap="20.0" prefHeight="200.0" style="-fx-background-color: white; -fx-padding: 20; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;" vgap="15.0">
                      <columnConstraints>
                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -66,101 +73,218 @@
                       <children>
                          <VBox alignment="CENTER_LEFT" style="-fx-background-color: #e7f3fe; -fx-padding: 15; -fx-background-radius: 5;">
                             <children>
-                               <Label text="Tổng Doanh thu">
-                                  <font><Font name="System Bold" size="14.0" /></font>
+                               <Label text="Total revenue">
+                                  <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
                                </Label>
                                <Label fx:id="totalRevenueLabel" text="0 VNĐ">
-                                  <font><Font size="18.0" /></font>
-                                  <VBox.margin><Insets top="5.0" /></VBox.margin>
+                                  <font>
+                              <Font size="18.0" />
+                           </font>
+                                  <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
                                </Label>
                             </children>
                          </VBox>
-                         <VBox alignment="CENTER_LEFT" style="-fx-background-color: #e6f9f0; -fx-padding: 15; -fx-background-radius: 5;" GridPane.columnIndex="1">
-                            <children>
-                               <Label text="Tổng Số đơn hàng">
-                                  <font><Font name="System Bold" size="14.0" /></font>
-                               </Label>
-                               <Label fx:id="totalOrdersLabel" text="0">
-                                  <font><Font size="18.0" /></font>
-                                   <VBox.margin><Insets top="5.0" /></VBox.margin>
-                               </Label>
-                            </children>
-                         </VBox>
-                         <VBox alignment="CENTER_LEFT" style="-fx-background-color: #fff0e6; -fx-padding: 15; -fx-background-radius: 5;" GridPane.columnIndex="2">
-                            <children>
-                               <Label text="Doanh thu TB/Đơn">
-                                  <font><Font name="System Bold" size="14.0" /></font>
-                               </Label>
-                               <Label fx:id="averageRevenuePerOrderLabel" text="0 VNĐ">
-                                  <font><Font size="18.0" /></font>
-                                   <VBox.margin><Insets top="5.0" /></VBox.margin>
-                               </Label>
-                            </children>
-                         </VBox>
-                          <VBox fx:id="totalCostsContainerVBox" alignment="CENTER_LEFT" style="-fx-background-color: #ffebee; -fx-padding: 15; -fx-background-radius: 5; -fx-cursor: hand;" GridPane.rowIndex="1">
+                          <VBox alignment="CENTER_LEFT" style="-fx-background-color: #e8f5e9; -fx-padding: 15; -fx-background-radius: 5;" GridPane.columnIndex="1">
                               <children>
-                                  <Label text="Tổng Chi Phí">
-                                      <font><Font name="System Bold" size="14.0" /></font>
+                                  <Label text="Total profit">
+                                      <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
                                   </Label>
-                                  <Label fx:id="totalCostsLabel" text="0 VNĐ">
-                                      <font><Font size="18.0" /></font>
-                                      <VBox.margin><Insets top="5.0" /></VBox.margin>
-                                  </Label>
-                                  <VBox fx:id="detailedCostsPane" managed="false" spacing="5.0" visible="false">
-                                      <padding><Insets top="10.0" /></padding>
-                                      <children>
-                                          <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                              <children>
-                                                  <Label style="-fx-font-size: 12px;" text="Tổng lương nhân viên:" />
-                                                  <Label fx:id="totalSalaryLabel" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="0 VNĐ" />
-                                              </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                              <children>
-                                                  <Label style="-fx-font-size: 12px;" text="Tổng tiền nhập sách:" />
-                                                  <Label fx:id="totalBookPurchaseCostLabel" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="0 VNĐ" />
-                                              </children>
-                                          </HBox>
-                                          </children>
-                                  </VBox>
-                              </children>
-                          </VBox>
-                          <VBox alignment="CENTER_LEFT" style="-fx-background-color: #e8f5e9; -fx-padding: 15; -fx-background-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                              <children>
-                                  <Label text="Tổng Lợi Nhuận">
-                                      <font><Font name="System Bold" size="14.0" /></font>
-                                  </Label>
-                                  <Label fx:id="totalProfitsLabel" text="0 VNĐ">
-                                      <font><Font size="18.0" /></font>
-                                      <VBox.margin><Insets top="5.0" /></VBox.margin>
+                                  <Label fx:id="totalProfitsLabel" text="0 USD">
+                                      <font>
+                              <Font size="18.0" />
+                           </font>
+                                      <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
                                   </Label>
                               </children>
                           </VBox>
                           <VBox alignment="CENTER_LEFT" style="-fx-background-color: #f3e5f5; -fx-padding: 15; -fx-background-radius: 5;" GridPane.columnIndex="2" GridPane.rowIndex="1">
                               <children>
-                                  <Label text="Tỷ suất Lợi nhuận">
-                                      <font><Font name="System Bold" size="14.0" /></font>
+                                  <Label text="Total products sales">
+                                      <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
                                   </Label>
-                                  <Label fx:id="profitMarginLabel" text="0%">
-                                      <font><Font size="18.0" /></font>
-                                      <VBox.margin><Insets top="5.0" /></VBox.margin>
+                                  <Label fx:id="profitMarginLabel" text="0">
+                                      <font>
+                              <Font size="18.0" />
+                           </font>
+                                      <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
                                   </Label>
                               </children>
                           </VBox>
+                         <VBox alignment="CENTER_LEFT" style="-fx-background-color: #e6f9f0; -fx-padding: 15; -fx-background-radius: 5;" GridPane.rowIndex="1">
+                            <children>
+                               <Label text="Total orders successfull">
+                                  <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                               </Label>
+                               <Label fx:id="totalOrdersLabel" text="0">
+                                  <font>
+                              <Font size="18.0" />
+                           </font>
+                                   <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                               </Label>
+                            </children>
+                         </VBox>
+                  <VBox fx:id="totalCostsContainerVBox1" alignment="CENTER_LEFT" style="-fx-background-color: #ffebee; -fx-padding: 15; -fx-background-radius: 5; -fx-cursor: hand;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <children>
+                        <Label text="Total orders cancelled">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="totalCostsLabel1" text="0">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <VBox fx:id="detailedCostsPane1" managed="false" spacing="5.0" visible="false">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="Tổng lương nhân viên:" />
+                                    <Label fx:id="totalSalaryLabel1" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="0 VNĐ" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 12px;" text="Tổng tiền nhập sách:" />
+                                    <Label fx:id="totalBookPurchaseCostLabel1" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="0 VNĐ" />
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets top="10.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </VBox>
+                         <VBox alignment="CENTER_LEFT" style="-fx-background-color: #fff0e6; -fx-padding: 15; -fx-background-radius: 5;" GridPane.columnIndex="2">
+                            <children>
+                               <Label text="Total products cost">
+                                  <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                               </Label>
+                               <Label fx:id="averageRevenuePerOrderLabel" text="0 USD">
+                                  <font>
+                              <Font size="18.0" />
+                           </font>
+                                   <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                               </Label>
+                            </children>
+                         </VBox>
                       </children>
                    </GridPane>
+            <Separator prefWidth="200.0" />
+            <VBox prefHeight="151.0" prefWidth="788.0">
+               <children>
+                  <Label alignment="CENTER" maxWidth="Infinity" text="Monthly Cost">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" />
+                     </padding>
+                  </Label>
+                  <GridPane hgap="20.0" prefHeight="100.0" style="-fx-background-color: white; -fx-padding: 20; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;" vgap="15.0">
+                     <children>
+                        <VBox alignment="CENTER_LEFT" style="-fx-background-color: #e7f3fe; -fx-padding: 15; -fx-background-radius: 5;" GridPane.columnIndex="1">
+                           <children>
+                              <Label text="Other">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="totalRevenueLabel1" text="0 USD">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" prefHeight="71.0" prefWidth="180.0" style="-fx-background-color: #e8f5e9; -fx-padding: 15; -fx-background-radius: 5;" GridPane.columnIndex="2">
+                           <children>
+                              <Label text="Total">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="totalProfitsLabel1" text="0 USD">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" style="-fx-background-color: #f3e5f5; -fx-padding: 15; -fx-background-radius: 5;">
+                           <children>
+                              <Label text="Employee salaries">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="profitMarginLabel1" text="0 USD">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+               </children>
+            </VBox>
        
-                   <Separator prefWidth="200.0" />
+                               <Separator prefWidth="200.0" />
        
-                   <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                               <HBox alignment="CENTER_RIGHT" spacing="10.0">
                       <VBox.margin>
                          <Insets top="10.0" />
                       </VBox.margin>
                   <children>
-                     <Button fx:id="ExitButton" mnemonicParsing="false" onAction="#handleExit" text="Thoát" />
+                     <Button fx:id="ExitButton" mnemonicParsing="false" onAction="#handleExit" text="Back" />
                   </children>
                    </HBox>
                 </children>
              </VBox>
-          </content>
-       </ScrollPane>
+   </children>
+</VBox>

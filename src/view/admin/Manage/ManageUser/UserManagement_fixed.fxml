@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -11,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="404.0" prefWidth="700.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.UserManagementController">
+<BorderPane prefHeight="404.0" prefWidth="700.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.UserManagementController">
       <top>
          <VBox alignment="TOP_CENTER" spacing="15.0" BorderPane.alignment="CENTER">
             <padding>
@@ -52,7 +57,7 @@
                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
             </padding>
             <children>
-               <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddButtonAction" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="ADD USER" />
+               <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddButtonAction" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Create account" />
                <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteButtonAction" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="DELETE " />
                <Button fx:id="exitButton" mnemonicParsing="false" onAction="#handleExitButtonAction" text="EXIT" />
             </children>
