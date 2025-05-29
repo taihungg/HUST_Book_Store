@@ -70,7 +70,7 @@ public class StationeryController {
         String type = typeField.getText();
         String status = statusComboBox.getValue();
         String brand = brandField.getText();
-        String id = "STATIONERY_" + System.currentTimeMillis();
+        String id = "ST" + System.currentTimeMillis();
         Double sellingPrice = Double.parseDouble(sellingpriceField.getText());
         Double purchasePrice = Double.parseDouble(purchasepriceField.getText());
         int quantity = Integer.parseInt(quantityField.getText());
@@ -99,8 +99,6 @@ public class StationeryController {
                 galleryUrl,         // galleryURL
                 sellingPrice,       // sellingPrice
                 purchasePrice, // purchasePrice
-                0, // averageRating
-                0, // numberOfReviews
                 status,             // status
                 brand,
                 type              // type

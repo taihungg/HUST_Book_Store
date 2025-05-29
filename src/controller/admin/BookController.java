@@ -243,8 +243,6 @@ public class BookController {
                 galleryURL,
                 sellingPrice,
                 purchasePrice,    // purchasePrice
-                averageRatingDefault,    // averageRating
-                numberOfReviewsDefault,  // numberOfReviews
                 status,
                 isbn,
                 authors,            // author (số ít theo constructor Ebook)
@@ -265,13 +263,13 @@ public class BookController {
                  return;
             }
             
-            String id = "Audiobook_" + System.currentTimeMillis();
+            String id = "AB" + System.currentTimeMillis();
             // Giả sử constructor Audiobook của bạn là:
             // Audiobook(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status,
             //           isbn, authors, publisher, category, language, publicationYear,
             //           audioFormat, downloadURL, streamingURL, narrator, totalDuration, hasDRM, soundEffects, musicScore /*, demoAudioList */)
             productToAdd = new Audiobook(id, title, description, galleryURL, sellingPrice, purchasePrice,
-            averageRatingDefault, numberOfReviewsDefault, status, isbn, authors, // authors ở đây
+            status, isbn, authors, 
             publisher, category, language, audiobookDownloadURL
             );
 
@@ -280,11 +278,11 @@ public class BookController {
         else if ("Print Book".equals(selectedBookType)) {
             int numberOfPages = Integer.parseInt(printBookNumberOfPagesField.getText().trim());
             int weight = Integer.parseInt(printBookWeightField.getText().trim());
-            String id = "PrintBook_" + System.currentTimeMillis();
+            String id = "PB" + System.currentTimeMillis();
              quantity = Integer.parseInt(printBookQuantityField.getText().trim());
             quantitydefault = quantity;
             productToAdd = new Printbook(id, title, description, galleryURL, sellingPrice, purchasePrice,
-            averageRatingDefault, numberOfReviewsDefault, status, isbn, authors, publisher, category, language, numberOfPages, weight);
+            status, isbn, authors, publisher, category, language, numberOfPages, weight);
         }
 
          else {

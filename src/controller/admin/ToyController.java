@@ -84,7 +84,7 @@ public class ToyController {
     String brand =  brandField.getText();
     
 
-   String id = "TOY_" + System.currentTimeMillis();
+   String id = "TOY" + System.currentTimeMillis();
 
     try{
         if (    sellingPrice < 0 ){
@@ -105,7 +105,7 @@ public class ToyController {
    
 
    Toy newToy = new Toy( id,  title,  description,  galleryUrl,  sellingPrice,
-   purchasePrice, 0, 10,  status,
+   purchasePrice, status,
     brand,  suitableAge);
 
    appServiceManager.getProductManager().addProduct(newToy, quantity,currentUser);
