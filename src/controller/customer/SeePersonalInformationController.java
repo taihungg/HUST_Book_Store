@@ -35,8 +35,6 @@ public class SeePersonalInformationController implements Initializable {
     @FXML private Button backButton;
 
    
-    private Properties userData;
-    private Properties originalData; // Lưu thông tin gốc để phục hồi khi cancel
     private Customer currentUser = (Customer)Main.currentUser;
 
     // Thông tin mặc định
@@ -126,11 +124,11 @@ public class SeePersonalInformationController implements Initializable {
         currentUser.setEmail(emailField.getText().trim());
         currentUser.setPhone(phoneField.getText().trim());
         currentUser.setAddress(addressField.getText().trim());
+        currentUser.setPassword(passwordField.getText().trim());
+        currentUser.setUsername(usernameField.getText().trim());
 
         // Save to file
-        
         // Update backup with new data
-        
         setFieldsEditable(false);
         updateButtonVisibility(false);
         showAlert("Success", "Your information has been saved successfully!");
