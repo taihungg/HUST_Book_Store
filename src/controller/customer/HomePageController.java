@@ -53,7 +53,6 @@ public class HomePageController {
     @FXML private ScrollPane mainScrollPane;
     @FXML private Button personalInfoButton;
     @FXML private Button orderHistoryButton;
-    @FXML private Button browseProductsButton;
     @FXML private Button cartMenuButton;
 
     // BrowseProducts controls
@@ -395,7 +394,8 @@ public class HomePageController {
         VBox card = new VBox(10); 
         card.setPadding(new Insets(10)); 
         card.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5;"); 
-
+        card.setAlignment(javafx.geometry.Pos.CENTER); // Căn giữa tất cả nội dung trong card
+        
         ImageView imageView = new ImageView();
         imageView.setFitHeight(150); 
         imageView.setFitWidth(100);  
@@ -611,16 +611,12 @@ public class HomePageController {
         Button button = (Button) event.getSource();
         String fxmlPath = null; 
 
-        boolean loginRequired = !(button.getId().equals("browseProductsButton")); 
-        if (loginRequired && currentUser == null) {
+        if (currentUser == null) {
             showAlert("Login Required", "Please log in to access this feature.");
             return;
         }
 
         switch (button.getId()) {
-            case "browseProductsButton":
-                refreshProductView(); 
-                return; 
             case "cartMenuButton":
             	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/customer/Store/SeeCart.fxml"));
                 Parent root = loader.load();
