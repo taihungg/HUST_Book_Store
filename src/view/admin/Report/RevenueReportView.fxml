@@ -18,7 +18,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.layout.AnchorPane?>
 
 <ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.RevenueReportController">
        <content>
@@ -75,7 +74,7 @@
                             <Label text="Tổng Doanh thu">
                                <font><Font name="System Bold" size="14.0" /></font>
                             </Label>
-                            <Label fx:id="totalRevenueLabel" text="0 VNĐ">
+                            <Label fx:id="totalRevenueLabel" text="0 $">
                                <font><Font size="18.0" /></font>
                                <VBox.margin><Insets top="5.0" /></VBox.margin>
                             </Label>
@@ -97,7 +96,7 @@
                             <Label text="Doanh thu TB/Đơn">
                                <font><Font name="System Bold" size="14.0" /></font>
                             </Label>
-                            <Label fx:id="averageRevenuePerOrderLabel" text="0 VNĐ">
+                            <Label fx:id="averageRevenuePerOrderLabel" text="0 $">
                                <font><Font size="18.0" /></font>
                                 <VBox.margin><Insets top="5.0" /></VBox.margin>
                             </Label>

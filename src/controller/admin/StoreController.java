@@ -93,14 +93,18 @@ public class StoreController {
         titleCol.setCellFactory(TextFieldTableCell.forTableColumn());
         titleCol.setOnEditCommit((CellEditEvent<Product, String> event) -> {
             Product product = event.getRowValue();
-            product.setTitle(event.getNewValue()); // Product cần có setTitle()
+            product.setTitle(event.getNewValue()); 
+            appServiceManager.getProductManager().updateProduct(product,currentUser);
+            productTableView.refresh();
         });
 
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         descriptionCol.setCellFactory(TextFieldTableCell.forTableColumn());
         descriptionCol.setOnEditCommit((CellEditEvent<Product, String> event) -> {
             Product product = event.getRowValue();
-            product.setDescription(event.getNewValue()); // Product cần có setDescription()
+            product.setDescription(event.getNewValue()); 
+            appServiceManager.getProductManager().updateProduct(product,currentUser);
+            productTableView.refresh();
         });
 
         priceCol.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
@@ -108,7 +112,9 @@ public class StoreController {
         priceCol.setOnEditCommit((CellEditEvent<Product, Double> event) -> {
             Product product = event.getRowValue();
             if (event.getNewValue() != null) {
-                product.setSellingPrice(event.getNewValue()); // Product cần có setPrice()
+                product.setSellingPrice(event.getNewValue()); 
+                appServiceManager.getProductManager().updateProduct(product,currentUser);
+                productTableView.refresh();
             }
         });
 
@@ -116,7 +122,9 @@ public class StoreController {
         statusCol.setCellFactory(TextFieldTableCell.forTableColumn());
         statusCol.setOnEditCommit((CellEditEvent<Product, String> event) -> {
             Product product = event.getRowValue();
-            product.setStatus(event.getNewValue()); // Product cần có setStatus()
+            product.setStatus(event.getNewValue()); 
+            appServiceManager.getProductManager().updateProduct(product,currentUser);
+            productTableView.refresh();
         });
 
         quantityCol.setCellValueFactory(cellData -> {
