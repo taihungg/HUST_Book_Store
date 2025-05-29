@@ -127,7 +127,6 @@ public class SeeCartController implements Initializable {
 		});
         removeCartButton.setOnAction(e -> handleRemoveCart());
         clearCartButton.setOnAction(e -> handleClearCart());
-        checkoutButton.setOnAction(e -> handleCheckout());
     }
 
     public void handleContinueShopping(ActionEvent event) throws IOException {
@@ -158,17 +157,17 @@ public class SeeCartController implements Initializable {
         updateTotalLabel();
         showAlert("Thông báo", "Đã xóa toàn bộ giỏ hàng!");
     }
-
-    public void handleCheckout() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/customer/Store/PlaceOrder.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) ((Node) checkoutButton).getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-            Stage currentStage = (Stage) ((Node) checkoutButton).getScene().getWindow();
-            currentStage.close();
+    @FXML
+    public void handleCheckout(ActionEvent event) {
+        try{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/customer/Store/PlaceOrder.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
