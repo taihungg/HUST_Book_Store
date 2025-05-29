@@ -1,8 +1,10 @@
 package controller.admin;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import controller.Main;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,7 +33,7 @@ public class OrderManagementController {
     private TableColumn<Order, Double> amoutCol;
 
     @FXML
-    private TableColumn<Order, LocalDateTime> dateCol;
+    private TableColumn<Order, LocalDate> dateCol;
 
     @FXML
     private Button exitButton;
@@ -64,16 +66,22 @@ public class OrderManagementController {
         orderidCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderId"));
         addressCol.setCellValueFactory(new PropertyValueFactory<Order, String>("shippingAddress"));
         amoutCol.setCellValueFactory(new PropertyValueFactory<Order, Double>("totalAmount"));
-        dateCol.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateTimeStringConverter()));
-        payCol.setCellValueFactory(new PropertyValueFactory<Order, String>("paymentMethod"));
-        statusCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderStatus"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<Order, LocalDate>("orderDate"));
+        
+        
+        // CellFactory này vẫn dùng LocalDateTimeStringConverter vì cột của bạn là LocalDateTime
         usernameCol.setCellValueFactory(new PropertyValueFactory<Order, String>("customerUsername"));
         orderidCol.setCellFactory(TextFieldTableCell.forTableColumn());
         addressCol.setCellFactory(TextFieldTableCell.forTableColumn());
         amoutCol.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-        dateCol.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateTimeStringConverter()));
+        dateCol.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateStringConverter()));
         payCol.setCellFactory(TextFieldTableCell.forTableColumn());
         statusCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        statusCol.setOnEditCommit(event -> {
+            Order order = event.getRowValue();
+            order.setOrderStatus(event.getNewValue());
+            orderTable.refresh();
+        });
         usernameCol.setCellFactory(TextFieldTableCell.forTableColumn());
 
         

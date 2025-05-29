@@ -121,19 +121,19 @@ int totalProductsSold = statisticsManager.calculateTotalProductsSold(currentUser
 int totalCancelledOrders = statisticsManager.calculateTotalCancelledOrders(currentUser, startDate, endDate);
 
 // Cập nhật các Label trong ô tổng quan
-totalRevenueLabel.setText(currencyFormatter.format(totalRevenue));
-totalProfitsLabel.setText(currencyFormatter.format(totalProfit));
+totalRevenueLabel.setText(String.valueOf(totalRevenue));
+totalProfitsLabel.setText(String.valueOf(totalProfit));
 profitMarginLabel.setText(String.valueOf(totalProductsSold)); // FXML: Total products sales
 totalOrdersLabel.setText(String.valueOf(totalSuccessfulOrders)); // FXML: Total orders successfull
 totalCostsLabel1.setText(String.valueOf(totalCancelledOrders)); // FXML: Total orders cancelled
-averageRevenuePerOrderLabel.setText(currencyFormatter.format(totalCostOfSoldProducts)); // FXML: Total products cost
+averageRevenuePerOrderLabel.setText(String.valueOf(totalCostOfSoldProducts)); // FXML: Total products cost
 
 // Cập nhật các Label trong mục "Monthly Cost"
 // StatisticsManager không cung cấp chi phí lương hay "Other" trực tiếp theo khoảng ngày.
 // Tạm thời đặt là "N/A" hoặc 0.
 profitMarginLabel1.setText("N/A"); // Lương nhân viên
 totalRevenueLabel1.setText("N/A");  // Chi phí khác
-totalProfitsLabel1.setText(currencyFormatter.format(totalProfit)); // Tổng lợi nhuận (hiển thị lại)
+totalProfitsLabel1.setText(String.valueOf(totalProfit)); // Tổng lợi nhuận (hiển thị lại)
 
 
 }
