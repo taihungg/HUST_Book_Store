@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -24,9 +25,11 @@ import model.product.book.Audiobook;
 import model.product.book.Book; // Assuming this is the base class for books
 import model.product.book.Ebook;
 import model.product.book.Printbook;
+import model.product.interfaces.DigitalProduct;
 import model.product.interfaces.PhysicalProduct;
 import model.user.User;
 import model.user.cart.Cart;
+import model.user.cart.CartItem;
 import model.user.customer.Customer;
 
 import java.io.IOException;

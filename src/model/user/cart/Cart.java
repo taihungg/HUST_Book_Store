@@ -55,7 +55,7 @@ public class Cart {
             for (CartItem item : items) {
                 if(item.getProductId().equals(productId)) { // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
                     item.setQuantity(1); // DigitalProduct chỉ được mua 1 bản quyền
-                    return true;
+                    return false;
                 }
             }
             items.add(new CartItem(productId, 1));

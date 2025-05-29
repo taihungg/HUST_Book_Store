@@ -19,7 +19,6 @@ public class Main extends Application {
     public static User currentUser =appServiceManager.getCurrentUser() ;
 
     public static UserManager userManager = appServiceManager.getUserManager();
-    public static User currentUser;
 
     public static void main(String[] args) {
                 launch(args);
