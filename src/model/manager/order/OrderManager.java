@@ -42,7 +42,7 @@ public class OrderManager {
      * @param currentUser Người dùng đang thực hiện hành động (có thể là khách hàng hoặc nhân viên).
      * @return true nếu đơn hàng được đặt thành công, false nếu thất bại (ví dụ: không đủ tồn kho, không có quyền).
      */
-    public boolean placeOrder(Cart customerCart, Customer customer, String shippingAddress, String paymentMethod, User currentUser) {
+    public boolean placeOrder(Cart customerCart, Customer customer, String shippingAddress, String paymentMethod, String phoneNumber, User currentUser) {
         // --- Kiểm tra quyền hạn ---
         if (currentUser == null) {
             System.out.println("Access Denied: No user logged in to place an order.");
@@ -87,13 +87,15 @@ public class OrderManager {
         }
 
         // --- Bước 2: Tạo đối tượng Order mới ---
-        
+        String orderStatus = (paymentMethod.equals("Debit") || paymentMethod.equals("Credit")) ? "Pending" : "Approved";
         Order newOrder = new Order(
             customer.getUsername(),
             new ArrayList<CartItem>(customerCart.getItems()), // Tạo bản sao danh sách item
             customerCart.calculateTotal(productManager), // Tính tổng tiền
             shippingAddress,
-            paymentMethod
+            paymentMethod,
+            phoneNumber,
+            orderStatus
         );
 
         // --- Bước 3: Thêm đơn hàng vào danh sách quản lý ---
@@ -120,6 +122,10 @@ public class OrderManager {
         // Chỉ Admin hoặc Employee/Manager mới được cập nhật trạng thái đơn hàng
         if (currentUser == null || (!(currentUser instanceof Manager))) {
             System.out.println("Access Denied: User " + (currentUser != null ? currentUser.getUsername() : "N/A") + " does not have permission to update order status.");
+            return false;
+        }
+        else if(orderMap.get(orderId).getOrderStatus().equals("CANCELLED") || orderMap.get(orderId).getOrderStatus().equals("DELIVERED") || orderMap.get(orderId).getOrderStatus().equals("Done")) {
+            System.out.println("Error: Order " + orderId + " is " + orderMap.get(orderId).getOrderStatus() + " and cannot be updated.");
             return false;
         }
 

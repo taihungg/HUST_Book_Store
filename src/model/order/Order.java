@@ -11,10 +11,11 @@ public class Order {
     private final String customerUsername; // ID của khách hàng đã đặt đơn hàng (final)
     private final LocalDateTime orderDate; // Thời điểm đơn hàng được đặt (final)
     private final List<CartItem> orderItems; // Danh sách các mặt hàng trong đơn hàng (final)
-    private double totalAmount; // Tổng giá trị của đơn hàng
+    private final double totalAmount; // Tổng giá trị của đơn hàng
+    private final String shippingAddress; // Địa chỉ giao hàng
+    private final String paymentMethod; // Phương thức thanh toán
+    private final String phoneNumber; // Số điện thoại khách hàng
     private String orderStatus; // Trạng thái hiện tại của đơn hàng
-    private String shippingAddress; // Địa chỉ giao hàng
-    private String paymentMethod; // Phương thức thanh toán
 
     /**
      * Constructor cho Order.
@@ -30,7 +31,7 @@ public class Order {
      * @throws IllegalArgumentException nếu totalAmount âm.
      */
     public Order(String customerUsername, List<CartItem> orderItems,
-                 double totalAmount, String shippingAddress, String paymentMethod) {
+                 double totalAmount, String shippingAddress, String paymentMethod, String phoneNumber, String orderStatus) {
         this.orderId = generateOrderId();
         this.customerUsername = Objects.requireNonNull(customerUsername, "Customer username cannot be null.");
         this.orderDate = LocalDateTime.now(); // <<-- Tự động lấy thời gian hiện tại
@@ -39,10 +40,10 @@ public class Order {
             throw new IllegalArgumentException("Total amount cannot be negative.");
         }
         this.totalAmount = totalAmount;
-
-        this.orderStatus = "Pending"; // Trạng thái mặc định khi tạo đơn hàng
         this.shippingAddress = Objects.requireNonNull(shippingAddress, "Shipping address cannot be null.");
         this.paymentMethod = Objects.requireNonNull(paymentMethod, "Payment method cannot be null.");
+        this.phoneNumber = Objects.requireNonNull(phoneNumber, "Phone number cannot be null.");
+        this.orderStatus = Objects.requireNonNull(orderStatus, "Order status cannot be null.");
     }
 
     private static String generateOrderId() {
@@ -78,12 +79,8 @@ public class Order {
     public String getPaymentMethod() {
         return paymentMethod;
     }
-    
-    public void setTotalAmount(double totalAmount) {
-        if (totalAmount < 0) {
-            throw new IllegalArgumentException("Total amount cannot be negative.");
-        }
-        this.totalAmount = totalAmount;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
     /**
@@ -94,14 +91,6 @@ public class Order {
      */
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = Objects.requireNonNull(orderStatus, "Order status cannot be null.");
-    }
-
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = Objects.requireNonNull(shippingAddress, "Shipping address cannot be null.");
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = Objects.requireNonNull(paymentMethod, "Payment method cannot be null.");
     }
 
     // --- Phương thức toString để dễ dàng in ra thông tin đơn hàng ---
