@@ -1,5 +1,7 @@
 package controller.admin;
 
+import java.io.InputStream;
+
 import controller.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -81,9 +83,70 @@ public class ToyDetailController {
         ageLabel.setText(String.valueOf(toy.getSuitableAge()));
         //toyMaterialLabel.setText(toy.
         descriptionArea.setText(toy.getDescription());
-        toyImage.setImage(new Image(toy.getGalleryURL()));
         quantityLabel.setText(String.valueOf(appServiceManager.getProductManager().getProductQuantity(toy.getId())));
+        String galleryURL = toy.getGalleryURL();
+        System.out.println("Attempting to load image for Toy from: " + galleryURL);
 
+        if (toyImage == null) {
+            System.err.println("toyImage ImageView is null. Check FXML fx:id.");
+            return; // Không thể hiển thị ảnh nếu ImageView là null
+        }
+
+        if (galleryURL != null && !galleryURL.isEmpty()) {
+            try {
+                Image image = null;
+                if (galleryURL.startsWith("http://") || galleryURL.startsWith("https://") || galleryURL.startsWith("file:/")) {
+                    image = new Image(galleryURL, true);
+                } else {
+                    InputStream imageStream = getClass().getResourceAsStream(galleryURL);
+                    if (imageStream != null) {
+                        image = new Image(imageStream);
+                        imageStream.close();
+                    } else {
+                        System.err.println("Không tìm thấy tài nguyên hình ảnh (trong resources): " + galleryURL);
+                    }
+                }
+
+                if (image != null && !image.isError()) {
+                    toyImage.setImage(image);
+                } else {
+                    if (image != null && image.getException() != null) {
+                        image.getException().printStackTrace();
+                    }
+                    System.err.println("Đối tượng Image báo lỗi hoặc null sau khi tạo từ: " + galleryURL);
+                    toyImage.setImage(getPlaceholderImage());
+                }
+            } catch (IllegalArgumentException e) {
+                System.err.println("URL hình ảnh không hợp lệ: " + galleryURL + " - " + e.getMessage());
+                toyImage.setImage(getPlaceholderImage());
+            } catch (Exception e) {
+                System.err.println("Lỗi không xác định khi tải hình ảnh: " + galleryURL);
+                e.printStackTrace();
+                toyImage.setImage(getPlaceholderImage());
+            }
+        } else {
+            System.err.println("Gallery URL của Toy bị null hoặc rỗng.");
+            toyImage.setImage(getPlaceholderImage());
+        }
+    }
+    private Image getPlaceholderImage() {
+        try {
+            InputStream placeholderStream = getClass().getResourceAsStream("/images/placeholder.png");
+            if (placeholderStream != null) {
+                Image img = new Image(placeholderStream);
+                placeholderStream.close();
+                return img;
+            } else {
+                System.err.println("Không tìm thấy file /images/placeholder.png. Trả về ảnh trống.");
+                return createBlankImage();
+            }
+        } catch (Exception e) {
+            System.err.println("Lỗi khi tải ảnh placeholder: " + e.getMessage());
+            return createBlankImage();
+        }
+    }
+    private Image createBlankImage() {
+        return new Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=");
     }
 
 }

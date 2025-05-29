@@ -1,5 +1,7 @@
 package controller.admin;
 
+import java.io.InputStream;
+
 import controller.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -71,10 +73,69 @@ public class StationeryDetailController {
         statusLabel.setText(newStationery.getStatus());
         purchasePriceLabel.setText(String.valueOf(newStationery.getPurchasePrice()));
         descriptionArea.setText(newStationery.getDescription());
-        bookImage.setImage(new Image(newStationery.getGalleryURL()));
         quantityLabel.setText(String.valueOf(appServiceManager.getProductManager().getProductQuantity(newStationery.getId())));
         typeLabel.setText(newStationery.getType());
         brandLabel.setText(newStationery.getBrand());
+        String galleryURL = newStationery.getGalleryURL();
+        System.out.println("Attempting to load image for Stationery from: " + galleryURL);
+
+        if (galleryURL != null && !galleryURL.isEmpty()) {
+            try {
+                Image image = null;
+                if (galleryURL.startsWith("http://") || galleryURL.startsWith("https://") || galleryURL.startsWith("file:/")) {
+                    image = new Image(galleryURL, true);
+                } else {
+                    InputStream imageStream = getClass().getResourceAsStream(galleryURL);
+                    if (imageStream != null) {
+                        image = new Image(imageStream);
+                        imageStream.close();
+                    } else {
+                        System.err.println("Không tìm thấy tài nguyên hình ảnh (trong resources): " + galleryURL);
+                    }
+                }
+
+                if (image != null && !image.isError()) {
+                    bookImage.setImage(image); // bookImage nên đổi tên thành itemImage hoặc stationeryImage trong FXML và controller
+                } else {
+                    if (image != null && image.getException() != null) {
+                        image.getException().printStackTrace();
+                    }
+                    System.err.println("Đối tượng Image báo lỗi hoặc null sau khi tạo từ: " + galleryURL);
+                    bookImage.setImage(getPlaceholderImage());
+                }
+            } catch (IllegalArgumentException e) {
+                System.err.println("URL hình ảnh không hợp lệ: " + galleryURL + " - " + e.getMessage());
+                bookImage.setImage(getPlaceholderImage());
+            } catch (Exception e) {
+                System.err.println("Lỗi không xác định khi tải hình ảnh: " + galleryURL);
+                e.printStackTrace();
+                bookImage.setImage(getPlaceholderImage());
+            }
+        } else {
+            System.err.println("Gallery URL của Stationery bị null hoặc rỗng.");
+            bookImage.setImage(getPlaceholderImage());
+        }
     }
+    private Image getPlaceholderImage() {
+        try {
+            InputStream placeholderStream = getClass().getResourceAsStream("/images/placeholder.png");
+            if (placeholderStream != null) {
+                Image img = new Image(placeholderStream);
+                placeholderStream.close();
+                return img;
+            } else {
+                System.err.println("Không tìm thấy file /images/placeholder.png. Trả về ảnh trống.");
+                return createBlankImage();
+            }
+        } catch (Exception e) {
+            System.err.println("Lỗi khi tải ảnh placeholder: " + e.getMessage());
+            return createBlankImage();
+        }
+        
+    }
+    private Image createBlankImage() {
+        return new Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=");
+    }
+
 
 }
