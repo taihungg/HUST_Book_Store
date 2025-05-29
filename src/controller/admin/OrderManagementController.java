@@ -20,6 +20,7 @@ import model.order.Order;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.LocalDateTimeStringConverter;
 import javafx.scene.Parent;
+import javafx.util.converter.LocalDateStringConverter;
 public class OrderManagementController {
 
     
@@ -63,7 +64,7 @@ public class OrderManagementController {
         orderidCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderId"));
         addressCol.setCellValueFactory(new PropertyValueFactory<Order, String>("shippingAddress"));
         amoutCol.setCellValueFactory(new PropertyValueFactory<Order, Double>("totalAmount"));
-        dateCol.setCellValueFactory(new PropertyValueFactory<Order, LocalDateTime>("orderDate"));
+        dateCol.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateTimeStringConverter()));
         payCol.setCellValueFactory(new PropertyValueFactory<Order, String>("paymentMethod"));
         statusCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderStatus"));
         usernameCol.setCellValueFactory(new PropertyValueFactory<Order, String>("customerUsername"));
