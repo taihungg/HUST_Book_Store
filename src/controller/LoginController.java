@@ -135,11 +135,10 @@ public class LoginController {
         @FXML
         void handleSignUpAction(ActionEvent event) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignUp.fxml"));
+            	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignUp.fxml"));
                 Parent root = loader.load();
                 Scene scene = new Scene(root);
-                Stage stage = new Stage();
-                stage.setTitle("Sign Up");
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.setScene(scene);
                 stage.show();
                 Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

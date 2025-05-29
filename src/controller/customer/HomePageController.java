@@ -1,11 +1,12 @@
 package controller.customer;
 
+import javafx.event.ActionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -49,12 +50,11 @@ public class HomePageController {
     // HomePage controls
     @FXML private Button loginButton;
     @FXML private Button logoutButton;
-    @FXML private MenuBar menuBar;
-    @FXML private MenuItem personalInfoMenuItem; // Ensure ID is set in FXML e.g., profileMenuItem
-    @FXML private MenuItem orderHistoryMenuItem; // Ensure ID is set in FXML e.g., ordersMenuItem
-    @FXML private MenuItem browseProductsMenuItem;
-    @FXML private MenuItem cartMenuItem;
     @FXML private ScrollPane mainScrollPane;
+    @FXML private Button personalInfoButton;
+    @FXML private Button orderHistoryButton;
+    @FXML private Button browseProductsButton;
+    @FXML private Button cartMenuButton;
 
     // BrowseProducts controls
     @FXML private TextField searchField;
@@ -103,7 +103,7 @@ public class HomePageController {
         setupEventHandlers();
 
         try {
-            availableProducts = appServiceManager.getProductManager().getAllProductsForManager(Main.currentUser);
+            availableProducts = appServiceManager.getProductManager().getAvailableProductsForCustomer();
             if (availableProducts == null) {
                 System.err.println("ProductManager returned null for availableProducts. Initializing as empty list.");
                 availableProducts = FXCollections.observableArrayList();
@@ -157,7 +157,7 @@ public class HomePageController {
     }
 
     private void updateButtonsVisibility(boolean isLoggedIn) {
-        if (loginButton == null || logoutButton == null || menuBar == null) {
+        if (loginButton == null || logoutButton == null) {
             System.err.println("UI components not ready in updateButtonsVisibility.");
             return;
         }
@@ -577,23 +577,16 @@ public class HomePageController {
     }
 
     @FXML
-    private void handleLogin() {
+    private void handleLogin(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
-            Parent loginView = loader.load();
-            Stage loginStage = new Stage();
-            loginStage.setTitle("Login");
-            loginStage.initModality(Modality.APPLICATION_MODAL); // Quan trọng: Chặn tương tác với cửa sổ khác
-            loginStage.setScene(new Scene(loginView));
-
-            loginStage.show();
-            Stage currentStage = (Stage) loginButton.getScene().getWindow();
-            currentStage.close();
-
-            
-            
-
-            
+        	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close(); 
         } catch (IOException e) {
             showError("Login Error", "Failed to open login window: " + e.getMessage());
             e.printStackTrace();
@@ -601,7 +594,7 @@ public class HomePageController {
     }
 
     @FXML
-    private void handleLogout() {
+    private void handleLogout(ActionEvent event) {
         try {
             appServiceManager.logout(); 
             this.currentUser = null;
@@ -614,46 +607,53 @@ public class HomePageController {
     }
 
     @FXML
-    private void handleMenuItemAction(ActionEvent event) throws IOException {
-        MenuItem menuItem = (MenuItem) event.getSource();
+    private void handleMenuButton(ActionEvent event) throws IOException {
+        Button button = (Button) event.getSource();
         String fxmlPath = null; 
 
-        boolean loginRequired = !(menuItem.getId().equals("browseProductsMenuItem")); 
+        boolean loginRequired = !(button.getId().equals("browseProductsButton")); 
         if (loginRequired && currentUser == null) {
             showAlert("Login Required", "Please log in to access this feature.");
             return;
         }
 
-        switch (menuItem.getId()) {
-            case "browseProductsMenuItem":
+        switch (button.getId()) {
+            case "browseProductsButton":
                 refreshProductView(); 
                 return; 
-            case "cartMenuItem":
-                fxmlPath = "/view/customer/Store/SeeCart.fxml";
-                FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-                Parent personalInfoView = loader.load();
-                Stage personalInfoStage = new Stage();
-                personalInfoStage.setTitle("Personal Information");
-                personalInfoStage.initModality(Modality.APPLICATION_MODAL);
-                personalInfoStage.setScene(new Scene(personalInfoView));
-                personalInfoStage.showAndWait();
+            case "cartMenuButton":
+            	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/customer/Store/SeeCart.fxml"));
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(scene);
+                stage.show();
+                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage.close();
                 break;
-            case "orderHistoryMenuItem": 
-                fxmlPath = "/view/customer/Account/BookOrderHistoryApp.fxml";
+            case "orderHistoryButton": 
+            	FXMLLoader loader1 = new FXMLLoader(getClass().getResource("/view/customer/Account/BookOrderHistoryApp.fxml"));
+                Parent root1 = loader1.load();
+                Scene scene1 = new Scene(root1);
+                Stage stage1 = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage1.setScene(scene1);
+                stage1.show();
+                Stage currentStage1 = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage1.close();
                 break;
-            case "personalInfoMenuItem": 
-                fxmlPath = "/view/customer/Account/SeePersonalInformation.fxml";
-                FXMLLoader loader1 = new FXMLLoader(getClass().getResource(fxmlPath));
-                Parent personalInfoView1 = loader1.load();
-                Stage personalInfoStage1 = new Stage();
-                personalInfoStage1.setTitle("Personal Information");
-                personalInfoStage1.initModality(Modality.APPLICATION_MODAL);
-                personalInfoStage1.setScene(new Scene(personalInfoView1));
-                personalInfoStage1.showAndWait();
+            case "personalInfoButton": 
+            	FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/view/customer/Account/SeePersonalInformation.fxml"));
+                Parent root2 = loader2.load();
+                Scene scene2 = new Scene(root2);
+                Stage stage2 = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage2.setScene(scene2);
+                stage2.show();
+                Stage currentStage2 = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage2.close();
                 break;
             default:
-                System.err.println("Unsupported MenuItem ID: " + menuItem.getId());
-                showAlert("Navigation Error", "The selected menu item is not configured.");
+                System.err.println("Unsupported Button ID: " + button.getId());
+                showAlert("Navigation Error", "The selected button is not configured.");
                 return;
         }
 

@@ -65,11 +65,10 @@ public class ForgotPasswordController {
 
     	try {
             // Chuyển về trang đăng nhập
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
+    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ForgotPassword.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.setTitle("Login");
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -83,14 +82,12 @@ public class ForgotPasswordController {
     @FXML
     void btnBackclicked(ActionEvent event) {
     	try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
-            Parent loginView = loader.load();
-            Stage loginStage = new Stage();
-            loginStage.setTitle("Login");
-            loginStage.initModality(Modality.APPLICATION_MODAL); // Quan trọng: Chặn tương tác với cửa sổ khác
-            loginStage.setScene(new Scene(loginView));
-
-            loginStage.show();
+    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             currentStage.close(); 
         }
