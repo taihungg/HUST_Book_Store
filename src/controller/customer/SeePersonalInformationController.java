@@ -1,16 +1,23 @@
 package controller.customer;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import model.user.customer.Customer;
 
 import java.io.*;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 import controller.Main;
 
@@ -30,7 +37,7 @@ public class SeePersonalInformationController implements Initializable {
    
     private Properties userData;
     private Properties originalData; // Lưu thông tin gốc để phục hồi khi cancel
-    private Customer currentUser = (Customer)Main.appServiceManager.getCurrentUser();
+    private Customer currentUser = (Customer)Main.currentUser;
 
     // Thông tin mặc định
     
@@ -137,14 +144,45 @@ public class SeePersonalInformationController implements Initializable {
     }
 
     @FXML
-    private void handleBack() {
-        
+    private void handleBack(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/customer/HomePage.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setTitle("Sign Up");
+            stage.setScene(scene);
+            stage.show();
+
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+           
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
-    private boolean isValidEmail(String email) {
-        return email.contains("@") && email.contains(".") && 
-               email.indexOf("@") < email.lastIndexOf(".");
-    }
+    private static final String EMAIL_REGEX =
+    "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" + // Phần tên người dùng
+    "(?:[a-zA-Z0-9-]+\\.)+" +                      // Phần tên miền (có thể có subdomain)
+    "[a-zA-Z]{2,}$";                               // Phần TLD (ít nhất 2 chữ cái)
+
+// Biên dịch Pattern một lần để tăng hiệu suất nếu phương thức được gọi nhiều lần
+private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+
+/**
+* Kiểm tra xem một chuỗi email có hợp lệ không bằng cách sử dụng biểu thức chính quy.
+*
+* @param email Chuỗi email cần kiểm tra.
+* @return true nếu email hợp lệ, false nếu không.
+*/
+private boolean isValidEmail(String email) {
+if (email == null || email.isEmpty()) {
+    return false; // Email rỗng hoặc null không hợp lệ
+}
+// So khớp email với biểu thức chính quy đã biên dịch
+return EMAIL_PATTERN.matcher(email).matches();
+}
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
