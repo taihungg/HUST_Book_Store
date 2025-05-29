@@ -183,7 +183,7 @@ public class StoreController {
 
         ObservableList<Product> filteredList = FXCollections.observableArrayList();
         for (Product product :appServiceManager.getProductManager().getAllProductsForManager(currentUser  )) {
-            if (product.getTitle() != null && product.getTitle().equalsIgnoreCase(searchText)) {
+            if (product.getTitle() != null && product.getTitle().toLowerCase().contains(searchText)) {
                 filteredList.add(product);
             }
             // Bạn có thể thêm tìm kiếm theo description hoặc status nếu muốn
