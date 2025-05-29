@@ -6,7 +6,7 @@ public class test {
 	private static AppServiceManager appServiceManager;
 	public static void main(String[] args) {
 		appServiceManager = new AppServiceManager();
-		System.out.println("done");
+		System.out.println("available product: " + appServiceManager.getProductManager().getAvailableProductsForCustomer().size());
 	}
 
 }

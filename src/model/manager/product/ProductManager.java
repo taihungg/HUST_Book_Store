@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,7 +25,7 @@ public class ProductManager {
 	private final ObservableList<Product> productList;
 	private final Map<String, Product> productMap;
 	private final Map<String, Integer> productQuantity;
-    private final FilteredList<Product> availableProductsFilteredList;
+    private final FilteredList<Product> availableProducts;
 
     // Sample data
 	private final Random random = new Random();
@@ -34,44 +36,40 @@ public class ProductManager {
     private final String[] COMMON_BRANDS_STATIONERY_TOY = {"Thiên Long", "Plus", "Colgate", "Biti's", "Lego", "Bandai", "Hasbro"};
     private final String[] STATIONERY_TYPES = {"Bút bi", "Sổ tay", "Tẩy", "Hộp bút", "Kẹp giấy", "Bút chì", "Thước kẻ"};
     private final String[] TOY_TYPES = {"Đồ chơi xếp hình", "Mô hình", "Búp bê", "Xe đồ chơi", "Thú bông", "Đồ chơi giáo dục"};
-    private final String[] STATUS_OPTIONS = {"In Stock", "Available", "Low Stock", "New Arrival"};
+    private final String[] PHYSICAL_STATUS_OPTIONS = {"In Stock", "Out of Stock", "Discontinued"};
+    private final String[] DIGITAL_STATUS_OPTIONS = {"Available", "Unavailable", "Coming soon", "Discontinued"};
+    
 
 	public ProductManager() {
 		this.productList = FXCollections.observableArrayList();
 		this.productMap = new HashMap<>();
 		this.productQuantity = new HashMap<>();
-        this.availableProductsFilteredList = new FilteredList<>(productList, createAvailableProductPredicate());    
+        this.availableProducts = new FilteredList<>(productList, new Predicate<Product>() {
+            @Override
+            public boolean test(Product product) {
+                return isProductAvailableForShop(product);
+            }
+        });
+
+        productList.addListener(new javafx.collections.ListChangeListener<Product>() {
+            @Override
+            public void onChanged(javafx.collections.ListChangeListener.Change<? extends Product> change) {
+                // Yêu cầu "Danh sách Hiển thị" kiểm tra lại tất cả các sản phẩm
+                availableProducts.setPredicate(new Predicate<Product>() {
+                    @Override
+                    public boolean test(Product product) {
+                        return isProductAvailableForShop(product);
+                    }
+                });
+            }
+        });
 		loadInitialProducts();
 	}
 
-    // --- Phương thức tạo Predicate (điều kiện lọc) ---
-    private Predicate<Product> createAvailableProductPredicate() {
-        return p -> {
-            String status = p.getStatus(); 
-            boolean isAvailableStatus = status.equalsIgnoreCase("Available") ||
-                                        status.equalsIgnoreCase("In Stock") ||
-                                        status.equalsIgnoreCase("New Arrival");
-            
-            if (p instanceof PhysicalProduct) {
-                return isAvailableStatus && getProductQuantity(p.getId()) > 0;
-            } else { // DigitalProduct
-                return isAvailableStatus; // Digital products always available if status is good
-            }
-        };
-    }
-
-    // --- Phương thức hỗ trợ kích hoạt cập nhật cho FilteredList ---
-    // (Cần thiết khi một thuộc tính không phải Property của Product thay đổi, ví dụ: quantity trong Map riêng)
-    private void updateProductAvailability(String productId) {
-        // Lấy lại Predicate hiện tại
-        Predicate<Product> currentPredicate = (Predicate<Product>) availableProductsFilteredList.getPredicate();
-        // Set lại cùng một Predicate. Điều này buộc FilteredList phải chạy lại bộ lọc của nó
-        // và kiểm tra lại tất cả các phần tử.
-        // Đây là cách để thông báo cho FilteredList rằng dữ liệu CƠ BẢN mà nó dựa vào (quantity)
-        // đã thay đổi, ngay cả khi đối tượng Product không thay đổi Properties của nó.
-        availableProductsFilteredList.setPredicate(currentPredicate);
-        // Hoặc bạn có thể tạo lại Predicate nếu nó có trạng thái thay đổi
-        // availableProductsFilteredList.setPredicate(createAvailableProductPredicate());
+    private boolean isProductAvailableForShop(Product product) {
+        return "In Stock".equalsIgnoreCase(product.getStatus()) 
+        || "Available".equalsIgnoreCase(product.getStatus()) 
+        || "Coming soon".equalsIgnoreCase(product.getStatus());
     }
 
 	/**
@@ -100,14 +98,12 @@ public class ProductManager {
                 productList.add(product); // Thêm vào ObservableList -> UI cập nhật
                 productMap.put(product.getId(), product); // Thêm vào Map để tra cứu nhanh
                 productQuantity.put(product.getId(), initialQuantity); // Lưu số lượng tồn kho
-                updateProductAvailability(product.getId());
                 System.out.println("Product added: " + product.getTitle() + " (ID: " + product.getId() + ")");
                 return true;
             }
             else {
                 productList.add(product); // Thêm vào ObservableList -> UI cập nhật
                 productMap.put(product.getId(), product); // Thêm vào Map để tra cứu nhanh
-                updateProductAvailability(product.getId());
                 System.out.println("Product added: " + product.getTitle() + " (ID: " + product.getId() + ")");
                 return true;
             }
@@ -135,7 +131,6 @@ public class ProductManager {
             //     // Rất hiếm khi xảy ra nếu logic thêm/xóa đúng
             //     System.err.println("Product updated in map but not found in list (ID: " + updatedProduct.getProductId() + ")");
             // }
-            updateProductAvailability(updatedProduct.getId());
             System.out.println("Product updated in memory: " + updatedProduct.getTitle() + " (ID: " + updatedProduct.getId() + ")");
             return true;
         }
@@ -162,7 +157,6 @@ public class ProductManager {
                 if (productToRemove instanceof PhysicalProduct) {
                     productQuantity.remove(productId); // Xóa số lượng tồn kho nếu là PhysicalProduct
                 }
-                updateProductAvailability(productId);
                 System.out.println("Product removed: " + productToRemove.getTitle() + " (ID: " + productId + ")");
                 return true;
             }
@@ -201,7 +195,6 @@ public class ProductManager {
                 return false;
             }
             productQuantity.put(productId, currentQuantity - amount);
-            updateProductAvailability(productId);
             System.out.println("Decreased stock for " + product.getTitle() + " by " + amount + ". New stock: " + productQuantity.get(productId));
             return true;
         }
@@ -233,7 +226,6 @@ public class ProductManager {
             }
                 int currentQuantity = productQuantity.getOrDefault(productId, 0);
                 productQuantity.put(productId, currentQuantity + amount);
-                updateProductAvailability(productId);
                 System.out.println("Increased stock for " + p.getTitle() + " by " + amount + ". New stock: " + productQuantity.get(productId));
                 return true;
         }
@@ -264,7 +256,6 @@ public class ProductManager {
                 return false;
             }
             productQuantity.put(productId, newQuantity);
-            updateProductAvailability(productId);
             System.out.println("Set new stock for " + product.getTitle() + " (ID: " + productId + ") to: " + newQuantity);
             return true;
         }
@@ -280,16 +271,14 @@ public class ProductManager {
 
     // --- Phương thức lấy danh sách sản phẩm cho khách hàng (Store Front) ---
     public ObservableList<Product> getAvailableProductsForCustomer() {
-        // TRẢ VỀ CÙNG MỘT INSTANCE của SortedList/FilteredList
-        // UI sẽ bind vào đây và tự động cập nhật
-        return availableProductsFilteredList; // Hoặc availableProductsFilteredList nếu không cần sắp xếp
+        return availableProducts;
     }
 
     //chỗ lấy tất cả sản phẩm trong store của manager thì gọi hàm này
 	public ObservableList<Product> getAllProductsForManager(User currentUser) {
 		if(!(currentUser instanceof Manager)) {
             System.out.println("Error: Only managers can get all products.");
-            return null;
+            return FXCollections.observableArrayList(); // Return empty list instead of null
         }
 		else return productList;
 	}
@@ -297,9 +286,10 @@ public class ProductManager {
     //chỗ search trong store của customer thì gọi hàm này
 	public ObservableList<Product> searchProductsForCustomer(String keyword) {
 		ObservableList<Product> filteredList = FXCollections.observableArrayList();
-		for (Product product : availableProductsFilteredList) {
+		for (Product product : availableProducts) {
 			if (product.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
-				product.getId().toLowerCase().contains(keyword.toLowerCase())) {
+				product.getId().toLowerCase().contains(keyword.toLowerCase()) ||
+                product.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
 				filteredList.add(product);
 			}
 		}
@@ -310,12 +300,14 @@ public class ProductManager {
     public ObservableList<Product> searchProductsForManager(String keyword, User currentUser) {
 		if(!(currentUser instanceof Manager)) {
             System.out.println("Error: Only managers can search products.");
-            return null;
-        }else {
+            return FXCollections.observableArrayList(); // Return empty list instead of null
+        }
+		else {
             ObservableList<Product> filteredList = FXCollections.observableArrayList();
             for (Product product : productList) {
 			if (product.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
-				product.getId().toLowerCase().contains(keyword.toLowerCase())) {
+				product.getId().toLowerCase().contains(keyword.toLowerCase()) ||
+                product.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
 				filteredList.add(product);
 				}
 			}
@@ -332,12 +324,12 @@ public class ProductManager {
             String id = "PB" + (1000 + i);
             String title = "Sách In - Tiêu đề " + (i + 1) + " (Tập " + (i % 5 + 1) + ")";
             String description = "Mô tả chi tiết cho cuốn sách in " + title + ". Đây là một cuốn sách hấp dẫn với nhiều nội dung giá trị.";
-            String galleryURL = "https://example.com/images/pb" + (i + 1) + ".jpg";
-            double sellingPrice = 50000.0 + random.nextDouble() * 150000.0; // 50k - 200k VND
+            String galleryURL = "@../images/product/book" + (i + 1) + ".jpg";
+            double sellingPrice = 2 + random.nextDouble() * 100;
             double purchasePrice = sellingPrice * (0.6 + random.nextDouble() * 0.1); // 60-70% giá bán
             double averageRating = 3.5 + random.nextDouble() * 1.5; // 3.5 - 5.0
             int numberOfReviews = random.nextInt(500);
-            String status = STATUS_OPTIONS[random.nextInt(STATUS_OPTIONS.length)];
+            String status = PHYSICAL_STATUS_OPTIONS[random.nextInt(PHYSICAL_STATUS_OPTIONS.length)];
             String isbn = "978-604-0-" + String.format("%04d", i) + "-X";
             String author = COMMON_AUTHORS[random.nextInt(COMMON_AUTHORS.length)];
             String publisher = COMMON_PUBLISHERS[random.nextInt(COMMON_PUBLISHERS.length)];
@@ -366,7 +358,7 @@ public class ProductManager {
             double purchasePrice = sellingPrice * (0.4 + random.nextDouble() * 0.1); // 40-50% giá bán
             double averageRating = 3.0 + random.nextDouble() * 2.0;
             int numberOfReviews = random.nextInt(300);
-            String status = "Available Online";
+            String status = DIGITAL_STATUS_OPTIONS[random.nextInt(DIGITAL_STATUS_OPTIONS.length)];
             String isbn = "978-999-0-" + String.format("%04d", i) + "-Y";
             String author = COMMON_AUTHORS[random.nextInt(COMMON_AUTHORS.length)];
             String publisher = COMMON_PUBLISHERS[random.nextInt(COMMON_PUBLISHERS.length)];
@@ -395,7 +387,7 @@ public class ProductManager {
             double purchasePrice = sellingPrice * (0.5 + random.nextDouble() * 0.1); // 50-60% giá bán
             double averageRating = 3.8 + random.nextDouble() * 1.2;
             int numberOfReviews = random.nextInt(250);
-            String status = "Streaming Available";
+            String status = DIGITAL_STATUS_OPTIONS[random.nextInt(DIGITAL_STATUS_OPTIONS.length)];
             String isbn = "978-000-0-" + String.format("%04d", i) + "-Z";
             String author = COMMON_AUTHORS[random.nextInt(COMMON_AUTHORS.length)];
             String publisher = COMMON_PUBLISHERS[random.nextInt(COMMON_PUBLISHERS.length)];
@@ -423,7 +415,7 @@ public class ProductManager {
             double purchasePrice = sellingPrice * (0.3 + random.nextDouble() * 0.2); // 30-50% giá bán
             double averageRating = 3.0 + random.nextDouble() * 2.0;
             int numberOfReviews = random.nextInt(120);
-            String status = STATUS_OPTIONS[random.nextInt(STATUS_OPTIONS.length)];
+            String status = PHYSICAL_STATUS_OPTIONS[random.nextInt(PHYSICAL_STATUS_OPTIONS.length)];
             String brand = COMMON_BRANDS_STATIONERY_TOY[random.nextInt(COMMON_BRANDS_STATIONERY_TOY.length)];
             String type = STATIONERY_TYPES[random.nextInt(STATIONERY_TYPES.length)];
 
@@ -446,7 +438,7 @@ public class ProductManager {
             double purchasePrice = sellingPrice * (0.5 + random.nextDouble() * 0.15); // 50-65% giá bán
             double averageRating = 4.0 + random.nextDouble() * 1.0; // 4.0 - 5.0
             int numberOfReviews = random.nextInt(300);
-            String status = STATUS_OPTIONS[random.nextInt(STATUS_OPTIONS.length)];
+            String status = PHYSICAL_STATUS_OPTIONS[random.nextInt(PHYSICAL_STATUS_OPTIONS.length)];
             String brand = COMMON_BRANDS_STATIONERY_TOY[random.nextInt(COMMON_BRANDS_STATIONERY_TOY.length)];
             int suitableAge = 2 + random.nextInt(10); // 2 - 11 tuổi
 
