@@ -17,7 +17,6 @@ public class Main extends Application {
     public static AppServiceManager appServiceManager = new AppServiceManager();
     public static UserManager userManager = appServiceManager.getUserManager();
     public static User currentUser ;
-    public static Stage primaryStage;
     public static void main(String[] args) {
                 launch(args);
             }
@@ -25,7 +24,7 @@ public class Main extends Application {
             @Override
             public void start(Stage primaryStage) {
                 try{
-                    Parent root = FXMLLoader.load(this.getClass().getResource("/view/Login.fxml"));
+                    Parent root = FXMLLoader.load(this.getClass().getResource("/view/customer/HomePage.fxml"));
                     Scene scene = new Scene(root);
                     primaryStage.setScene(scene);
                     primaryStage.show();

@@ -6,9 +6,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label; // <<--- Đảm bảo là dòng này
-
-
-
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import model.order.Order;
@@ -54,6 +52,8 @@ public class OrderDetailsController {
         shippingAddressLabel.setText(order.getShippingAddress());
         paymentMethodLabel.setText(order.getPaymentMethod());
         customerUsernameLabel.setText(order.getCustomerUsername());
+        
+        orderItemsListView.setItems(FXCollections.observableArrayList(order.getOrderItems()));
             
             
 

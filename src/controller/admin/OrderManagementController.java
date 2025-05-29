@@ -73,24 +73,7 @@ public class OrderManagementController {
         statusCol.setCellFactory(TextFieldTableCell.forTableColumn());
         usernameCol.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        addressCol.setOnEditCommit((CellEditEvent<Order, String> event) -> {
-            Order order = event.getRowValue();
-            order.setShippingAddress(event.getNewValue());
-        });
-        amoutCol.setOnEditCommit((CellEditEvent<Order, Double> event) -> {
-            Order order = event.getRowValue();
-            order.setTotalAmount(event.getNewValue());
-        });
-       
-        payCol.setOnEditCommit((CellEditEvent<Order, String> event) -> {
-            Order order = event.getRowValue();
-            order.setPaymentMethod(event.getNewValue());
-        });
-
-        statusCol.setOnEditCommit((CellEditEvent<Order, String> event) -> {
-            Order order = event.getRowValue();
-            order.setOrderStatus(event.getNewValue());
-        });
+        
         
         orderTable.setItems(Main.appServiceManager.getOrderManager().getAllOrders(Main.currentUser));
     }

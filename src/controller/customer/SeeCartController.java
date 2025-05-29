@@ -98,23 +98,7 @@ public class SeeCartController implements Initializable {
 
         if (quantityColumn != null) {
             quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-            quantityColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-            quantityColumn.setOnEditCommit(e -> {
-                CartItem item = e.getRowValue();
-                int oldQuantity = item.getQuantity();
-                int newQuantity = e.getNewValue();
-                if (newQuantity > 0) {
-                    item.setQuantity(newQuantity);
-                } else {
-                    item.setQuantity(oldQuantity);
-                    showAlert("Lỗi", "Số lượng phải lớn hơn 0!");
-                }
-                updateTotalLabel();
-                if (cartTable != null) cartTable.refresh();
-            });
-        } else {
-            System.err.println("quantityColumn is null, check FXML configuration.");
-        }
+        } 
 
         if (totalPriceColumn != null) {
             totalPriceColumn.setCellValueFactory(cellDataFeatures -> {
