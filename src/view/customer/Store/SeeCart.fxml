@@ -10,13 +10,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox spacing="15" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.SeeCartController">
+<VBox prefHeight="800.0" prefWidth="1200.0" spacing="15" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.SeeCartController">
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
    </padding>
    
    <HBox alignment="CENTER_LEFT" spacing="10">
-      <Button fx:id="continueShoppingButton" text="&lt; Continue Shopping" />
+      <Button fx:id="continueShoppingButton" onAction="#handleContinueShopping" text="&lt; Continue Shopping" />
       <Label styleClass="section-header" text="Your Cart">
          <font>
             <Font name="System Bold" size="18.0" />

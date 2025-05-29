@@ -86,11 +86,10 @@ private boolean isValidEmail(String email) {
 
         try {
             // Chuyển về trang đăng nhập
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
+        	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.setTitle("Sign Up");
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

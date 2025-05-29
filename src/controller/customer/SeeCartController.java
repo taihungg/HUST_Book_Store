@@ -2,9 +2,11 @@ package controller.customer;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -123,21 +125,28 @@ public class SeeCartController implements Initializable {
     }
 
     private void setupEventHandlers() {
-        continueShoppingButton.setOnAction(e -> handleContinueShopping());
+        continueShoppingButton.setOnAction(e -> {
+			try {
+				handleContinueShopping(e);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
         removeCartButton.setOnAction(e -> handleRemoveCart());
         clearCartButton.setOnAction(e -> handleClearCart());
         checkoutButton.setOnAction(e -> handleCheckout());
     }
 
-    public void handleContinueShopping() {
-        Stage currentStage = (Stage) continueShoppingButton.getScene().getWindow();
-        if (currentStage != null) {
-            currentStage.close(); // Đóng cửa sổ giỏ hàng
-        } else {
-            System.err.println("Không thể đóng cửa sổ giỏ hàng: Stage không tìm thấy.");
-            // Có thể hiển thị một Alert ở đây nếu cần thiết,
-            // nhưng trường hợp này hiếm khi xảy ra nếu button được nhấn.
-        }
+    public void handleContinueShopping(ActionEvent event) throws IOException {
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/customer/HomePage.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.close();
     }
     
 
