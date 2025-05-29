@@ -26,12 +26,18 @@
                     <children>
                         <Label style="-fx-text-fill: RED;" text="HustBookStore" textFill="RED">
                             <font>
-                                <Font name="System Bold" size="24.0" />
+                                <Font name="System Bold" size="36.0" />
                             </font>
                         </Label>
                         <Pane HBox.hgrow="ALWAYS" />
-                        <Button fx:id="loginButton" onAction="#handleLogin" text="Login" />
-                        <Button fx:id="logoutButton" onAction="#handleLogout" text="Logout" visible="false" />
+                        <Button fx:id="loginButton" onAction="#handleLogin" text="Login">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Button>
+                        <Button fx:id="logoutButton" onAction="#handleLogout" text="Logout" visible="false">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Button>
                     </children>
                     <padding>
                         <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
@@ -39,10 +45,21 @@
                 </HBox>
             <HBox>
                <children>
-                  <Button fx:id="personalInfoButton" mnemonicParsing="false" onAction="#handleMenuButton" prefWidth="300.0" text="See Personal Information" />
-                  <Button fx:id="orderHistoryButton" mnemonicParsing="false" onAction="#handleMenuButton" prefWidth="300.0" text="See Order History" />
-                  <Button fx:id="browseProductsButton" mnemonicParsing="false" onAction="#handleMenuButton" prefWidth="300.0" text="Browse Products" />
-                  <Button fx:id="cartMenuButton" mnemonicParsing="false" onAction="#handleMenuButton" prefWidth="300.0" text="See Cart" />
+                  <Button fx:id="personalInfoButton" mnemonicParsing="false" onAction="#handleMenuButton" prefWidth="400.0" text="See Personal Information">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="orderHistoryButton" mnemonicParsing="false" onAction="#handleMenuButton" prefWidth="400.0" text="See Order History">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="cartMenuButton" mnemonicParsing="false" onAction="#handleMenuButton" prefWidth="400.0" text="See Cart">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
                </children>
             </HBox>
             </children>
@@ -61,7 +78,7 @@
                             <children>
                                 <Label styleClass="section-header" text="Store">
                                     <font>
-                                        <Font name="System Bold" size="18.0" />
+                                        <Font name="System Bold" size="24.0" />
                                     </font>
                                 </Label>
                             </children>
@@ -70,7 +87,10 @@
                         <HBox spacing="10">
                             <children>
                                 <TextField fx:id="searchField" promptText="Search products..." HBox.hgrow="ALWAYS" />
-                                <Button fx:id="searchButton" onAction="#handleSearch" text="Search" />
+                                <Button fx:id="searchButton" onAction="#handleSearch" text="Search">
+                           <font>
+                              <Font size="14.0" />
+                           </font></Button>
                             </children>
                         </HBox>
 
@@ -80,7 +100,7 @@
                                     <children>
                                         <Label styleClass="filter-header" text="Filter Options">
                                             <font>
-                                                <Font name="System Bold" size="14.0" />
+                                                <Font name="System Bold" size="18.0" />
                                             </font>
                                             <VBox.margin>
                                                 <Insets bottom="10.0" />
@@ -181,7 +201,7 @@
                                                 <Label text="items" />
                                             </children>
                                         </HBox>
-                                        <GridPane fx:id="productsGrid" hgap="10" vgap="10">
+                                        <GridPane fx:id="productsGrid" alignment="CENTER" hgap="10" vgap="10">
                                             <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
