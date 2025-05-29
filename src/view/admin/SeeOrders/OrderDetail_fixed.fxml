@@ -1,91 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-    <?import javafx.scene.control.Button?>
-    <?import javafx.scene.control.Label?>
-    <?import javafx.scene.control.ListView?> <?import javafx.scene.control.ScrollPane?>
-    <?import javafx.scene.control.TextField?>
-    <?import javafx.scene.layout.ColumnConstraints?>
-    <?import javafx.scene.layout.GridPane?>
-    <?import javafx.scene.layout.HBox?>
-    <?import javafx.scene.layout.RowConstraints?>
-    <?import javafx.scene.layout.VBox?>
-    <?import javafx.scene.text.Font?>
-    
-    <ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.OrderDetailController">
-        <content>
-            <VBox prefWidth="600.0" spacing="15.0">
-                <padding>
-                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                </padding>
-                <children>
-                    <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="ORDER DETAILS">
-                        <font>
-                            <Font name="System Bold" size="18.0" />
-                        </font>
-                    </Label>
-    
-                    <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <children>
-                            <Label text="Order ID to View/Search:" />
-                            <TextField fx:id="searchOrderIdField" promptText="Enter Order ID" HBox.hgrow="ALWAYS" />
-                            <Button fx:id="searchOrderButton" onAction="#handleSearchOrder" text="LOAD ORDER" />
-                        </children>
-                        <VBox.margin>
-                            <Insets bottom="10.0" />
-                        </VBox.margin>
-                    </HBox>
-    
-                    <GridPane hgap="10.0" vgap="10.0">
-                        <columnConstraints>
-                            <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="150.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                        </columnConstraints>
-    
-                        <Label text="Order ID:" GridPane.rowIndex="0" />
-                        <Label fx:id="orderIdLabel" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
-    
-                        <Label text="User name:" GridPane.rowIndex="1" />
-                        <Label fx:id="customerUsernameLabel" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    
-                        <Label text="Date:" GridPane.rowIndex="2" />
-                        <Label fx:id="orderDateLabel" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        
-                        <Label text="Ship address:" GridPane.rowIndex="3" />
-                        <Label fx:id="shippingAddressLabel" text="[N/A]" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-    
-                        <Label text="Pay method:" GridPane.rowIndex="4" />
-                        <Label fx:id="paymentMethodLabel" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        
-                        <Label text="Status:" GridPane.rowIndex="5" />
-                        <Label fx:id="orderStatusLabel" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-    
-                        <Label text="Total amount:" GridPane.rowIndex="6" />
-                        <Label fx:id="totalAmountLabel" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="6" style="-fx-font-weight: bold;"/>
-                        
-                        <Label text="Order items:" GridPane.rowIndex="7" GridPane.valignment="TOP" />
-                        <ListView fx:id="orderItemsListView" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                        
-                        <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                            <RowConstraints minHeight="10.0" prefHeight="150.0" /> </rowConstraints>
-                    </GridPane>
-    
-                    <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <children>
-                            <Button fx:id="exitButton" onAction="#handleExit" text="THOÁT" />
-                        </children>
-                        <VBox.margin>
-                            <Insets top="20.0" />
-                        </VBox.margin>
-                    </HBox>
-                </children>
-            </VBox>
-        </content>
-    </ScrollPane>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToWidth="true" prefHeight="700.0" prefWidth="800.0" style="-fx-background-color: #F8F9FA;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.OrderDetailController">
+    <content>
+        <VBox alignment="TOP_CENTER" prefWidth="800" spacing="25.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 12;">
+            <padding>
+                <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+            </padding>
+            <children>
+                <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #34495E;" text="ORDER DETAILS">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                    <effect>
+                        <DropShadow blurType="GAUSSIAN" height="5.0" radius="2.0" width="5.0">
+                            <color>
+                                <Color opacity="0.15" />
+                            </color>
+                        </DropShadow>
+                    </effect>
+                </Label>
+
+                <VBox spacing="10.0" style="-fx-background-color: #FDFDFD; -fx-background-radius: 8; -fx-border-color: #E0E0E0; -fx-border-radius: 8; -fx-border-width: 1;">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                    <effect>
+                        <DropShadow blurType="GAUSSIAN" height="10.0" radius="4.5" width="10.0">
+                            <color>
+                                <Color opacity="0.08" />
+                            </color>
+                        </DropShadow>
+                    </effect>
+                    <children>
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #555;" text="Search Order" />
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label style="-fx-text-fill: #4A5568;" text="Order ID:" />
+                                <TextField fx:id="searchOrderIdField" promptText="Enter Order ID" style="-fx-background-color: #F8F9FA; -fx-border-color: #CED4DA; -fx-border-radius: 5; -fx-padding: 8 10;" HBox.hgrow="ALWAYS" />
+                                <Button fx:id="searchOrderButton" onAction="#handleSearchOrder" style="-fx-background-color: #007BFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 8 18;" text="SEARCH">
+                                    <effect>
+                                        <DropShadow blurType="GAUSSIAN" height="3.0" radius="1.0" width="3.0">
+                                            <color>
+                                                <Color opacity="0.15" />
+                                            </color>
+                                        </DropShadow>
+                                    </effect>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <VBox spacing="15.0" style="-fx-background-color: #FDFDFD; -fx-background-radius: 8; -fx-border-color: #E0E0E0; -fx-border-radius: 8; -fx-border-width: 1;">
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
+                    <effect>
+                        <DropShadow blurType="GAUSSIAN" height="10.0" radius="4.5" width="10.0">
+                            <color>
+                                <Color opacity="0.08" />
+                            </color>
+                        </DropShadow>
+                    </effect>
+                    <children>
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #555;" text="Order Information" />
+                        <GridPane hgap="15.0" vgap="12.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="120.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+
+                            <Label style="-fx-font-weight: bold; -fx-text-fill: #4A5568;" text="Order ID:" GridPane.rowIndex="0" />
+                            <Label fx:id="orderIdLabel" style="-fx-font-weight: bold; -fx-text-fill: #2D3748;" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                            <Label style="-fx-font-weight: bold; -fx-text-fill: #4A5568;" text="User Name:" GridPane.rowIndex="1" />
+                            <Label fx:id="customerUsernameLabel" style="-fx-text-fill: #2D3748;" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                            <Label style="-fx-font-weight: bold; -fx-text-fill: #4A5568;" text="Date:" GridPane.rowIndex="2" />
+                            <Label fx:id="orderDateLabel" style="-fx-text-fill: #2D3748;" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                            <Label style="-fx-font-weight: bold; -fx-text-fill: #4A5568;" text="Ship Address:" GridPane.rowIndex="3" />
+                            <Label fx:id="shippingAddressLabel" style="-fx-text-fill: #2D3748;" text="[N/A]" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                            <Label style="-fx-font-weight: bold; -fx-text-fill: #4A5568;" text="Payment Method:" GridPane.rowIndex="4" />
+                            <Label fx:id="paymentMethodLabel" style="-fx-text-fill: #2D3748;" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                            <Label style="-fx-font-weight: bold; -fx-text-fill: #4A5568;" text="Status:" GridPane.rowIndex="5" />
+                            <Label fx:id="orderStatusLabel" style="-fx-font-weight: bold; -fx-text-fill: #28A745;" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                            <Label style="-fx-font-weight: bold; -fx-text-fill: #4A5568;" text="Total Amount:" GridPane.rowIndex="6" />
+                            <Label fx:id="totalAmountLabel" style="-fx-font-weight: bold; -fx-text-fill: #DC3545; -fx-font-size: 16px;" text="[N/A]" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+                            <Label style="-fx-font-weight: bold; -fx-text-fill: #4A5568;" text="Order Items:" GridPane.rowIndex="7" GridPane.valignment="TOP" />
+                            <ListView fx:id="orderItemsListView" prefHeight="150.0" style="-fx-background-color: #F8F9FA; -fx-border-color: #CED4DA; -fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        </GridPane>
+                    </children>
+                </VBox>
+
+                <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                    <children>
+                        <Button fx:id="exitButton" onAction="#handleExit" style="-fx-background-color: #6C757D; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 10 25;" text="EXIT">
+                            <effect>
+                                <DropShadow blurType="GAUSSIAN" height="5.0" radius="2.0" width="5.0">
+                                    <color>
+                                        <Color opacity="0.2" />
+                                    </color>
+                                </DropShadow>
+                            </effect>
+                        </Button>
+                    </children>
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </HBox>
+            </children>
+        </VBox>
+    </content>
+</ScrollPane>
