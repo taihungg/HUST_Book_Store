@@ -13,9 +13,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 import model.product.Product;
+import model.product.Stationery;
+import model.product.Toy;
+import model.product.book.Book;
 import model.user.User;
 import model.user.cart.CartItem;
 import model.user.customer.Customer;
@@ -188,5 +192,40 @@ public class SeeCartController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    @FXML
+    private void handleViewCart(ActionEvent event) throws IOException {
+        CartItem selectedProduct = cartTable.getSelectionModel().getSelectedItem();
+        Parent root = null;
+    
+        if(appServiceManager.getProductManager().getProductById(selectedProduct.getProductId()) instanceof Book){
+            String fxmlPath = "/view/customer/Store/ViewDetails/ViewBookDetails.fxml";
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+             root = loader.load();
+            ViewBookDetailsController bookController = loader.getController();
+            bookController.setAppServiceManager(appServiceManager); // Pass AppServiceManager
+            bookController.updateUIforBook((Book) appServiceManager.getProductManager().getProductById(selectedProduct.getProductId())); // Pass the specific book
+        }
+        else if(appServiceManager.getProductManager().getProductById(selectedProduct.getProductId()) instanceof Toy){
+            String fxmlPath = "/view/customer/Store/ViewDetails/ViewToyDetails.fxml";
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+             root = loader.load();
+            ViewToyDetailsController toyController = loader.getController();
+            toyController.setAppServiceManager(appServiceManager); // Pass AppServiceManager
+            toyController.updateUIforToy((Toy) appServiceManager.getProductManager().getProductById(selectedProduct.getProductId())); // Pass the specific book
+        }
+        else if(appServiceManager.getProductManager().getProductById(selectedProduct.getProductId()) instanceof Stationery){
+            String fxmlPath = "/view/customer/Store/ViewDetails/ViewStationeryDetails.fxml";
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+             root = loader.load();
+            ViewStationeryDetailsController stationeryController = loader.getController();
+            stationeryController.setAppServiceManager(appServiceManager); // Pass AppServiceManager
+            stationeryController.updateUIforStationery((Stationery) appServiceManager.getProductManager().getProductById(selectedProduct.getProductId())); // Pass the specific book
+        }
+        Stage stage = new Stage();
+        stage.setTitle(appServiceManager.getProductManager().getProductById(selectedProduct.getProductId()).getTitle() + " - Details"); // Use the actual product's title
+        stage.initModality(Modality.APPLICATION_MODAL); 
+        stage.setScene(new Scene(root));
+        stage.showAndWait(); 
+}
 }
 
