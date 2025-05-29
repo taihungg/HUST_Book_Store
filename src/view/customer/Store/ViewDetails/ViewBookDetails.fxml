@@ -112,7 +112,7 @@
                            <children>
                               <Label style="-fx-font-weight: bold; -fx-text-fill: #92400e; -fx-font-size: 12;" text="Quantity:" />
                               <Spinner fx:id="quantitySpinner" editable="true" initialValue="1" max="99" min="1" prefWidth="70" />
-                              <Button fx:id="addToCartButton" defaultButton="true" onAction="#handleAddtoCart" style="-fx-background-color: #22c55e; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 8 16; -fx-font-size: 13;" text="Add to Cart" />
+                              <Button fx:id="addToCartButton" defaultButton="true" onAction="#handleAddToCart" style="-fx-background-color: #22c55e; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 8 16; -fx-font-size: 13;" text="Add to Cart" />
                            </children>
                         </HBox>
                      </children>
