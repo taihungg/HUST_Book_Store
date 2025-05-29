@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #F8F9FA;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.HomePageController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #F8F9FA;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.HomePageController">
     <top>
         <VBox spacing="8" style="-fx-background-color: #FFFFFF; -fx-padding: 10 0 0 0;">
             <children>
