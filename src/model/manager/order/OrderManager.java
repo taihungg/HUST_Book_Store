@@ -280,7 +280,7 @@ public class OrderManager {
         // --- Lọc đơn hàng theo khoảng thời gian ---
         ObservableList<Order> filteredOrders = FXCollections.observableArrayList();
         for (Order order : orderList) {
-            LocalDate orderLocalDate = order.getOrderDate().toLocalDate(); // Chuyển LocalDateTime thành LocalDate
+            LocalDate orderLocalDate = order.getOrderDate(); // Chuyển LocalDateTime thành LocalDate
             if (!orderLocalDate.isBefore(startDate) && !orderLocalDate.isAfter(endDate)) {
                 // Điều kiện: (orderDate >= startDate) AND (orderDate <= endDate)
                 filteredOrders.add(order);

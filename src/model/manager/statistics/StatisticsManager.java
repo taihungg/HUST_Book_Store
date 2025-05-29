@@ -62,21 +62,18 @@ public class StatisticsManager {
      * @return Tổng doanh thu, hoặc 0.0 nếu người dùng không phải Admin.
      */
     public double calculateTotalRevenue(User currentUser, LocalDate startDate, LocalDate endDate) {
-        ArrayList<Order> validOrders = getFilteredAndValidOrders(currentUser, startDate, endDate);
         
         // In thông báo truy cập nếu không phải Admin
-        if (validOrders.isEmpty() && !isAdmin(currentUser)) {
+        if (!isAdmin(currentUser)) {
             System.out.println("Access Denied: Only Admin can view total revenue.");
-            return 0.0;
-        }
-        // Nếu là Admin nhưng không có đơn hàng hợp lệ, vẫn trả về 0.0
-        if (validOrders.isEmpty()) { // Kiểm tra lại sau khi đã xác định Admin
             return 0.0;
         }
 
         double totalRevenue = 0.0;
-        for (Order order : validOrders) {
-            totalRevenue += order.getTotalAmount();
+        for (Order order : orderManager.getOrdersByDateRange(startDate, endDate, currentUser)) {
+            if ("Done".equals(order.getOrderStatus()) || "Delivered".equals(order.getOrderStatus())) {
+                totalRevenue += order.getTotalAmount();
+            }
         }
         return totalRevenue;
     }
@@ -92,19 +89,15 @@ public class StatisticsManager {
      * @return Tổng chi phí, hoặc 0.0 nếu người dùng không phải Admin.
      */
     public double calculateTotalPurchaseCostOfSoldProducts(User currentUser, LocalDate startDate, LocalDate endDate) {
-        ArrayList<Order> validOrders = getFilteredAndValidOrders(currentUser, startDate, endDate);
-        
-        if (validOrders.isEmpty() && !isAdmin(currentUser)) {
+        if (!isAdmin(currentUser)) {
             System.out.println("Access Denied: Only Admin can view total purchase cost.");
             return 0.0;
         }
-        if (validOrders.isEmpty()) {
-            return 0.0;
-        }
-
         double totalPurchaseCost = 0.0;
-        for (Order order : validOrders) {
-            totalPurchaseCost += getTotalCostOfOrder(order);
+        for (Order order : orderManager.getOrdersByDateRange(startDate, endDate, currentUser)) {
+            if ("Done".equals(order.getOrderStatus()) || "Delivered".equals(order.getOrderStatus())) {
+                totalPurchaseCost += getTotalCostOfOrder(order);
+            }
         }
         return totalPurchaseCost;
     }
@@ -126,14 +119,18 @@ public class StatisticsManager {
      * @param endDate Ngày kết thúc của khoảng thời gian.
      * @return Tổng số đơn hàng, hoặc 0 nếu người dùng không phải Admin.
      */
-    public int calculateTotalOrders(User currentUser, LocalDate startDate, LocalDate endDate) {
-        ArrayList<Order> validOrders = getFilteredAndValidOrders(currentUser, startDate, endDate);
-        
-        if (validOrders.isEmpty() && !isAdmin(currentUser)) {
+    public int calculateTotalDoneOrDeliveredOrders(User currentUser, LocalDate startDate, LocalDate endDate) {
+        if (!isAdmin(currentUser)) {
             System.out.println("Access Denied: Only Admin can view total orders.");
             return 0;
         }
-        return validOrders.size();
+        int totalDoneOrDeliveredOrders = 0;
+        for (Order order : orderManager.getOrdersByDateRange(startDate, endDate, currentUser)) {
+            if ("Done".equals(order.getOrderStatus()) || "Delivered".equals(order.getOrderStatus())) {
+                totalDoneOrDeliveredOrders++;
+            }
+        }
+        return totalDoneOrDeliveredOrders;
     }
 
     /**
@@ -146,18 +143,12 @@ public class StatisticsManager {
      * @return Tổng số sản phẩm đã bán, hoặc 0 nếu người dùng không phải Admin.
      */
     public int calculateTotalProductsSold(User currentUser, LocalDate startDate, LocalDate endDate) {
-        ArrayList<Order> validOrders = getFilteredAndValidOrders(currentUser, startDate, endDate);
-        
-        if (validOrders.isEmpty() && !isAdmin(currentUser)) {
+        if (!isAdmin(currentUser)) {
             System.out.println("Access Denied: Only Admin can view total products sold.");
             return 0;
         }
-        if (validOrders.isEmpty()) {
-            return 0;
-        }
-
         int totalProducts = 0;
-        for (Order order : validOrders) {
+        for (Order order : orderManager.getOrdersByDateRange(startDate, endDate, currentUser)) {
             for (CartItem item : order.getOrderItems()) {
                 totalProducts += item.getQuantity();
             }
@@ -181,15 +172,8 @@ public class StatisticsManager {
         }
 
         int totalCancelledOrders = 0;
-        for (Order order : orderManager.getAllOrders(currentUser)) {
-            // Kiểm tra ngày tháng
-            boolean isAfterStartDate = !order.getOrderDate().isBefore(startDate);
-            boolean isBeforeEndDate = !order.getOrderDate().isAfter(endDate);
-
-            // Kiểm tra trạng thái
-            boolean isCancelled = "Cancelled".equals(order.getOrderStatus());
-
-            if (isAfterStartDate && isBeforeEndDate && isCancelled) {
+        for (Order order : orderManager.getOrdersByDateRange(startDate, endDate, currentUser)) {
+            if ("Cancelled".equals(order.getOrderStatus())) {
                 totalCancelledOrders++;
             }
         }
