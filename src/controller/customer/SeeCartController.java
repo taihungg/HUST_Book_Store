@@ -160,12 +160,17 @@ public class SeeCartController implements Initializable {
     }
 
     public void handleCheckout() {
-        if (cartItems.isEmpty()) {
-            showAlert("Lỗi", "Giỏ hàng trống, không thể thanh toán!");
-        } else {
-            showAlert("Thành công", "Thanh toán thành công!");
-            cartItems.clear();
-            updateTotalLabel();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/customer/Store/PlaceOrder.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) checkoutButton).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+            Stage currentStage = (Stage) ((Node) checkoutButton).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
