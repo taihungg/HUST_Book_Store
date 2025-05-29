@@ -55,8 +55,10 @@ public class OrderManagementController {
 
     
     @FXML
-    void intialize(){
+    void initialize(){
         orderTable.setEditable(true);
+        System.out.println(Main.appServiceManager.getOrderManager().getAllOrders(Main.currentUser));
+
 
         orderidCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderId"));
         addressCol.setCellValueFactory(new PropertyValueFactory<Order, String>("shippingAddress"));
@@ -76,6 +78,8 @@ public class OrderManagementController {
         
         
         orderTable.setItems(Main.appServiceManager.getOrderManager().getAllOrders(Main.currentUser));
+        System.out.println(Main.appServiceManager.getOrderManager().getAllOrders(Main.currentUser));
+
     }
     @FXML
     private void handleViewDetail(ActionEvent event) {

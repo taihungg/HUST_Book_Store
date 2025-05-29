@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.placeOrderController">
    <content>
       <VBox spacing="15">
          <padding>
@@ -28,7 +28,7 @@
          <children>
             <HBox alignment="CENTER_LEFT" spacing="10">
                <children>
-                  <Button fx:id="backToCartButton" text="&lt; Back to Cart" />
+                  <Button fx:id="backToCartButton" onAction="#handleBackToCart" text="&lt; Back to Cart" />
                   <Label styleClass="section-header" text="Place Order">
                      <font>
                         <Font name="System Bold" size="18.0" />
@@ -144,7 +144,7 @@
                               <CheckBox fx:id="savePaymentInfoCheckbox" text="Save payment information for future purchases" />
                               <HBox alignment="CENTER" spacing="15">
                                  <children>
-                                    <Button fx:id="placeOrderButton1" prefWidth="150" styleClass="primary-button" text="Place Order">
+                                    <Button fx:id="placeOrderButton1" onAction="#handlePlaceOrder" prefWidth="150" styleClass="primary-button" text="Place Order">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
