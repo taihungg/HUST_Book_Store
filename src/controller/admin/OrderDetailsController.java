@@ -5,8 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Label; // <<--- Đảm bảo là dòng này
 
-import java.lang.classfile.Label;
+
 
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
@@ -45,8 +46,14 @@ public class OrderDetailsController {
     private Label totalAmountLabel;
 
     // Phương thức để nhận dữ liệu từ OrderManagement
-    public void setOrderId(Order order) {
-            
+    public void setOrder(Order order) {
+        orderIdLabel.setText(order.getOrderId());
+        orderDateLabel.setText(order.getOrderDate().toString());
+        orderStatusLabel.setText(order.getOrderStatus());
+        totalAmountLabel.setText(String.valueOf(order.getTotalAmount()));
+        shippingAddressLabel.setText(order.getShippingAddress());
+        paymentMethodLabel.setText(order.getPaymentMethod());
+        customerUsernameLabel.setText(order.getCustomerUsername());
             
             
 

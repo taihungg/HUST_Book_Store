@@ -19,8 +19,7 @@ import javafx.stage.Stage;
 import model.order.Order;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.LocalDateTimeStringConverter;
-import controller.admin.OrderDetailsController;
-
+import javafx.scene.Parent;
 public class OrderManagementController {
 
     
@@ -103,7 +102,7 @@ public class OrderManagementController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/SeeOrders/OrderDetail_fixed.fxml"));
                 Parent root = loader.load();
                 OrderDetailsController controller = loader.getController();
-                //controller.setOrder(selectedOrder);
+                controller.setOrder(selectedOrder);
                 Stage stage = new Stage();
                 stage.setTitle("Order Details");
                 stage.setScene(new Scene(root));

@@ -28,11 +28,10 @@
 
       <TextField fx:id="searchField" layoutX="13.0" layoutY="43.0" />
       <Button layoutX="169.0" layoutY="43.0" onAction="#handleSearch" text="SEARCH" />
-      <Button layoutX="502.0" layoutY="43.0" onAction="#handleDisplayAll" text="DISPLAY ALL" />
 
       <Label layoutX="14.0" layoutY="321.0" />
 
-      <Button layoutX="506.0" layoutY="317.0" onAction="#handleViewDetail" text="View details" />
+      <Button fx:id="viewDetailsButton" layoutX="506.0" layoutY="317.0" onAction="#handleViewDetail" text="View details" />
       <Button fx:id="exitButton" layoutX="280.0" layoutY="361.0" onAction="#handleExit" text="EXIT" />
    </children>
 </Pane>
