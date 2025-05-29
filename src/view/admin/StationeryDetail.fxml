@@ -4,114 +4,141 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.StationeryDetailController">
-           <content>
-              <VBox maxWidth="2000.0" spacing="15" HBox.hgrow="ALWAYS">
-                 <padding>
-                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                 </padding>
-                 <children>
-                    <HBox alignment="CENTER_LEFT" spacing="10">
-                       <children>
-                          <Button fx:id="backButton" onAction="#handleBackButton" text="&lt; Back" /> <!-- Xóa onAction -->
-                          <Label styleClass="section-header" text="Product Details">
-                             <font>
-                                <Font name="System Bold" size="18.0" />
-                             </font>
-                          </Label>
-                       </children>
-                    </HBox>
-                    <HBox spacing="20" HBox.hgrow="ALWAYS">
-                       <children>
-                          <VBox alignment="TOP_CENTER" maxWidth="400" minWidth="300" spacing="15">
-                             <padding>
-                                <Insets top="10" />
-                             </padding>
-                             <children>
-                                <ImageView fx:id="bookImage" fitHeight="300" fitWidth="200" preserveRatio="true" />
-                                <HBox alignment="CENTER" spacing="10" />
-                             </children>
-                          </VBox>
-                          <VBox spacing="10" HBox.hgrow="ALWAYS">
-                             <children>
-                                <Label fx:id="titleLabel" styleClass="product-title" text="Stationery Title" wrapText="true">
-                                   <font>
-                                      <Font name="System Bold" size="24.0" />
-                                   </font>
-                                </Label>
-                            <HBox alignment="CENTER_LEFT" spacing="5">
-                               <children>
-                                  <Label text="Brand: " />
-                                  <Label fx:id="brandLabel" text="Chi Vu" />
-                               </children>
-                            </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="5">
+<ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: #f8fafc;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.StationeryDetailController">
+   <content>
+      <VBox maxWidth="800.0" spacing="15" style="-fx-background-color: #f8fafc;" HBox.hgrow="ALWAYS">
+         <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+         </padding>
+         <children>
+            <!-- Header Section -->
+            <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-border-width: 1;">
+               <padding>
+                  <Insets bottom="12.0" left="15.0" right="15.0" top="12.0" />
+               </padding>
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="12">
+                     <children>
+                        <Button fx:id="backButton" onAction="#handleBackButton" style="-fx-background-color: #e2e8f0; -fx-text-fill: #4a5568; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 12; -fx-font-size: 12;" text="← Back" />
+                        <Label style="-fx-text-fill: #2d3748;" styleClass="section-header" text="Product Details">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            
+            <!-- Main Content Section -->
+            <HBox spacing="15" HBox.hgrow="ALWAYS">
+               <children>
+                  <!-- Left Column - Image -->
+                  <VBox alignment="TOP_CENTER" maxWidth="220" minWidth="200" spacing="10" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-border-width: 1;">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                     <children>
+                        <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #f7fafc; -fx-background-radius: 6; -fx-padding: 12;">
                            <children>
-                              <Label text="Type: " />
-                              <Label fx:id="typeLabel" text="Type" />
+                              <ImageView fx:id="bookImage" fitHeight="240" fitWidth="160" preserveRatio="true" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  
+                  <!-- Right Column - Details -->
+                  <VBox spacing="12" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-border-width: 1;" HBox.hgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                     <children>
+                        <!-- Title -->
+                        <Label fx:id="titleLabel" style="-fx-text-fill: #2d3748;" styleClass="product-title" text="Stationery Title" wrapText="true">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </Label>
+                        
+                        <!-- Basic Info Grid -->
+                        <VBox spacing="8">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #f7fafc; -fx-background-radius: 4; -fx-padding: 8;">
+                                 <children>
+                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #4a5568; -fx-min-width: 70; -fx-font-size: 12;" text="🏷️ Brand:" />
+                                    <Label fx:id="brandLabel" style="-fx-text-fill: #2d3748; -fx-font-size: 12;" text="Chi Vu" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #f7fafc; -fx-background-radius: 4; -fx-padding: 8;">
+                                 <children>
+                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #4a5568; -fx-min-width: 70; -fx-font-size: 12;" text="📝 Type:" />
+                                    <Label fx:id="typeLabel" style="-fx-text-fill: #2d3748; -fx-font-size: 12;" text="Type" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: #f7fafc; -fx-background-radius: 4; -fx-padding: 8;">
+                                 <children>
+                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #4a5568; -fx-min-width: 70; -fx-font-size: 12;" text="📊 Status:" />
+                                    <Label fx:id="statusLabel" style="-fx-text-fill: #16a34a; -fx-font-weight: bold; -fx-font-size: 12;" text="Status" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        
+                        <!-- Pricing Section -->
+                        <VBox spacing="8">
+                           <children>
+                              <Label style="-fx-font-weight: bold; -fx-text-fill: #374151; -fx-font-size: 13;" text="💰 Pricing" />
+                              <HBox spacing="12">
+                                 <children>
+                                    <VBox spacing="3" style="-fx-background-color: #f0f9ff; -fx-background-radius: 4; -fx-padding: 8;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label style="-fx-font-weight: bold; -fx-text-fill: #0369a1; -fx-font-size: 11;" text="🏷️ Selling Price" />
+                                          <Label fx:id="sellingPriceLabel" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #0369a1;" text="19.99" />
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="3" style="-fx-background-color: #f0fdf4; -fx-background-radius: 4; -fx-padding: 8;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label style="-fx-font-weight: bold; -fx-text-fill: #166534; -fx-font-size: 11;" text="💵 Purchase Price" />
+                                          <Label fx:id="purchasePriceLabel" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #166534;" text="19.99" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        
+                        <!-- Description -->
+                        <VBox spacing="8">
+                           <children>
+                              <Label style="-fx-font-weight: bold; -fx-text-fill: #374151; -fx-font-size: 13;" text="📖 Description" />
+                              <ScrollPane fitToWidth="true" prefHeight="80" style="-fx-background-color: #f9fafb; -fx-background-radius: 6; -fx-border-color: #e5e7eb; -fx-border-radius: 6;" VBox.vgrow="ALWAYS">
+                                 <content>
+                                    <TextArea fx:id="descriptionArea" editable="false" prefRowCount="3" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: #374151; -fx-font-size: 11;" text="This is a detailed description of the book." wrapText="true" />
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
+                        
+                        <!-- Stock Information -->
+                        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #fffbeb; -fx-background-radius: 6; -fx-padding: 10;">
+                           <children>
+                              <Label style="-fx-font-weight: bold; -fx-text-fill: #92400e; -fx-font-size: 12;" text="📦 Quantitized Stock:" />
+                              <Label fx:id="quantityLabel" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #92400e;" text="20" />
+                              <Label style="-fx-text-fill: #92400e; -fx-font-size: 12;" text="units" />
+                              <Button fx:id="notifyButton" style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-background-radius: 4; -fx-cursor: hand; -fx-font-size: 11;" text="🔔 Notify When Available" visible="false" />
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="5">
-                           <children>
-                              <Label text="Status: " />
-                              <Label fx:id="statusLabel" text="Status" />
-                           </children>
-                        </HBox>
-                                <HBox alignment="CENTER_LEFT" spacing="5">
-                                   <children>
-                                      <Label styleClass="product-price" text="SellingPrice:">
-                                         <font>
-                                            <Font name="System Bold" size="16.0" />
-                                         </font>
-                                      </Label>
-                                      <Label fx:id="sellingPriceLabel" styleClass="product-price" text="19.99">
-                                         <font>
-                                            <Font name="System Bold" size="16.0" />
-                                         </font>
-                                      </Label>
-                                   </children>
-                                </HBox>
-                            <HBox alignment="CENTER_LEFT" spacing="5">
-                               <children>
-                                  <Label styleClass="product-price" text="PurchasePrice:">
-                                     <font>
-                                        <Font name="System Bold" size="16.0" />
-                                     </font>
-                                  </Label>
-                                  <Label fx:id="purchasePriceLabel" styleClass="product-price" text="19.99">
-                                     <font>
-                                        <Font name="System Bold" size="16.0" />
-                                     </font>
-                                  </Label>
-                               </children>
-                            </HBox>
-                                <Separator />
-                                <Label text="Description:" />
-                                <ScrollPane fitToWidth="true" prefHeight="150" VBox.vgrow="ALWAYS">
-                                   <content>
-                                      <TextArea fx:id="descriptionArea" editable="false" prefRowCount="5" text="This is a detailed description of the book." wrapText="true" />
-                                   </content>
-                                </ScrollPane>
-                                <Separator />
-                                <HBox alignment="CENTER_LEFT" spacing="10">
-                                   <children>
-                                      <Label text="Quantitized Stock: " />
-                                  <Label fx:id="quantityLabel" text="20" /> <!-- Xóa onAction -->
-                                      <Button fx:id="notifyButton" text="Notify When Available" visible="false" /> <!-- Xóa onAction -->
-                                   </children>
-                                </HBox>
-                             </children>
-                          </VBox>
-                       </children>
-                    </HBox>
-                 </children>
-              </VBox>
-           </content>
-        </ScrollPane>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

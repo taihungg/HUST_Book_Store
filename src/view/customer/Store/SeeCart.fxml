@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="800.0" prefWidth="1200.0" spacing="15" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.SeeCartController">
+<VBox prefHeight="600.0" prefWidth="800.0" spacing="15" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.SeeCartController">
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
    </padding>
@@ -56,8 +56,9 @@
    </HBox>
    
    <HBox alignment="CENTER_RIGHT" spacing="10">
+      <Button fx:id="viewCartButton" mnemonicParsing="false" text="View Cart" />
       <Button fx:id="removeCartButton" mnemonicParsing="false" text="Remove Cart" />
       <Button fx:id="clearCartButton" text="Clear Cart" />
-      <Button fx:id="checkoutButton" defaultButton="true" text="Checkout" />
+      <Button fx:id="checkoutButton" defaultButton="true" onAction="#handleCheckout" text="Checkout" />
    </HBox>
 </VBox>

@@ -1,6 +1,6 @@
 package model.order;
 
-import java.time.LocalDateTime;          // Để lưu danh sách các mặt hàng
+import java.time.LocalDate;
 import java.util.List;       // Để kiểm tra null
 import java.util.Objects;
 import model.user.cart.CartItem;
@@ -9,7 +9,7 @@ public class Order {
     private static int index = 0;
     private final String orderId; // ID duy nhất của đơn hàng (final vì không thay đổi)
     private final String customerUsername; // ID của khách hàng đã đặt đơn hàng (final)
-    private final LocalDateTime orderDate; // Thời điểm đơn hàng được đặt (final)
+    private final LocalDate orderDate; // Thời điểm đơn hàng được đặt (final)
     private final List<CartItem> orderItems; // Danh sách các mặt hàng trong đơn hàng (final)
     private final double totalAmount; // Tổng giá trị của đơn hàng
     private final String shippingAddress; // Địa chỉ giao hàng
@@ -34,7 +34,7 @@ public class Order {
                  double totalAmount, String shippingAddress, String paymentMethod, String phoneNumber, String orderStatus) {
         this.orderId = generateOrderId();
         this.customerUsername = Objects.requireNonNull(customerUsername, "Customer username cannot be null.");
-        this.orderDate = LocalDateTime.now(); // <<-- Tự động lấy thời gian hiện tại
+        this.orderDate = LocalDate.now(); // <<-- Tự động lấy thời gian hiện tại
         this.orderItems = Objects.requireNonNull(orderItems, "Order items cannot be null."); // Lưu bản sao item
         if (totalAmount < 0) {
             throw new IllegalArgumentException("Total amount cannot be negative.");
@@ -61,7 +61,7 @@ public class Order {
     public String getCustomerUsername() {
         return customerUsername;
     }
-    public LocalDateTime getOrderDate() {
+    public LocalDate getOrderDate() {
         return orderDate;
     }
     public List<CartItem> getOrderItems() {
@@ -93,16 +93,4 @@ public class Order {
         this.orderStatus = Objects.requireNonNull(orderStatus, "Order status cannot be null.");
     }
 
-    // --- Phương thức toString để dễ dàng in ra thông tin đơn hàng ---
-    @Override
-    public String toString() {
-        return "Order{" +
-               "orderId='" + orderId + '\'' +
-               ", customerUsername='" + customerUsername + '\'' +
-               ", orderDate=" + orderDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + // Định dạng hiển thị
-               ", totalAmount=" + String.format("%.2f", totalAmount) + // Định dạng 2 chữ số thập phân
-               ", orderStatus=" + orderStatus + 
-               ", itemsCount=" + orderItems.size() +
-               '}';
-    }
 }

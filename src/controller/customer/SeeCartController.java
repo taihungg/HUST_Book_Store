@@ -98,23 +98,7 @@ public class SeeCartController implements Initializable {
 
         if (quantityColumn != null) {
             quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-            quantityColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-            quantityColumn.setOnEditCommit(e -> {
-                CartItem item = e.getRowValue();
-                int oldQuantity = item.getQuantity();
-                int newQuantity = e.getNewValue();
-                if (newQuantity > 0) {
-                    item.setQuantity(newQuantity);
-                } else {
-                    item.setQuantity(oldQuantity);
-                    showAlert("Lỗi", "Số lượng phải lớn hơn 0!");
-                }
-                updateTotalLabel();
-                if (cartTable != null) cartTable.refresh();
-            });
-        } else {
-            System.err.println("quantityColumn is null, check FXML configuration.");
-        }
+        } 
 
         if (totalPriceColumn != null) {
             totalPriceColumn.setCellValueFactory(cellDataFeatures -> {
@@ -143,7 +127,6 @@ public class SeeCartController implements Initializable {
 		});
         removeCartButton.setOnAction(e -> handleRemoveCart());
         clearCartButton.setOnAction(e -> handleClearCart());
-        checkoutButton.setOnAction(e -> handleCheckout());
     }
 
     public void handleContinueShopping(ActionEvent event) throws IOException {
@@ -174,14 +157,19 @@ public class SeeCartController implements Initializable {
         updateTotalLabel();
         showAlert("Thông báo", "Đã xóa toàn bộ giỏ hàng!");
     }
-
-    public void handleCheckout() {
-        if (cartItems.isEmpty()) {
-            showAlert("Lỗi", "Giỏ hàng trống, không thể thanh toán!");
-        } else {
-            showAlert("Thành công", "Thanh toán thành công!");
-            cartItems.clear();
-            updateTotalLabel();
+    @FXML
+    public void handleCheckout(ActionEvent event) {
+        try{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/customer/Store/PlaceOrder.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

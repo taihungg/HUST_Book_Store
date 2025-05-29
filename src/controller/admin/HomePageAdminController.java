@@ -5,9 +5,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import model.user.User;
+import model.user.manager.Admin;
 
 public class HomePageAdminController {
     @FXML
@@ -39,7 +42,7 @@ public class HomePageAdminController {
     private void handleReportButton() {
         try {
             // Load the RevenueReportView.fxml
-
+            if(currentUser instanceof Admin) {
             FXMLLoader loader1 = new FXMLLoader(getClass().getResource("/view/admin/Report/RevenueReportView.fxml"));
             Parent root = loader1.load();
             
@@ -51,7 +54,15 @@ public class HomePageAdminController {
 
             Stage curreStage = (Stage)reportButton.getScene().getWindow();
             curreStage.close();
-
+            }
+            else {
+                System.out.println("You are not authorized to access this page");
+                Alert alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Only Admin accesible");
+                    alert.setContentText("You are not authorized to access this page");
+                    alert.showAndWait();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

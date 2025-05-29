@@ -9,66 +9,68 @@
 
 <HBox alignment="CENTER" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SignUpController">
    <children>
-      <VBox alignment="CENTER" maxWidth="2000.0" style="-fx-background-color: #E0E0E0;" HBox.hgrow="ALWAYS">
+      <VBox alignment="CENTER" maxWidth="600.0" minWidth="500.0" style="-fx-background-color: linear-gradient(to bottom, #f8f9fa, #ffffff); -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0, 0, 3);" HBox.hgrow="ALWAYS">
          <padding>
-            <Insets bottom="20" left="40" right="40" top="20" />
+            <Insets bottom="40.0" left="50.0" right="50.0" top="40.0" />
          </padding>
-         <spacing>20</spacing>
+         <spacing>25</spacing>
          <children>
-            <Label style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Sign Up" />
+            <Label style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Create Account" />
             
-            <VBox spacing="15">
+            <VBox spacing="20">
                <children>
-                  <HBox alignment="CENTER_LEFT" spacing="10">
+                  <HBox alignment="CENTER_LEFT" spacing="15">
                      <children>
-                        <Label minWidth="150" style="-fx-font-size: 18px;" text="Full Name" />
-                        <TextField fx:id="fullName" HBox.hgrow="ALWAYS" />
+                        <Label minWidth="140" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #495057;" text="Full Name" />
+                        <TextField fx:id="fullName" prefHeight="40.0" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10; -fx-font-size: 14px;" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   
-                  <HBox alignment="CENTER_LEFT" spacing="10">
+                  <HBox alignment="CENTER_LEFT" spacing="15">
                      <children>
-                        <Label minWidth="150" style="-fx-font-size: 18px;" text="Phone Number" />
-                        <TextField fx:id="phone" HBox.hgrow="ALWAYS" />
+                        <Label minWidth="140" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #495057;" text="Phone Number" />
+                        <TextField fx:id="phone" prefHeight="40.0" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10; -fx-font-size: 14px;" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   
-                  <HBox alignment="CENTER_LEFT" spacing="10">
+                  <HBox alignment="CENTER_LEFT" spacing="15">
                      <children>
-                        <Label minWidth="150" style="-fx-font-size: 18px;" text="Username" />
-                        <TextField fx:id="username" HBox.hgrow="ALWAYS" />
+                        <Label minWidth="140" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #495057;" text="Username" />
+                        <TextField fx:id="username" prefHeight="40.0" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10; -fx-font-size: 14px;" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   
-                  <HBox alignment="CENTER_LEFT" spacing="10">
+                  <HBox alignment="CENTER_LEFT" spacing="15">
                      <children>
-                        <Label minWidth="150" style="-fx-font-size: 18px;" text="Password" />
-                        <TextField fx:id="password" HBox.hgrow="ALWAYS" />
+                        <Label minWidth="140" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #495057;" text="Password" />
+                        <TextField fx:id="password" prefHeight="40.0" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10; -fx-font-size: 14px;" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   
-                  <HBox alignment="CENTER_LEFT" spacing="10">
+                  <HBox alignment="CENTER_LEFT" spacing="15">
                      <children>
-                        <Label minWidth="150" style="-fx-font-size: 18px;" text="Confirm Password" />
-                        <TextField fx:id="cfpw" HBox.hgrow="ALWAYS" />
+                        <Label minWidth="140" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #495057;" text="Confirm Password" />
+                        <TextField fx:id="cfpw" prefHeight="40.0" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10; -fx-font-size: 14px;" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="180.0" spacing="10">
+                  
+                  <HBox alignment="CENTER_LEFT" spacing="15">
                      <children>
-                        <Label minWidth="150" style="-fx-font-size: 18px;" text="Address" />
-                        <TextField fx:id="address" HBox.hgrow="ALWAYS" />
+                        <Label minWidth="140" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #495057;" text="Address" />
+                        <TextField fx:id="address" prefHeight="40.0" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10; -fx-font-size: 14px;" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="222.0" spacing="10">
+                  
+                  <HBox alignment="CENTER_LEFT" spacing="15">
                      <children>
-                        <Label minWidth="150" style="-fx-font-size: 18px;" text="Email" />
-                        <TextField fx:id="email" HBox.hgrow="ALWAYS" />
+                        <Label minWidth="140" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #495057;" text="Email" />
+                        <TextField fx:id="email" prefHeight="40.0" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10; -fx-font-size: 14px;" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                </children>
             </VBox>
             
-            <Button fx:id="btnSignUp" minHeight="34" minWidth="100" onAction="#btnSignUpclicked" style="-fx-background-color: ADD8E6; -fx-cursor: hand; -fx-font-size: 18px;" text="Sign Up" />
+            <Button fx:id="btnSignUp" minHeight="45" minWidth="200" onAction="#btnSignUpclicked" style="-fx-background-color: Blue; -fx-cursor: hand; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 25;" text="Create Account" />
          </children>
       </VBox>
    </children>

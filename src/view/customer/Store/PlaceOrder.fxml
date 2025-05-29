@@ -3,16 +3,15 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -20,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.placeOrderController">
    <content>
       <VBox spacing="15">
          <padding>
@@ -29,7 +28,7 @@
          <children>
             <HBox alignment="CENTER_LEFT" spacing="10">
                <children>
-                  <Button fx:id="backToCartButton" text="&lt; Back to Cart" />
+                  <Button fx:id="backToCartButton" onAction="#handleBackToCart" text="&lt; Back to Cart" />
                   <Label styleClass="section-header" text="Place Order">
                      <font>
                         <Font name="System Bold" size="18.0" />
@@ -64,26 +63,14 @@
                                                 <RowConstraints />
                                                 <RowConstraints />
                                                 <RowConstraints />
-                                                <RowConstraints />
-                                                <RowConstraints />
-                                                <RowConstraints />
-                                                <RowConstraints />
                                              </rowConstraints>
                                              <children>
                                                 <Label text="Full Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                                 <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                                                 <Label text="Address:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                                 <TextField fx:id="addressField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <Label text="City:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                                <TextField fx:id="cityField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <Label text="State/Province:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                                                <TextField fx:id="stateField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                <Label text="Postal Code:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                                                <TextField fx:id="postalCodeField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <Label text="Country:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                                                <ComboBox fx:id="countryComboBox" promptText="Select Country" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                <Label text="Phone:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-                                                <TextField fx:id="phoneField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                <Label text="Phone:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                                <TextField fx:id="phoneField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -91,19 +78,13 @@
                                     <Separator orientation="VERTICAL" />
                                     <VBox spacing="15">
                                        <children>
-                                          <Label styleClass="subsection-header" text="Order Summary">
+                                          <Label styleClass="subsection-header" text="Order Information">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                           </Label>
                                           <VBox spacing="5" style="-fx-border-color: #cccccc; -fx-border-width: 1; -fx-padding: 10;">
                                              <children>
-                                                <HBox spacing="10">
-                                                   <children>
-                                                      <Label text="Items:" />
-                                                      <Label fx:id="itemCountLabel" text="3" />
-                                                   </children>
-                                                </HBox>
                                                 <HBox spacing="10">
                                                    <children>
                                                       <Label text="Subtotal:" />
@@ -113,13 +94,7 @@
                                                 <HBox spacing="10">
                                                    <children>
                                                       <Label text="Shipping:" />
-                                                      <Label fx:id="shippingLabel" text="5.99" />
-                                                   </children>
-                                                </HBox>
-                                                <HBox spacing="10">
-                                                   <children>
-                                                      <Label text="Tax:" />
-                                                      <Label fx:id="summaryTaxLabel" text="5.00" />
+                                                      <Label fx:id="shippingLabel" text="2$" />
                                                    </children>
                                                 </HBox>
                                                 <Separator />
@@ -139,7 +114,6 @@
                                                 </HBox>
                                              </children>
                                           </VBox>
-                                          <Button fx:id="viewCartButton" maxWidth="Infinity" text="View Cart Details" />
                                        </children>
                                     </VBox>
                                  </children>
@@ -160,144 +134,23 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <GridPane hgap="10" vgap="10">
-                                 <columnConstraints>
-                                    <ColumnConstraints minWidth="150" />
-                                    <ColumnConstraints hgrow="ALWAYS" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                 </rowConstraints>
-                                 <children>
-                                    <Label text="Card Number:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                    <TextField fx:id="cardNumberField" promptText="XXXX XXXX XXXX XXXX" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                                    <Label text="Cardholder Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                    <TextField fx:id="cardholderField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <Label text="Expiration Date:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                    <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                       <children>
-                                          <ComboBox fx:id="monthComboBox" promptText="Month" />
-                                          <ComboBox fx:id="yearComboBox" promptText="Year" />
-                                       </children>
-                                    </HBox>
-                                    <Label text="CVV:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                                    <TextField fx:id="cvvField" maxWidth="80" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                 </children>
-                              </GridPane>
+                              <RadioButton fx:id="cashOption" mnemonicParsing="false" text="Cash">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="paymentGroup" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <RadioButton fx:id="creditCardOption" mnemonicParsing="false" text="Credit Card" toggleGroup="$paymentGroup" />
+                              <RadioButton fx:id="debitCardOption" mnemonicParsing="false" text="Debit Card" toggleGroup="$paymentGroup" />
                               <CheckBox fx:id="savePaymentInfoCheckbox" text="Save payment information for future purchases" />
-                           </children>
-                        </VBox>
-                     </content>
-                  </Tab>
-                  <Tab closable="false" text="Review and Submit">
-                     <content>
-                        <VBox spacing="15">
-                           <padding>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </padding>
-                           <children>
-                              <Label styleClass="subsection-header" text="Review Your Order">
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <TitledPane expanded="true" text="Order Items">
-                                 <content>
-                                    <ListView fx:id="orderItemsListView" prefHeight="150" />
-                                 </content>
-                              </TitledPane>
-                              <TitledPane expanded="true" text="Shipping Information">
-                                 <content>
-                                    <VBox spacing="5">
-                                       <children>
-                                          <Label fx:id="reviewNameLabel" text="Name: John Doe" />
-                                          <Label fx:id="reviewAddressLabel" text="Address: 123 Main St" />
-                                          <Label fx:id="reviewCityStateLabel" text="City, State: Anytown, ST 12345" />
-                                          <Label fx:id="reviewCountryLabel" text="Country: Vietnam" />
-                                          <Label fx:id="reviewPhoneLabel" text="Phone: (123) 456-7890" />
-                                       </children>
-                                    </VBox>
-                                 </content>
-                              </TitledPane>
-                              <TitledPane expanded="true" text="Payment Information">
-                                 <content>
-                                    <VBox spacing="5">
-                                       <children>
-                                          <Label fx:id="reviewPaymentMethodLabel" text="Payment Method: Credit Card" />
-                                          <Label fx:id="reviewCardNumberLabel" text="Card Number: XXXX XXXX XXXX 1234" />
-                                          <Label fx:id="reviewCardholderLabel" text="Cardholder: John Doe" />
-                                       </children>
-                                    </VBox>
-                                 </content>
-                              </TitledPane>
-                              <TitledPane expanded="true" text="Order Total">
-                                 <content>
-                                    <VBox spacing="5">
-                                       <children>
-                                          <HBox spacing="10">
-                                             <children>
-                                                <Label text="Subtotal:" />
-                                                <Label fx:id="reviewSubtotalLabel" text="49.97" />
-                                             </children>
-                                          </HBox>
-                                          <HBox spacing="10">
-                                             <children>
-                                                <Label text="Shipping:" />
-                                                <Label fx:id="reviewShippingLabel" text="5.99" />
-                                             </children>
-                                          </HBox>
-                                          <HBox spacing="10">
-                                             <children>
-                                                <Label text="Tax:" />
-                                                <Label fx:id="reviewTaxLabel" text="5.00" />
-                                             </children>
-                                          </HBox>
-                                          <Separator />
-                                          <HBox spacing="10">
-                                             <children>
-                                                <Label styleClass="order-total" text="Total:">
-                                                   <font>
-                                                      <Font name="System Bold" size="14.0" />
-                                                   </font>
-                                                </Label>
-                                                <Label fx:id="reviewTotalLabel" styleClass="order-total" text="60.96">
-                                                   <font>
-                                                      <Font name="System Bold" size="14.0" />
-                                                   </font>
-                                                </Label>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </VBox>
-                                 </content>
-                              </TitledPane>
-                              <Separator />
-                              <VBox spacing="10">
-                                 <children>
-                                    <Label styleClass="subsection-header" text="Terms and Conditions">
-                                       <font>
-                                          <Font name="System Bold" size="14.0" />
-                                       </font>
-                                    </Label>
-                                    <CheckBox fx:id="termsAcceptCheckbox" text="I agree to the Terms and Conditions and Privacy Policy" />
-                                    <CheckBox fx:id="marketingEmailsCheckbox" text="I would like to receive marketing emails about promotions and new products" />
-                                 </children>
-                              </VBox>
-                              <Separator />
                               <HBox alignment="CENTER" spacing="15">
                                  <children>
-                                    <Button fx:id="cancelOrderButton" styleClass="cancel-button" text="Cancel Order" />
-                                    <Button fx:id="placeOrderButton" prefWidth="150" styleClass="primary-button" text="Place Order">
+                                    <Button fx:id="placeOrderButton1" onAction="#handlePlaceOrder" prefWidth="150" styleClass="primary-button" text="Place Order">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Button>
                                  </children>
                               </HBox>
-                              <Label styleClass="disclaimer-text" text="By placing this order, you confirm that all information provided is accurate and complete." wrapText="true" />
                            </children>
                         </VBox>
                      </content>
