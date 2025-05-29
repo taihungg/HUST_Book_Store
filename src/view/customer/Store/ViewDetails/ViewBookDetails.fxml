@@ -25,7 +25,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" spacing="12">
                      <children>
-                        <Button fx:id="backButton" onAction="#handleBacktoProducts" style="-fx-background-color: #e2e8f0; -fx-text-fill: #4a5568; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 12; -fx-font-size: 12;" text="&lt; Back to Products" />
+                        <Button fx:id="backButton" onAction="#handleBackToProducts" style="-fx-background-color: #e2e8f0; -fx-text-fill: #4a5568; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 6 12; -fx-font-size: 12;" text="&lt; Back to Products" />
                         <Label style="-fx-text-fill: #2d3748;" styleClass="section-header" text="Product Details">
                            <font>
                               <Font name="System Bold" size="18.0" />
