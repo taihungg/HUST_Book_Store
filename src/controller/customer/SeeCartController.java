@@ -1,6 +1,7 @@
 package controller.customer;
 
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,13 +24,14 @@ import model.manager.AppServiceManager;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleStringProperty;
 
 import controller.Main;
 
 public class SeeCartController implements Initializable {
 
     @FXML private TableView<CartItem> cartTable;
-    @FXML private TableColumn<CartItem, Product> itemColumn;
+    @FXML private TableColumn<CartItem, String> itemColumn;
     @FXML private TableColumn<CartItem, Double> priceColumn;
     @FXML private TableColumn<CartItem, Integer> quantityColumn;
     @FXML private TableColumn<CartItem, Double> totalPriceColumn;
@@ -38,6 +40,7 @@ public class SeeCartController implements Initializable {
     @FXML private Button removeCartButton;
     @FXML private Button clearCartButton;
     @FXML private Button checkoutButton;
+    
 
     private AppServiceManager appServiceManager = Main.appServiceManager;
     private Customer currentUser = (Customer)Main.currentUser;
@@ -63,32 +66,35 @@ public class SeeCartController implements Initializable {
     }
 
     private void setupTableColumns() {
-        if (itemColumn != null) {
-            itemColumn.setCellValueFactory(new PropertyValueFactory<>("product"));
-            itemColumn.setCellFactory(col -> new TableCell<>() {
-                @Override
-                protected void updateItem(Product item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(empty || item == null ? null : item.getTitle());
+       // Corrected approach:
+       if (itemColumn != null) {
+        itemColumn.setCellValueFactory(cellDataFeatures -> {
+            CartItem cartItem = cellDataFeatures.getValue();
+            if (cartItem != null && appServiceManager != null && appServiceManager.getProductManager() != null) {
+                Product product = appServiceManager.getProductManager().getProductById(cartItem.getProductId());
+                if (product != null && product.getTitle() != null) {
+                    // Return the title directly, wrapped in an ObservableValue
+                    return new SimpleStringProperty(product.getTitle()); // MODIFIED
+                } else if (product != null) {
+                    return new SimpleStringProperty(""); // Product exists but no title
                 }
-            });
-        } else {
-            System.err.println("itemColumn is null, check FXML configuration.");
-        }
+            }
+            return new SimpleStringProperty(null); // Or new SimpleStringProperty("") for an empty cell
+        });
 
-        if (priceColumn != null) {
-            priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-            priceColumn.setCellFactory(col -> new TableCell<>() {
-                @Override
-                protected void updateItem(Double price, boolean empty) {
-                    super.updateItem(price, empty);
-                    setText(empty || price == null ? null : String.format("%.2f USD", price));
+    if (priceColumn != null) {
+        // This will now fetch the current selling price from the Product object
+        priceColumn.setCellValueFactory(cellDataFeatures -> {
+            CartItem cartItem = cellDataFeatures.getValue();
+            if (cartItem != null && appServiceManager != null && appServiceManager.getProductManager() != null) {
+                Product product = appServiceManager.getProductManager().getProductById(cartItem.getProductId());
+                if (product != null) {
+                    // Assuming Product class has a method like getSellingPrice() that returns a numeric type (e.g., double or Double)
+                    return new javafx.beans.property.SimpleObjectProperty<>(product.getSellingPrice());
                 }
-            });
-         
-        } else {
-            System.err.println("priceColumn is null, check FXML configuration.");
-        }
+            }
+            return new javafx.beans.property.SimpleObjectProperty<>(null); // Return null if price can't be determined
+        });
 
         if (quantityColumn != null) {
             quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
@@ -111,17 +117,20 @@ public class SeeCartController implements Initializable {
         }
 
         if (totalPriceColumn != null) {
-            totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
-            totalPriceColumn.setCellFactory(col -> new TableCell<>() {
-                @Override
-                protected void updateItem(Double total, boolean empty) {
-                    super.updateItem(total, empty);
-                    setText(empty || total == null ? null : String.format("%.2f USD", total));
+            totalPriceColumn.setCellValueFactory(cellDataFeatures -> {
+                CartItem cartItem = cellDataFeatures.getValue();
+                if (cartItem != null && appServiceManager != null && appServiceManager.getProductManager() != null) {
+                    Product product = appServiceManager.getProductManager().getProductById(cartItem.getProductId());
+                    if (product != null) {
+                        double itemTotalPrice = product.getSellingPrice() * cartItem.getQuantity();
+                        return new SimpleObjectProperty<>(itemTotalPrice);
+                    }
                 }
+                return new SimpleObjectProperty<>(null);
             });
-        } else {
-            System.err.println("totalPriceColumn is null, check FXML configuration.");
         }
+    }
+    }
     }
 
     private void setupEventHandlers() {
@@ -129,7 +138,6 @@ public class SeeCartController implements Initializable {
 			try {
 				handleContinueShopping(e);
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
@@ -193,3 +201,4 @@ public class SeeCartController implements Initializable {
         alert.showAndWait();
     }
 }
+
