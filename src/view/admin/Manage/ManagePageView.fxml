@@ -10,7 +10,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="450.0" prefWidth="650.0" style="-fx-background-color: #ECEFF1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.ManagePageController">
+<BorderPane prefHeight="404.0" prefWidth="700.0" style="-fx-background-color: #ECEFF1;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.ManagePageController">
        <top>
           <HBox alignment="CENTER" style="-fx-background-color: #E0E0E0; -fx-padding: 20;">
              <children>
