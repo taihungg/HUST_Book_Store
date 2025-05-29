@@ -65,7 +65,7 @@ public class ForgotPasswordController {
 
     	try {
             // Chuyển về trang đăng nhập
-    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ForgotPassword.fxml"));
+    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
