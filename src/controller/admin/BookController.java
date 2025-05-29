@@ -108,11 +108,11 @@ public class BookController {
     @FXML
     public void initialize() {
         // Populate ComboBoxes
-        languageComboBox.getItems().addAll("Tiếng Việt", "Tiếng Anh", "Tiếng Nhật", "Tiếng Pháp", "Song ngữ", "Khác");
-        statusComboBox.getItems().addAll("Còn hàng", "Hết hàng", "Sắp phát hành", "Ngừng kinh doanh");
+        languageComboBox.getItems().addAll("Vietnamese", "English", "Japanese", "French", "Dual Language", "Other");
+        statusComboBox.getItems().addAll("In Stock", "Out of Stock", "Coming soon", "Discontinued");
         bookTypeComboBox.getItems().addAll("Print Book", "Ebook", "Audiobook");
-        categoryComboBox.getItems().addAll("Văn học", "Kinh tế", "Tâm lý - Kỹ năng sống", "Thiếu nhi", "Tiểu sử - Hồi ký",
-                                           "Giáo trình", "Khoa học - Kỹ thuật", "Ngoại ngữ", "Lịch sử", "Truyện tranh", "Khác");
+        categoryComboBox.getItems().addAll("Literature", "Economy", "Psychology - Life Skills", "Children", "Biography - Memoirs",
+                                           "Textbooks", "Science - Technology", "Foreign Languages", "History", "Comics", "Other");
 
         // Listener để hiển thị/ẩn các trường cụ thể cho Ebook/Audiobook
         bookTypeComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {

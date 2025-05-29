@@ -4,7 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -15,6 +18,7 @@ import model.manager.AppServiceManager;
 import model.manager.statistics.StatisticsManager;
 import model.user.User;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.time.DayOfWeek;
@@ -48,7 +52,8 @@ public class RevenueReportController implements Initializable {
 
 @FXML private Button ExitButton;
 
-private StatisticsManager statisticsManager;
+
+private StatisticsManager statisticsManager ;
 private User currentUser; // Người dùng hiện tại, giả sử là Admin
 private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
@@ -57,6 +62,9 @@ public void initialize(URL location, ResourceBundle resources) {
 // Lấy instance từ Main (giả định)
 AppServiceManager appServiceManager = Main.appServiceManager;
 currentUser = Main.currentUser;
+statisticsManager = new StatisticsManager(appServiceManager.getProductManager(), appServiceManager.getOrderManager());
+
+
 
 if (appServiceManager == null || currentUser == null) {
 showAlert(Alert.AlertType.ERROR, "Lỗi Khởi Tạo", "Không thể tải dịch vụ hoặc thông tin người dùng.");
@@ -64,8 +72,6 @@ showAlert(Alert.AlertType.ERROR, "Lỗi Khởi Tạo", "Không thể tải dịc
 generateReportButton.setDisable(true);
 return;
 }
-
-statisticsManager = new StatisticsManager(appServiceManager.getProductManager(), appServiceManager.getOrderManager());
 
 populatePredefinedDateRanges();
 setDefaultDateRange(); // Đặt khoảng ngày mặc định và tải báo cáo ban đầu
@@ -114,19 +120,25 @@ return;
 
 // Tính toán từ StatisticsManager
 double totalRevenue = statisticsManager.calculateTotalRevenue(currentUser, startDate, endDate);
+System.out.println("Total Revenue: " + totalRevenue);
 double totalCostOfSoldProducts = statisticsManager.calculateTotalPurchaseCostOfSoldProducts(currentUser, startDate, endDate);
+System.out.println("Total Cost of Sold Products: " + totalCostOfSoldProducts);
 double totalProfit = totalRevenue - totalCostOfSoldProducts;
+System.out.println("Total Profit: " + totalProfit);
 int totalSuccessfulOrders = statisticsManager.calculateTotalDoneOrDeliveredOrders(currentUser, startDate, endDate);
+System.out.println("Total Successful Orders: " + totalSuccessfulOrders);
 int totalProductsSold = statisticsManager.calculateTotalProductsSold(currentUser, startDate, endDate);
+System.out.println("Total Products Sold: " + totalProductsSold);
 int totalCancelledOrders = statisticsManager.calculateTotalCancelledOrders(currentUser, startDate, endDate);
+System.out.println("Total Cancelled Orders: " + totalCancelledOrders);
 
 // Cập nhật các Label trong ô tổng quan
-totalRevenueLabel.setText(String.valueOf(totalRevenue));
-totalProfitsLabel.setText(String.valueOf(totalProfit));
+totalRevenueLabel.setText(currencyFormatter.format(totalRevenue));
+totalProfitsLabel.setText(currencyFormatter.format(totalProfit));
 profitMarginLabel.setText(String.valueOf(totalProductsSold)); // FXML: Total products sales
 totalOrdersLabel.setText(String.valueOf(totalSuccessfulOrders)); // FXML: Total orders successfull
 totalCostsLabel1.setText(String.valueOf(totalCancelledOrders)); // FXML: Total orders cancelled
-averageRevenuePerOrderLabel.setText(String.valueOf(totalCostOfSoldProducts)); // FXML: Total products cost
+averageRevenuePerOrderLabel.setText(currencyFormatter.format(totalCostOfSoldProducts)); // FXML: Total products cost
 
 // Cập nhật các Label trong mục "Monthly Cost"
 // StatisticsManager không cung cấp chi phí lương hay "Other" trực tiếp theo khoảng ngày.
@@ -185,9 +197,16 @@ updateReport(); // Tự động cập nhật báo cáo khi chọn khoảng thờ
 }
 
 @FXML
-void handleExit(ActionEvent event) {
-Stage stage = (Stage) ExitButton.getScene().getWindow();
-stage.close();
+void handleExit(ActionEvent event) throws IOException {
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/HomePageAdmin.fxml"));
+    Parent root = loader.load();
+    Scene scene = new Scene(root);
+    Stage stage = (Stage) ExitButton.getScene().getWindow();
+    stage.setScene(scene);
+    stage.show();
+
+    Stage currentStage = (Stage) ExitButton.getScene().getWindow();
+    currentStage.close();
 // Hoặc điều hướng về trang chủ admin nếu cần
 // try {
 //     Parent root = FXMLLoader.load(getClass().getResource("/view/admin/HomePageAdmin.fxml"));
