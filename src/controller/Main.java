@@ -12,14 +12,12 @@ import model.product.Toy;
 import model.product.book.Book;
 import model.user.User;
 
-
-
-
 public class Main extends Application {
 
     public static AppServiceManager appServiceManager = new AppServiceManager();
     public static UserManager userManager = appServiceManager.getUserManager();
     public static User currentUser ;
+    public static Stage primaryStage;
     public static void main(String[] args) {
                 launch(args);
             }
