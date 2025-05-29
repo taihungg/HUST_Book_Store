@@ -19,7 +19,7 @@ public abstract class Product {
 	private final StringProperty status;
 	
 	public Product(String id, String title, String description, String galleryURL,
-			double sellingPrice, double purchasePrice, double averageRating, int numberOfReviews, String status) {
+			double sellingPrice, double purchasePrice, String status) {
 		super();
 		this.id = new SimpleStringProperty(id);
 		this.title = new SimpleStringProperty(title);
@@ -27,8 +27,8 @@ public abstract class Product {
 		this.galleryURL = new SimpleStringProperty(galleryURL);
 		this.sellingPrice = new SimpleDoubleProperty(sellingPrice);
 		this.purchasePrice = new SimpleDoubleProperty(purchasePrice);
-		this.averageRating = new SimpleDoubleProperty(averageRating);
-		this.numberOfReviews = new SimpleIntegerProperty(numberOfReviews);
+		this.averageRating = new SimpleDoubleProperty(0);
+		this.numberOfReviews = new SimpleIntegerProperty(0);
 		this.status = new SimpleStringProperty(status);
 		System.out.println("Product " + getTitle() + " has been created.");
 	}

@@ -13,10 +13,8 @@ public class Printbook extends Book implements Readable, PhysicalProduct{
 	private final StringProperty[] demoPageURLs; //đường dẫn trang demo
 	
 	public Printbook(String id, String title, String description, String galleryURL, double sellingPrice,
-			double purchasePrice, double averageRating, int numberOfReviews, String status, String isbn, String author,
-			String publisher, String category, String language, int numberOfPages, int weight) {
-		super(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status,
-				isbn, author, publisher, category, language);
+			double purchasePrice, String status, String isbn, String author, String publisher, String category, String language, int numberOfPages, int weight) {
+		super(id, title, description, galleryURL, sellingPrice, purchasePrice, status, isbn, author, publisher, category, language);
 		this.numberOfPages = new SimpleIntegerProperty(numberOfPages);
 		this.weight = new SimpleIntegerProperty(weight);
 		this.demoPageURLs = new SimpleStringProperty[5];

@@ -11,9 +11,8 @@ public class Toy extends Product implements PhysicalProduct{
 	private final IntegerProperty suitableAge; // age for toy >= suitable age
 	
 	public Toy(String id, String title, String description, String galleryURL, double sellingPrice,
-			double purchasePrice, double averageRating, int numberOfReviews, String status,
-			String brand, int suitableAge) {
-		super(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status);
+			double purchasePrice, String status, String brand, int suitableAge) {
+		super(id, title, description, galleryURL, sellingPrice, purchasePrice, status);
 		this.brand = new SimpleStringProperty(brand);
 		this.suitableAge = new SimpleIntegerProperty(suitableAge);	
 	}

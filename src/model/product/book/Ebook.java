@@ -13,10 +13,8 @@ public class Ebook extends Book implements Readable, DigitalProduct{
     private final StringProperty[] demoPageURLs; //đường dẫn trang demo
     
 	public Ebook(String id, String title, String description, String galleryURL, double sellingPrice,
-			double purchasePrice, double averageRating, int numberOfReviews, String status, String isbn,
-			String author, String publisher, String category, String language, int numberOfPages, String downloadURL) {
-		super(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status,
-				isbn, author, publisher, category, language);
+			double purchasePrice, String status, String isbn, String author, String publisher, String category, String language, int numberOfPages, String downloadURL) {
+		super(id, title, description, galleryURL, sellingPrice, purchasePrice, status, isbn, author, publisher, category, language);
 		this.numberOfPages = new SimpleIntegerProperty(numberOfPages);
 		this.downloadURL = new SimpleStringProperty(downloadURL);
 		this.demoPageURLs = new SimpleStringProperty[5];

@@ -27,19 +27,6 @@ public class ProductManager {
 	private final Map<String, Integer> productQuantity;
     private final FilteredList<Product> availableProducts;
 
-    // Sample data
-	private final Random random = new Random();
-    private final String[] COMMON_AUTHORS = {"Nguyễn Nhật Ánh", "J.K. Rowling", "Stephen King", "Yuval Noah Harari", "Haruki Murakami", "Nguyễn Du", "Tô Hoài", "Marc Levy", "Dan Brown"};
-    private final String[] COMMON_PUBLISHERS = {"NXB Trẻ", "NXB Kim Đồng", "Penguin Random House", "HarperCollins", "NXB Văn Học", "Fahasa"};
-    private final String[] COMMON_CATEGORIES_BOOK = {"Văn học", "Khoa học", "Lịch sử", "Trinh thám", "Kinh tế", "Thiếu nhi", "Self-help"};
-    private final String[] COMMON_LANGUAGES = {"Tiếng Việt", "English", "French", "Japanese"};
-    private final String[] COMMON_BRANDS_STATIONERY_TOY = {"Thiên Long", "Plus", "Colgate", "Biti's", "Lego", "Bandai", "Hasbro"};
-    private final String[] STATIONERY_TYPES = {"Bút bi", "Sổ tay", "Tẩy", "Hộp bút", "Kẹp giấy", "Bút chì", "Thước kẻ"};
-    private final String[] TOY_TYPES = {"Đồ chơi xếp hình", "Mô hình", "Búp bê", "Xe đồ chơi", "Thú bông", "Đồ chơi giáo dục"};
-    private final String[] PHYSICAL_STATUS_OPTIONS = {"In Stock", "Out of Stock", "Discontinued"};
-    private final String[] DIGITAL_STATUS_OPTIONS = {"Available", "Unavailable", "Coming soon", "Discontinued"};
-    
-
 	public ProductManager() {
 		this.productList = FXCollections.observableArrayList();
 		this.productMap = new HashMap<>();
@@ -63,7 +50,8 @@ public class ProductManager {
                 });
             }
         });
-		loadInitialProducts();
+
+        loadSampleData();
 	}
 
     private boolean isProductAvailableForShop(Product product) {
@@ -195,6 +183,13 @@ public class ProductManager {
                 return false;
             }
             productQuantity.put(productId, currentQuantity - amount);
+            if (productQuantity.get(productId) == 0) {
+                // Nếu số lượng về 0, cập nhật trạng thái của đối tượng Product
+                if (!"Out of Stock".equalsIgnoreCase(product.getStatus())) { // Tránh cập nhật nếu đã Out of Stock
+                    product.setStatus("Out of Stock");
+                    System.out.println("Cập nhật trạng thái của '" + product.getTitle() + "' thành 'Out of Stock' do hết hàng.");
+                }
+            }
             System.out.println("Decreased stock for " + product.getTitle() + " by " + amount + ". New stock: " + productQuantity.get(productId));
             return true;
         }
@@ -256,6 +251,13 @@ public class ProductManager {
                 return false;
             }
             productQuantity.put(productId, newQuantity);
+            if (productQuantity.get(productId) == 0) {
+                // Nếu số lượng về 0, cập nhật trạng thái của đối tượng Product
+                if (!"Out of Stock".equalsIgnoreCase(product.getStatus())) { // Tránh cập nhật nếu đã Out of Stock
+                    product.setStatus("Out of Stock");
+                    System.out.println("Cập nhật trạng thái của '" + product.getTitle() + "' thành 'Out of Stock' do hết hàng.");
+                }
+            }
             System.out.println("Set new stock for " + product.getTitle() + " (ID: " + productId + ") to: " + newQuantity);
             return true;
         }
@@ -315,140 +317,610 @@ public class ProductManager {
 		}
 	}
 
-    // Phương thức loadInitialProducts sẽ chứa các câu lệnh khởi tạo trực tiếp
-    protected void loadInitialProducts() {
-        System.out.println("Generating sample products...");
+    private void loadSampleData() {
+        Audiobook audiobooks1 = new Audiobook(
+            "AB001", "Harry Potter and the Sorcerer's Stone (Audio)", "The first book in the Harry Potter series, narrated by Jim Dale.",
+            "http://example.com/hp1_audio.jpg", 15.99, 8.00, "Available",
+            "978-0739326006", "J.K. Rowling", "Pottermore Publishing", "Fantasy", "English", "http://example.com/hp1_audio.mp3"
+        );
+        Audiobook audiobooks2 = new Audiobook(
+            "AB002", "Dế Mèn Phiêu Lưu Ký (Sách nói)", "Cuộc phiêu lưu của chú Dế Mèn qua thế giới côn trùng.",
+            "http://example.com/demen_audio.jpg", 7.50, 4.00, "Available",
+            "978-6045610029", "Tô Hoài", "Nhà xuất bản Kim Đồng", "Truyện thiếu nhi", "Tiếng Việt", "http://example.com/demen_audio.mp3"
+        );
+        Audiobook audiobooks3 = new Audiobook(
+            "AB003", "Atomic Habits (Audio)", "Tiny Changes, Remarkable Results. An easy and proven way to build good habits.",
+            "http://example.com/atomic_habits_audio.jpg", 12.99, 6.50, "Available",
+            "978-0593181822", "James Clear", "Penguin Audio", "Self-help", "English", "http://example.com/atomic_habits_audio.mp3"
+        );
+        Audiobook audiobooks4 = new Audiobook(
+            "AB004", "Nhà Giả Kim (Sách nói)", "Câu chuyện truyền cảm hứng về việc theo đuổi ước mơ.",
+            "http://example.com/nhagia_kim_audio.jpg", 8.99, 4.50, "Out of Stock", // Trạng thái hết hàng
+            "978-6049987826", "Paulo Coelho", "Nhà xuất bản Văn Học", "Triết học", "Tiếng Việt", "http://example.com/nhagia_kim_audio.mp3"
+        );
+        Audiobook audiobooks5 = new Audiobook(
+            "AB005", "The Lord of the Rings: The Fellowship of the Ring (Audio)", "The epic first volume of Tolkien's high-fantasy saga.",
+            "http://example.com/lotr_audio.jpg", 18.00, 9.00, "Available",
+            "978-0618059039", "J.R.R. Tolkien", "HarperCollins Publishers", "Fantasy", "English", "http://example.com/lotr_audio.mp3"
+        );
+        Audiobook audiobooks6 = new Audiobook(
+            "AB006", "Sapiens: Lược Sử Loài Người (Sách nói)", "Khám phá lịch sử phát triển của loài người.",
+            "http://example.com/sapiens_audio.jpg", 14.00, 7.00, "Available",
+            "978-6045620004", "Yuval Noah Harari", "NXB Thế Giới", "Lịch sử", "Tiếng Việt", "http://example.com/sapiens_audio.mp3"
+        );
+        Audiobook audiobooks7 = new Audiobook(
+            "AB007", "Dune (Audiobook)", "A landmark science fiction novel about politics, religion, and ecology.",
+            "http://example.com/dune_audio.jpg", 17.50, 8.75, "Available",
+            "978-1524794269", "Frank Herbert", "Macmillan Audio", "Science Fiction", "English", "http://example.com/dune_audio.mp3"
+        );
+        Audiobook audiobooks8 = new Audiobook(
+            "AB008", "Đắc Nhân Tâm (Sách nói)", "Những nguyên tắc vàng trong giao tiếp và ứng xử.",
+            "http://example.com/dacnhantam_audio.jpg", 9.50, 4.75, "Available",
+            "978-6045610012", "Dale Carnegie", "NXB Trẻ", "Kỹ năng sống", "Tiếng Việt", "http://example.com/dacnhantam_audio.mp3"
+        );
+        Audiobook audiobooks9 = new Audiobook(
+            "AB009", "The Midnight Library (Audio)", "A magical story about second chances and parallel lives.",
+            "http://example.com/midnight_library_audio.jpg", 11.99, 6.00, "Discontinued", // Trạng thái ngừng kinh doanh
+            "978-0593340578", "Matt Haig", "Viking Audio", "Fantasy", "English", "http://example.com/midnight_library_audio.mp3"
+        );
+        Audiobook audiobooks10 = new Audiobook(
+            "AB010", "Conan Doyle: Sherlock Holmes Collection (Audio)", "Classic detective stories.",
+            "http://example.com/sherlock_audio.jpg", 16.50, 8.25, "Available",
+            "978-1441753232", "Arthur Conan Doyle", "Brilliance Audio", "Trinh thám", "English", "http://example.com/sherlock_audio.mp3"
+        );
 
-        // --- 1. Tạo 100 Printbook Samples ---
-        for (int i = 0; i < 100; i++) {
-            String id = "PB" + (1000 + i);
-            String title = "Sách In - Tiêu đề " + (i + 1) + " (Tập " + (i % 5 + 1) + ")";
-            String description = "Mô tả chi tiết cho cuốn sách in " + title + ". Đây là một cuốn sách hấp dẫn với nhiều nội dung giá trị.";
-            String galleryURL = "@../images/product/book" + (i + 1) + ".jpg";
-            double sellingPrice = 2 + random.nextDouble() * 100;
-            double purchasePrice = sellingPrice * (0.6 + random.nextDouble() * 0.1); // 60-70% giá bán
-            double averageRating = 3.5 + random.nextDouble() * 1.5; // 3.5 - 5.0
-            int numberOfReviews = random.nextInt(500);
-            String status = PHYSICAL_STATUS_OPTIONS[random.nextInt(PHYSICAL_STATUS_OPTIONS.length)];
-            String isbn = "978-604-0-" + String.format("%04d", i) + "-X";
-            String author = COMMON_AUTHORS[random.nextInt(COMMON_AUTHORS.length)];
-            String publisher = COMMON_PUBLISHERS[random.nextInt(COMMON_PUBLISHERS.length)];
-            String category = COMMON_CATEGORIES_BOOK[random.nextInt(COMMON_CATEGORIES_BOOK.length)];
-            String language = COMMON_LANGUAGES[random.nextInt(COMMON_LANGUAGES.length)];
-            int numberOfPages = 150 + random.nextInt(600); // 150 - 750 trang
-            int weight = 300 + random.nextInt(1000); // 300 - 1300 gram
+        Audiobook audiobooks11 = new Audiobook(
+    "AB011", "The Secret History (Audio)", "A dark academic novel of classical studies and obsession.",
+    "http://example.com/secret_hist_audio.jpg", 16.50, 8.50, "Available",
+    "978-0593414576", "Donna Tartt", "Penguin Audio", "Mystery", "English", "http://example.com/secret_hist_audio.mp3"
+        );
+        Audiobook audiobooks12 = new Audiobook(
+            "AB012", "Tuổi Thơ Dữ Dội (Sách nói)", "Tập truyện về tuổi thơ và chiến tranh đầy cảm động.",
+            "http://example.com/tuoitho_dudoi_audio.jpg", 9.80, 5.00, "Available",
+            "978-6045610036", "Phùng Quán", "NXB Trẻ", "Văn học", "Tiếng Việt", "http://example.com/tuoitho_dudoi_audio.mp3"
+        );
+        Audiobook audiobooks13 = new Audiobook(
+            "AB013", "Project Hail Mary (Audio)", "An astronaut's mission to save Earth from a cosmic threat.",
+            "http://example.com/hail_mary_audio.jpg", 14.99, 7.50, "Available",
+            "978-0593135207", "Andy Weir", "Audible Studios", "Science Fiction", "English", "http://example.com/hail_mary_audio.mp3"
+        );
+        Audiobook audiobooks14 = new Audiobook(
+            "AB014", "Bên Kia Rừng (Sách nói)", "Những câu chuyện dân gian độc đáo của Việt Nam.",
+            "http://example.com/benkiarung_audio.jpg", 7.00, 3.50, "Out of Stock",
+            "978-6045620018", "Truyện cổ tích", "NXB Văn Học", "Truyện cổ tích", "Tiếng Việt", "http://example.com/benkiarung_audio.mp3"
+        );
+        Audiobook audiobooks15 = new Audiobook(
+            "AB015", "Circe (Audio)", "A mythological retelling of the Greek goddess Circe's life.",
+            "http://example.com/circe_audio.jpg", 13.50, 6.75, "Available",
+            "978-0316556550", "Madeline Miller", "Hachette Audio", "Mythology", "English", "http://example.com/circe_audio.mp3"
+        );
+        Audiobook audiobooks16 = new Audiobook(
+            "AB016", "Muôn Kiếp Nhân Sinh (Sách nói)", "Những câu chuyện về luật nhân quả và nghiệp báo.",
+            "http://example.com/muonkiep_audio.jpg", 10.50, 5.25, "Available",
+            "978-6045630012", "Nguyên Phong", "First News", "Tâm linh", "Tiếng Việt", "http://example.com/muonkiep_audio.mp3"
+        );
+        Audiobook audiobooks17 = new Audiobook(
+            "AB017", "Educated (Audiobook)", "A memoir about a young woman's journey from an isolated upbringing to academia.",
+            "http://example.com/educated_audio.jpg", 12.00, 6.00, "Available",
+            "978-0399590511", "Tara Westover", "Random House Audio", "Memoir", "English", "http://example.com/educated_audio.mp3"
+        );
+        Audiobook audiobooks18 = new Audiobook(
+            "AB018", "Bản Giao Hưởng Định Mệnh (Sách nói)", "Câu chuyện về cuộc sống, tình yêu và những khúc mắc.",
+            "http://example.com/giaohuong_audio.jpg", 8.00, 4.00, "Available",
+            "978-6045610043", "Marc Levy", "NXB Phụ Nữ", "Lãng mạn", "Tiếng Việt", "http://example.com/giaohuong_audio.mp3"
+        );
+        Audiobook audiobooks19 = new Audiobook(
+            "AB019", "The Martian (Audiobook)", "An astronaut's struggle for survival on Mars.",
+            "http://example.com/martian_audio.jpg", 11.99, 6.00, "Discontinued",
+            "978-0804139045", "Andy Weir", "Crown Audio", "Science Fiction", "English", "http://example.com/martian_audio.mp3"
+        );
+        Audiobook audiobooks20 = new Audiobook(
+            "AB020", "Chuyện Con Mèo Dạy Hải Âu Bay (Sách nói)", "Tác phẩm kinh điển về tình bạn và trách nhiệm.",
+            "http://example.com/meo_haiau_audio.jpg", 6.50, 3.25, "Available",
+            "978-6045600055", "Luis Sepúlveda", "NXB Trẻ", "Truyện thiếu nhi", "Tiếng Việt", "http://example.com/meo_haiau_audio.mp3"
+        );
 
-            Printbook printbook = new Printbook(
-                id, title, description, galleryURL, sellingPrice, purchasePrice,
-                averageRating, numberOfReviews, status, isbn, author, publisher,
-                category, language, numberOfPages, weight
-            );
-            productList.add(printbook);
-            productMap.put(id, printbook);
-            productQuantity.put(id, 10 + random.nextInt(40)); // 10-50 bản tồn kho
-        }
+        Ebook ebooks1 = new Ebook(
+            "EB001", "The Alchemist (Ebook)", "An inspiring tale about following your dreams.",
+            "http://example.com/alchemist_ebook.jpg", 6.99, 3.50, "Available",
+            "978-0062315007", "Paulo Coelho", "HarperCollins", "Fiction", "English", 208, "http://example.com/alchemist_ebook.epub"
+        );
+        Ebook ebooks2 = new Ebook(
+            "EB002", "Đắc Nhân Tâm (Ebook)", "Nghệ thuật thu phục lòng người.",
+            "http://example.com/dacnhantam_ebook.jpg", 4.99, 2.50, "Available",
+            "978-6045610012", "Dale Carnegie", "Alpha Books", "Kỹ năng sống", "Tiếng Việt", 320, "http://example.com/dacnhantam_ebook.pdf"
+        );
+        Ebook ebooks3 = new Ebook(
+            "EB003", "1984 (Ebook)", "A dystopian social science fiction novel.",
+            "http://example.com/1984_ebook.jpg", 5.50, 2.75, "Available",
+            "978-0451524935", "George Orwell", "Signet Classic", "Dystopian", "English", 328, "http://example.com/1984_ebook.epub"
+        );
+        Ebook ebooks4 = new Ebook(
+            "EB004", "Tôi Thấy Hoa Vàng Trên Cỏ Xanh (Ebook)", "Tập truyện dài về tuổi thơ ở một làng quê Việt Nam.",
+            "http://example.com/hoavang_ebook.jpg", 3.99, 2.00, "Available",
+            "978-6045620001", "Nguyễn Nhật Ánh", "NXB Trẻ", "Văn học", "Tiếng Việt", 280, "http://example.com/hoavang_ebook.pdf"
+        );
+        Ebook ebooks5 = new Ebook(
+            "EB005", "The Great Gatsby (Ebook)", "A classic American novel exploring the American Dream.",
+            "http://example.com/gatsby_ebook.jpg", 4.00, 2.00, "Out of Stock", // Trạng thái hết hàng (giả sử có thể là do vấn đề bản quyền e-book)
+            "978-0743273565", "F. Scott Fitzgerald", "Scribner", "Classics", "English", 180, "http://example.com/gatsby_ebook.epub"
+        );
+        Ebook ebooks6 = new Ebook(
+            "EB006", "Bí Mật Của May Mắn (Ebook)", "Câu chuyện về hai hiệp sĩ tìm kiếm cỏ bốn lá may mắn.",
+            "http://example.com/bimay_mayman_ebook.jpg", 3.00, 1.50, "Available",
+            "978-6045600000", "Alex Rovira", "First News", "Kỹ năng sống", "Tiếng Việt", 120, "http://example.com/bimay_mayman_ebook.pdf"
+        );
+        Ebook ebooks7 = new Ebook(
+            "EB007", "Dune (Ebook)", "Frank Herbert's seminal science fiction masterpiece.",
+            "http://example.com/dune_ebook.jpg", 7.99, 4.00, "Available",
+            "978-0441013593", "Frank Herbert", "Ace Books", "Science Fiction", "English", 600, "http://example.com/dune_ebook.epub"
+        );
+        Ebook ebooks8 = new Ebook(
+            "EB008", "Cà Phê Sáng Với Thượng Đế (Ebook)", "Tập hợp những câu chuyện ngắn truyền cảm hứng.",
+            "http://example.com/caphesang_ebook.jpg", 4.50, 2.25, "Available",
+            "978-6045630005", "John P. Stapp", "NXB Tổng hợp TP.HCM", "Tâm lý", "Tiếng Việt", 250, "http://example.com/caphesang_ebook.pdf"
+        );
+        Ebook ebooks9 = new Ebook(
+            "EB009", "Educated (Ebook)", "A memoir about a young woman's journey from an isolated upbringing to academia.",
+            "http://example.com/educated_ebook.jpg", 6.00, 3.00, "Available",
+            "978-0399590504", "Tara Westover", "Random House", "Memoir", "English", 352, "http://example.com/educated_ebook.epub"
+        );
+        Ebook ebooks10 = new Ebook(
+            "EB010", "Ông Già Và Biển Cả (Ebook)", "Tác phẩm kinh điển về cuộc đấu tranh của con người với thiên nhiên.",
+            "http://example.com/onggia_ebook.jpg", 3.50, 1.75, "Available",
+            "978-6045600017", "Ernest Hemingway", "NXB Văn Học", "Văn học", "Tiếng Việt", 128, "http://example.com/onggia_ebook.pdf"
+        );
 
-        // --- 2. Tạo 100 Ebook Samples ---
-        for (int i = 0; i < 100; i++) {
-            String id = "EB" + (1000 + i);
-            String title = "Ebook - Tiêu đề " + (i + 1) + " (Series " + (i % 3 + 1) + ")";
-            String description = "Mô tả chi tiết cho ebook " + title + ". Đọc mọi lúc mọi nơi trên thiết bị của bạn.";
-            String galleryURL = "https://example.com/images/eb" + (i + 1) + ".jpg";
-            double sellingPrice = 30000.0 + random.nextDouble() * 100000.0; // 30k - 130k VND
-            double purchasePrice = sellingPrice * (0.4 + random.nextDouble() * 0.1); // 40-50% giá bán
-            double averageRating = 3.0 + random.nextDouble() * 2.0;
-            int numberOfReviews = random.nextInt(300);
-            String status = DIGITAL_STATUS_OPTIONS[random.nextInt(DIGITAL_STATUS_OPTIONS.length)];
-            String isbn = "978-999-0-" + String.format("%04d", i) + "-Y";
-            String author = COMMON_AUTHORS[random.nextInt(COMMON_AUTHORS.length)];
-            String publisher = COMMON_PUBLISHERS[random.nextInt(COMMON_PUBLISHERS.length)];
-            String category = COMMON_CATEGORIES_BOOK[random.nextInt(COMMON_CATEGORIES_BOOK.length)];
-            String language = COMMON_LANGUAGES[random.nextInt(COMMON_LANGUAGES.length)];
-            int numberOfPages = 80 + random.nextInt(500);
-            String downloadURL = "https://downloads.example.com/ebook" + (i + 1) + ".pdf";
+        Ebook ebooks11 = new Ebook(
+    "EB011", "The Night Circus (Ebook)", "A magical love story set in a mysterious circus.",
+    "http://example.com/night_circus_ebook.jpg", 6.00, 3.00, "Available",
+    "978-0385534633", "Erin Morgenstern", "Anchor Books", "Fantasy", "English", 392, "http://example.com/night_circus_ebook.epub"
+        );
+        Ebook ebooks12 = new Ebook(
+            "EB012", "Cây Chuối Non Đi Giày Xanh (Ebook)", "Truyện dài về tuổi thơ trong trẻo của Nguyễn Nhật Ánh.",
+            "http://example.com/caychuoinon_ebook.jpg", 4.20, 2.10, "Available",
+            "978-6045610009", "Nguyễn Nhật Ánh", "NXB Trẻ", "Văn học", "Tiếng Việt", 310, "http://example.com/caychuoinon_ebook.pdf"
+        );
+        Ebook ebooks13 = new Ebook(
+            "EB013", "Where the Crawdads Sing (Ebook)", "A compelling story of a lonely girl growing up in the marshes.",
+            "http://example.com/crawdads_ebook.jpg", 7.50, 3.75, "Available",
+            "978-0735219113", "Delia Owens", "G.P. Putnam's Sons", "Fiction", "English", 368, "http://example.com/crawdads_ebook.epub"
+        );
+        Ebook ebooks14 = new Ebook(
+            "EB014", "Tôi Tự Học (Ebook)", "Hành trình tự học và khám phá bản thân.",
+            "http://example.com/toituhoc_ebook.jpg", 5.00, 2.50, "Out of Stock",
+            "978-6045620025", "Nguyễn Duy Cần", "NXB Tổng Hợp TP.HCM", "Kỹ năng sống", "Tiếng Việt", 280, "http://example.com/toituhoc_ebook.pdf"
+        );
+        Ebook ebooks15 = new Ebook(
+            "EB015", "The Song of Achilles (Ebook)", "A stunning retelling of the Trojan War and the love between Achilles and Patroclus.",
+            "http://example.com/achilles_ebook.jpg", 6.75, 3.40, "Available",
+            "978-0062060624", "Madeline Miller", "Ecco", "Mythology", "English", 368, "http://example.com/achilles_ebook.epub"
+        );
+        Ebook ebooks16 = new Ebook(
+            "EB016", "Suối Nguồn (Ebook)", "Một câu chuyện về chủ nghĩa cá nhân và sự sáng tạo.",
+            "http://example.com/suoinuon_ebook.jpg", 8.00, 4.00, "Available",
+            "978-6045630030", "Ayn Rand", "NXB Tổng Hợp TP.HCM", "Triết học", "Tiếng Việt", 800, "http://example.com/suoinuon_ebook.pdf"
+        );
+        Ebook ebooks17 = new Ebook(
+            "EB017", "Circe (Ebook)", "A modern classic of the ancient world.",
+            "http://example.com/circe_ebook.jpg", 7.20, 3.60, "Available",
+            "978-0316556345", "Madeline Miller", "Little, Brown and Company", "Mythology", "English", 393, "http://example.com/circe_ebook.epub"
+        );
+        Ebook ebooks18 = new Ebook(
+            "EB018", "Một Lít Nước Mắt (Ebook)", "Câu chuyện có thật về nghị lực sống của cô gái trẻ.",
+            "http://example.com/motlitnuocmat_ebook.jpg", 4.00, 2.00, "Available",
+            "978-6045610050", "Kito Aya", "NXB Kim Đồng", "Tâm lý", "Tiếng Việt", 240, "http://example.com/motlitnuocmat_ebook.pdf"
+        );
+        Ebook ebooks19 = new Ebook(
+            "EB019", "The Henna Artist (Ebook)", "A vivid historical novel set in 1950s Jaipur.",
+            "http://example.com/henna_artist_ebook.jpg", 5.50, 2.75, "Discontinued",
+            "978-1982156822", " Alka Joshi", "Mira Books", "Historical Fiction", "English", 368, "http://example.com/henna_artist_ebook.epub"
+        );
+        Ebook ebooks20 = new Ebook(
+            "EB020", "Thám Tử Lừng Danh Conan - Tập 100 (Ebook)", "Tập mới nhất trong series trinh thám nổi tiếng.",
+            "http://example.com/conan100_ebook.jpg", 3.00, 1.50, "Available",
+            "978-6045640001", "Aoyama Gosho", "NXB Kim Đồng", "Manga", "Tiếng Việt", 192, "http://example.com/conan100_ebook.pdf"
+        );
 
-            Ebook ebook = new Ebook(
-                id, title, description, galleryURL, sellingPrice, purchasePrice,
-                averageRating, numberOfReviews, status, isbn, author, publisher,
-                category, language, numberOfPages, downloadURL
-            );
-            productList.add(ebook);
-            productMap.put(id, ebook);
-            productQuantity.put(id, 0); // Ebook không có tồn kho vật lý
-        }
+        Printbook printbooks1 = new Printbook(
+            "PB001", "Nhà Giả Kim (Bản in)", "Câu chuyện phiêu lưu và khám phá bản thân qua sa mạc.",
+            "http://example.com/nhagia_kim_print.jpg", 10.00, 5.00, "Available",
+            "978-6045610005", "Paulo Coelho", "Nhà xuất bản Văn Học", "Triết học", "Tiếng Việt", 224, 350
+        );
+        Printbook printbooks2 = new Printbook(
+            "PB002", "Harry Potter and the Philosopher's Stone (Print)", "The first book in the magical series.",
+            "http://example.com/hp1_print.jpg", 20.00, 10.00, "Available",
+            "978-0747532743", "J.K. Rowling", "Bloomsbury Publishing", "Fantasy", "English", 223, 400
+        );
+        Printbook printbooks3 = new Printbook(
+            "PB003", "Tắt Đèn (Bản in)", "Tiểu thuyết hiện thực phê phán xã hội Việt Nam thời Pháp thuộc.",
+            "http://example.com/tatden_print.jpg", 7.00, 3.50, "Out of Stock", // Hết hàng
+            "978-6045600021", "Ngô Tất Tố", "NXB Văn Học", "Văn học", "Tiếng Việt", 180, 280
+        );
+        Printbook printbooks4 = new Printbook(
+            "PB004", "The Psychology of Money (Print)", "Timeless lessons on wealth, greed, and happiness.",
+            "http://example.com/money_psych_print.jpg", 14.99, 7.50, "Available",
+            "978-0857197689", "Morgan Housel", "Harriman House", "Finance", "English", 256, 380
+        );
+        Printbook printbooks5 = new Printbook(
+            "PB005", "Số Đỏ (Bản in)", "Tiểu thuyết châm biếm xã hội Việt Nam đầu thế kỷ 20.",
+            "http://example.com/sodo_print.jpg", 8.50, 4.25, "Available",
+            "978-6045600038", "Vũ Trọng Phụng", "NXB Văn Học", "Văn học", "Tiếng Việt", 300, 450
+        );
+        Printbook printbooks6 = new Printbook(
+            "PB006", "The Lord of the Rings: The Fellowship of the Ring (Print)", "The epic fantasy novel.",
+            "http://example.com/lotr_print.jpg", 25.00, 12.50, "Available",
+            "978-0618260275", "J.R.R. Tolkien", "Houghton Mifflin Harcourt", "Fantasy", "English", 480, 700
+        );
+        Printbook printbooks7 = new Printbook(
+            "PB007", "Cho Tôi Một Vé Đi Tuổi Thơ (Bản in)", "Những câu chuyện trong trẻo về tuổi thơ.",
+            "http://example.com/ve_tuoitho_print.jpg", 9.00, 4.50, "Available",
+            "978-6045610008", "Nguyễn Nhật Ánh", "NXB Trẻ", "Văn học", "Tiếng Việt", 280, 420
+        );
+        Printbook printbooks8 = new Printbook(
+            "PB008", "Thinking, Fast and Slow (Print)", "A groundbreaking book on human cognition.",
+            "http://example.com/thinking_print.jpg", 18.00, 9.00, "Available",
+            "978-0374533557", "Daniel Kahneman", "Farrar, Straus and Giroux", "Psychology", "English", 499, 650
+        );
+        Printbook printbooks9 = new Printbook(
+            "PB009", "Cây Chuối Non Đi Giày Xanh (Bản in)", "Truyện dài của Nguyễn Nhật Ánh.",
+            "http://example.com/caychuoinon_print.jpg", 9.50, 4.75, "Discontinued", // Ngừng xuất bản
+            "978-6045610009", "Nguyễn Nhật Ánh", "NXB Trẻ", "Văn học", "Tiếng Việt", 310, 480
+        );
+        Printbook printbooks10 = new Printbook(
+            "PB010", "Gone Girl (Print)", "A thrilling psychological suspense novel.",
+            "http://example.com/gonegirl_print.jpg", 11.00, 5.50, "Available",
+            "978-0307588371", "Gillian Flynn", "Crown", "Thriller", "English", 419, 580
+        );
 
-        // --- 3. Tạo 100 Audiobook Samples ---
-        for (int i = 0; i < 100; i++) {
-            String id = "AB" + (1000 + i);
-            String title = "Sách Nói - Tiêu đề " + (i + 1) + " (Chương " + (i % 7 + 1) + ")";
-            String description = "Mô tả chi tiết cho sách nói " + title + ". Nghe sách mọi lúc mọi nơi.";
-            String galleryURL = "https://example.com/images/ab" + (i + 1) + ".jpg";
-            double sellingPrice = 40000.0 + random.nextDouble() * 120000.0; // 40k - 160k VND
-            double purchasePrice = sellingPrice * (0.5 + random.nextDouble() * 0.1); // 50-60% giá bán
-            double averageRating = 3.8 + random.nextDouble() * 1.2;
-            int numberOfReviews = random.nextInt(250);
-            String status = DIGITAL_STATUS_OPTIONS[random.nextInt(DIGITAL_STATUS_OPTIONS.length)];
-            String isbn = "978-000-0-" + String.format("%04d", i) + "-Z";
-            String author = COMMON_AUTHORS[random.nextInt(COMMON_AUTHORS.length)];
-            String publisher = COMMON_PUBLISHERS[random.nextInt(COMMON_PUBLISHERS.length)];
-            String category = COMMON_CATEGORIES_BOOK[random.nextInt(COMMON_CATEGORIES_BOOK.length)];
-            String language = COMMON_LANGUAGES[random.nextInt(COMMON_LANGUAGES.length)];
-            String downloadURL = "https://downloads.example.com/audiobook" + (i + 1) + ".mp3";
+        Printbook printbooks11 = new Printbook(
+    "PB011", "Ông Già Khó Tính Và Thần Chết (Bản in)", "Tiểu thuyết lãng mạn pha lẫn yếu tố kỳ ảo.",
+    "http://example.com/onggiakhotinh_print.jpg", 11.00, 5.50, "Available",
+    "978-6045610067", "Fredrik Backman", "NXB Hội Nhà Văn", "Văn học", "Tiếng Việt", 350, 520
+        );
+        Printbook printbooks12 = new Printbook(
+            "PB012", "The Secret History (Print)", "A gripping novel about a group of classics students at an elite New England college.",
+            "http://example.com/secret_history_print.jpg", 17.50, 8.75, "Available",
+            "978-0679733190", "Donna Tartt", "Vintage Books", "Literary Fiction", "English", 559, 800
+        );
+        Printbook printbooks13 = new Printbook(
+            "PB013", "Nếu Biết Trăm Năm Là Hữu Hạn (Bản in)", "Những suy ngẫm về cuộc sống và cái chết.",
+            "http://example.com/tramnam_print.jpg", 9.00, 4.50, "Available",
+            "978-6045620032", "Phạm Lữ Ân", "NXB Hội Nhà Văn", "Triết học", "Tiếng Việt", 280, 400
+        );
+        Printbook printbooks14 = new Printbook(
+            "PB014", "Verity (Print)", "A suspenseful thriller from the author of It Ends With Us.",
+            "http://example.com/verity_print.jpg", 12.00, 6.00, "Out of Stock",
+            "978-1538724736", "Colleen Hoover", "Grand Central Publishing", "Thriller", "English", 336, 450
+        );
+        Printbook printbooks15 = new Printbook(
+            "PB015", "Hoàng Tử Bé (Bản in)", "Tác phẩm kinh điển dành cho mọi lứa tuổi.",
+            "http://example.com/hoangtude_print.jpg", 6.50, 3.25, "Available",
+            "978-6045600062", "Antoine de Saint-Exupéry", "NXB Kim Đồng", "Văn học", "Tiếng Việt", 96, 180
+        );
+        Printbook printbooks16 = new Printbook(
+            "PB016", "The Da Vinci Code (Print)", "A thrilling mystery novel involving religious history.",
+            "http://example.com/davinci_print.jpg", 13.00, 6.50, "Available",
+            "978-0385504209", "Dan Brown", "Doubleday", "Thriller", "English", 454, 600
+        );
+        Printbook printbooks17 = new Printbook(
+            "PB017", "Đời Ngắn Đừng Ngủ Dài (Bản in)", "Những bài học về cách sống ý nghĩa.",
+            "http://example.com/doingan_print.jpg", 8.00, 4.00, "Available",
+            "978-6045610074", "Robin Sharma", "NXB Trẻ", "Kỹ năng sống", "Tiếng Việt", 260, 380
+        );
+        Printbook printbooks18 = new Printbook(
+            "PB018", "It Ends With Us (Print)", "A powerful and emotional romance novel.",
+            "http://example.com/it_ends_us_print.jpg", 11.50, 5.75, "Available",
+            "978-1501110368", "Colleen Hoover", "Atria Books", "Romance", "English", 384, 500
+        );
+        Printbook printbooks19 = new Printbook(
+            "PB019", "Rừng Na Uy (Bản in)", "Một câu chuyện tình yêu đầy ám ảnh của Haruki Murakami.",
+            "http://example.com/rungnauy_print.jpg", 10.50, 5.25, "Discontinued",
+            "978-6045600079", "Haruki Murakami", "NXB Hội Nhà Văn", "Văn học", "Tiếng Việt", 370, 550
+        );
+        Printbook printbooks20 = new Printbook(
+            "PB020", "The Nightingale (Print)", "A historical novel set during World War II in France.",
+            "http://example.com/nightingale_print.jpg", 14.00, 7.00, "Available",
+            "978-0312577223", "Kristin Hannah", "St. Martin's Press", "Historical Fiction", "English", 448, 620
+        );
 
-            Audiobook audiobook = new Audiobook(
-                id, title, description, galleryURL, sellingPrice, purchasePrice,
-                averageRating, numberOfReviews, status, isbn, author, publisher,
-                category, language, downloadURL
-            );
-            productList.add(audiobook);
-            productMap.put(id, audiobook);
-            productQuantity.put(id, 0); // Audiobook không có tồn kho vật lý
-        }
+        Stationery stationeries1 = new Stationery(
+            "ST001", "Bút bi Thiên Long TL-08", "Bút bi mực xanh, đầu bi 0.5mm, viết êm.",
+            "http://example.com/tl08_pen.jpg", 0.50, 0.20, "Available", "Thiên Long", "Bút bi"
+        );
+        Stationery stationeries2 = new Stationery(
+            "ST002", "Sổ tay A5 Moleskine Cổ điển", "Sổ tay bìa cứng A5, 240 trang giấy kẻ ngang.",
+            "http://example.com/moleskine_notebook.jpg", 12.00, 6.00, "Available", "Moleskine", "Sổ tay"
+        );
+        Stationery stationeries3 = new Stationery(
+            "ST003", "Tập học sinh Campus 96 trang", "Tập 96 trang, giấy trắng tự nhiên, kẻ ngang.",
+            "http://example.com/campus_notebook.jpg", 0.70, 0.30, "Out of Stock", // Hết hàng
+            "Campus", "Tập học sinh"
+        );
+        Stationery stationeries4 = new Stationery(
+            "ST004", "Bút chì Staedtler Noris HB", "Bút chì gỗ cao cấp, độ cứng HB, dễ tẩy.",
+            "http://example.com/staedtler_pencil.jpg", 0.80, 0.35, "Available", "Staedtler", "Bút chì"
+        );
+        Stationery stationeries5 = new Stationery(
+            "ST005", "Băng keo trong 3M Scotch", "Băng keo dính siêu chắc, không ố vàng.",
+            "http://example.com/3m_tape.jpg", 2.50, 1.00, "Available", "3M", "Băng keo"
+        );
+        Stationery stationeries6 = new Stationery(
+            "ST006", "Bộ bút lông màu Faber-Castell 12 màu", "Bút lông màu tươi sáng, an toàn cho trẻ em.",
+            "http://example.com/fabercastell_markers.jpg", 5.00, 2.50, "Available", "Faber-Castell", "Bút lông màu"
+        );
+        Stationery stationeries7 = new Stationery(
+            "ST007", "Kéo học sinh SDI", "Kéo nhỏ gọn, lưỡi thép không gỉ.",
+            "http://example.com/sdi_scissors.jpg", 1.50, 0.70, "Available", "SDI", "Kéo"
+        );
+        Stationery stationeries8 = new Stationery(
+            "ST008", "Bảng kẹp tài liệu A4 Deli", "Bảng kẹp cứng, có kẹp kim loại chắc chắn.",
+            "http://example.com/deli_clipboard.jpg", 3.00, 1.50, "Available", "Deli", "Bảng kẹp"
+        );
+        Stationery stationeries9 = new Stationery(
+            "ST009", "Tẩy Pentel Hi-Polymer", "Tẩy siêu sạch, ít bụi, không làm rách giấy.",
+            "http://example.com/pentel_eraser.jpg", 1.00, 0.45, "Discontinued", // Ngừng sản xuất
+            "Pentel", "Tẩy"
+        );
+        Stationery stationeries10 = new Stationery(
+            "ST010", "Giấy ghi chú Post-it 3x3 inch", "Giấy dán tiện lợi, màu vàng chanh.",
+            "http://example.com/postit_notes.jpg", 4.00, 2.00, "Available", "Post-it", "Giấy ghi chú"
+        );
 
-        // --- 4. Tạo 100 Stationery Samples ---
-        for (int i = 0; i < 100; i++) {
-            String id = "ST" + (1000 + i);
-            String title = STATIONERY_TYPES[random.nextInt(STATIONERY_TYPES.length)] + " " + (i + 1);
-            String description = "Sản phẩm văn phòng phẩm chất lượng cao: " + title + ".";
-            String galleryURL = "https://example.com/images/st" + (i + 1) + ".jpg";
-            double sellingPrice = 5000.0 + random.nextDouble() * 45000.0; // 5k - 50k VND
-            double purchasePrice = sellingPrice * (0.3 + random.nextDouble() * 0.2); // 30-50% giá bán
-            double averageRating = 3.0 + random.nextDouble() * 2.0;
-            int numberOfReviews = random.nextInt(120);
-            String status = PHYSICAL_STATUS_OPTIONS[random.nextInt(PHYSICAL_STATUS_OPTIONS.length)];
-            String brand = COMMON_BRANDS_STATIONERY_TOY[random.nextInt(COMMON_BRANDS_STATIONERY_TOY.length)];
-            String type = STATIONERY_TYPES[random.nextInt(STATIONERY_TYPES.length)];
+        Stationery stationeries11 = new Stationery(
+    "ST011", "Bộ bút chì màu Marco Raffine 24 màu", "Bộ bút chì màu chuyên nghiệp, sắc nét, dễ pha trộn.",
+    "http://example.com/marco_color_pencil.jpg", 15.00, 7.50, "Available", "Marco", "Bộ bút chì màu"
+        );
+        Stationery stationeries12 = new Stationery(
+            "ST012", "Hộp bút Unicorn hình cô gái", "Hộp bút vải mềm, hình ảnh dễ thương, kích thước lớn.",
+            "http://example.com/unicorn_pencil_case.jpg", 7.00, 3.50, "Available", "Unicorn", "Hộp bút"
+        );
+        Stationery stationeries13 = new Stationery(
+            "ST013", "Giấy A4 Double A 80gsm (500 tờ)", "Giấy in A4 chất lượng cao, trắng mịn, không kẹt giấy.",
+            "http://example.com/doublea_paper.jpg", 6.00, 3.00, "Out of Stock",
+            "Double A", "Giấy in"
+        );
+        Stationery stationeries14 = new Stationery(
+            "ST014", "Máy tính Casio FX-570ES Plus", "Máy tính khoa học phổ biến cho học sinh, sinh viên.",
+            "http://example.com/casio_fx570.jpg", 18.00, 9.00, "Available", "Casio", "Máy tính cầm tay"
+        );
+        Stationery stationeries15 = new Stationery(
+            "ST015", "Bút dạ quang Thiên Long (5 màu)", "Bộ 5 bút dạ quang với các màu sắc nổi bật, không lem.",
+            "http://example.com/tl_highlighter.jpg", 3.50, 1.75, "Available", "Thiên Long", "Bút dạ quang"
+        );
+        Stationery stationeries16 = new Stationery(
+            "ST016", "Sổ tay lò xo A6 họa tiết", "Sổ tay nhỏ gọn, bìa cứng, nhiều họa tiết đáng yêu.",
+            "http://example.com/a6_notebook.jpg", 4.50, 2.25, "Available", "Cute Design", "Sổ tay"
+        );
+        Stationery stationeries17 = new Stationery(
+            "ST017", "Gôm/Tẩy hình thú ngộ nghĩnh", "Gôm tẩy nhiều hình dạng động vật, không độc hại.",
+            "http://example.com/animal_eraser.jpg", 1.20, 0.60, "Available", "Kiddo Fun", "Tẩy"
+        );
+        Stationery stationeries18 = new Stationery(
+            "ST018", "Kẹp bướm Pgrand đen 32mm", "Hộp 12 cái kẹp bướm, giữ tài liệu chắc chắn.",
+            "http://example.com/pgrand_clip.jpg", 2.00, 1.00, "Available", "Pgrand", "Kẹp giấy"
+        );
+        Stationery stationeries19 = new Stationery(
+            "ST019", "Dao rọc giấy SDI loại lớn", "Dao rọc giấy lưỡi sắc, có khóa an toàn.",
+            "http://example.com/sdi_cutter.jpg", 3.00, 1.50, "Discontinued",
+            "SDI", "Dao rọc giấy"
+        );
+        Stationery stationeries20 = new Stationery(
+            "ST020", "Bảng trắng mini để bàn 20x30cm", "Bảng trắng kèm bút và bông lau, tiện lợi cho ghi chú.",
+            "http://example.com/mini_whiteboard.jpg", 10.00, 5.00, "Available", "OfficeMate", "Bảng trắng"
+        );
 
-            Stationery stationery = new Stationery(
-                id, title, description, galleryURL, sellingPrice, purchasePrice,
-                averageRating, numberOfReviews, status, brand, type
-            );
-            productList.add(stationery);
-            productMap.put(id, stationery);
-            productQuantity.put(id, 20 + random.nextInt(80)); // 20-100 bản tồn kho
-        }
+        Toy toys1 = new Toy(
+            "TOY001", "Xe ô tô địa hình điều khiển từ xa", "Xe điều khiển 4 bánh, chạy địa hình, sạc pin.",
+            "http://example.com/rc_car.jpg", 25.00, 12.00, "Available", " điều khiển từ xa", 6
+        );
+        Toy toys2 = new Toy(
+            "TOY002", "Bộ xếp hình Lego City Cảnh sát biển", "Bộ Lego 300 chi tiết, xây dựng đồn cảnh sát biển.",
+            "http://example.com/lego_city.jpg", 35.00, 18.00, "Available", "Lego", 7
+        );
+        Toy toys3 = new Toy(
+            "TOY003", "Búp bê Barbie Công chúa", "Búp bê Barbie với váy lộng lẫy và phụ kiện.",
+            "http://example.com/barbie_doll.jpg", 18.00, 9.00, "Out of Stock", // Hết hàng
+            "Mattel", 3
+        );
+        Toy toys4 = new Toy(
+            "TOY004", "Bộ đồ chơi bác sĩ trẻ em", "Đồ chơi nhập vai bác sĩ, có ống nghe, kim tiêm giả.",
+            "http://example.com/doctor_kit.jpg", 15.00, 7.50, "Available", "Fisher-Price", 3
+        );
+        Toy toys5 = new Toy(
+            "TOY005", "Rubik 3x3 tốc độ cao", "Rubik xoay mượt mà, chuyên nghiệp.",
+            "http://example.com/rubik_cube.jpg", 8.00, 4.00, "Available", "Gan Cube", 8
+        );
+        Toy toys6 = new Toy(
+            "TOY006", "Bộ đất nặn Play-Doh Cửa hàng kem", "Đất nặn mềm, nhiều màu sắc, kèm khuôn làm kem.",
+            "http://example.com/playdoh_icecream.jpg", 22.00, 11.00, "Available", "Play-Doh", 4
+        );
+        Toy toys7 = new Toy(
+            "TOY007", "Robot biến hình Optimus Prime", "Mô hình robot có thể biến hình thành xe tải.",
+            "http://example.com/optimus_prime.jpg", 40.00, 20.00, "Available", "Hasbro", 8
+        );
+        Toy toys8 = new Toy(
+            "TOY008", "Bộ xếp hình gỗ 100 khối", "Các khối gỗ với nhiều hình dạng và màu sắc.",
+            "http://example.com/wooden_blocks.jpg", 10.00, 5.00, "Available", "Melissa & Doug", 2
+        );
+        Toy toys9 = new Toy(
+            "TOY009", "Đàn piano điện tử trẻ em", "Đàn piano nhỏ gọn, có nhiều chế độ âm thanh.",
+            "http://example.com/kids_piano.jpg", 30.00, 15.00, "Discontinued", // Ngừng sản xuất
+            "Casio Kids", 5
+        );
+        Toy toys10 = new Toy(
+            "TOY010", "Bộ đồ chơi câu cá nam châm", "Bộ đồ chơi câu cá với cần câu và cá nam châm.",
+            "http://example.com/fishing_toy.jpg", 12.00, 6.00, "Available", "Kids Delight", 3
+        );
 
-        // --- 5. Tạo 100 Toy Samples ---
-        for (int i = 0; i < 100; i++) {
-            String id = "TOY" + (1000 + i);
-            String title = TOY_TYPES[random.nextInt(TOY_TYPES.length)] + " " + (i + 1);
-            String description = "Đồ chơi vui nhộn và bổ ích cho bé yêu: " + title + ".";
-            String galleryURL = "https://example.com/images/toy" + (i + 1) + ".jpg";
-            double sellingPrice = 100000.0 + random.nextDouble() * 400000.0; // 100k - 500k VND
-            double purchasePrice = sellingPrice * (0.5 + random.nextDouble() * 0.15); // 50-65% giá bán
-            double averageRating = 4.0 + random.nextDouble() * 1.0; // 4.0 - 5.0
-            int numberOfReviews = random.nextInt(300);
-            String status = PHYSICAL_STATUS_OPTIONS[random.nextInt(PHYSICAL_STATUS_OPTIONS.length)];
-            String brand = COMMON_BRANDS_STATIONERY_TOY[random.nextInt(COMMON_BRANDS_STATIONERY_TOY.length)];
-            int suitableAge = 2 + random.nextInt(10); // 2 - 11 tuổi
+        Toy toys11 = new Toy(
+    "TOY011", "Bộ đồ chơi xếp hình gỗ hình khối", "Các khối gỗ cơ bản giúp phát triển tư duy không gian.",
+    "http://example.com/wooden_shapes.jpg", 18.00, 9.00, "Available", "Melissa & Doug", 2
+        );
+        Toy toys12 = new Toy(
+            "TOY012", "Búp bê LOL Surprise! Glam Series", "Búp bê bất ngờ với nhiều lớp phụ kiện lấp lánh.",
+            "http://example.com/lol_surprise.jpg", 25.00, 12.50, "Available", "MGA Entertainment", 5
+        );
+        Toy toys13 = new Toy(
+            "TOY013", "Xe tải công trình điều khiển từ xa", "Xe tải lớn với các chức năng điều khiển đổ vật liệu.",
+            "http://example.com/rc_truck.jpg", 45.00, 22.50, "Out of Stock",
+            "Top Race", 8
+        );
+        Toy toys14 = new Toy(
+            "TOY014", "Bộ cờ tỷ phú Monopoly Classic", "Trò chơi cờ tỷ phú kinh điển cho gia đình và bạn bè.",
+            "http://example.com/monopoly.jpg", 20.00, 10.00, "Available", "Hasbro", 8
+        );
+        Toy toys15 = new Toy(
+            "TOY015", "Đồ chơi mô hình khủng long Tyrannosaurus Rex", "Mô hình khủng long T-Rex có khớp nối, âm thanh.",
+            "http://example.com/dino_trex.jpg", 16.00, 8.00, "Available", "Jurassic World", 4
+        );
+        Toy toys16 = new Toy(
+            "TOY016", "Bộ đồ chơi nấu ăn nhà bếp mini", "Bếp đồ chơi đầy đủ dụng cụ, phát triển kỹ năng nấu ăn.",
+            "http://example.com/mini_kitchen.jpg", 30.00, 15.00, "Available", "Little Tikes", 3
+        );
+        Toy toys17 = new Toy(
+            "TOY017", "Gấu bông Teddy Bear khổng lồ", "Gấu bông mềm mại, kích thước lớn (1 mét).",
+            "http://example.com/giant_teddy.jpg", 50.00, 25.00, "Available", "Gund", 0 // Mọi lứa tuổi
+        );
+        Toy toys18 = new Toy(
+            "TOY018", "Bộ ghép hình 1000 mảnh phong cảnh", "Trò chơi thử thách trí tuệ với bức tranh phong cảnh đẹp.",
+            "http://example.com/puzzle_1000.jpg", 15.00, 7.50, "Available", "Ravensburger", 12
+        );
+        Toy toys19 = new Toy(
+            "TOY019", "Xe đẩy em bé đồ chơi", "Xe đẩy nhỏ gọn cho búp bê, có thể gập lại.",
+            "http://example.com/doll_stroller.jpg", 10.00, 5.00, "Discontinued",
+            "Baby Alive", 3
+        );
+        Toy toys20 = new Toy(
+            "TOY020", "Bộ đồ chơi xếp hình nam châm Magna-Tiles", "Các mảnh ghép nam châm màu sắc, giúp xây dựng các hình khối 3D.",
+            "http://example.com/magna_tiles.jpg", 60.00, 30.00, "Available", "Magna-Tiles", 3
+        );
 
-            Toy toy = new Toy(
-                id, title, description, galleryURL, sellingPrice, purchasePrice,
-                averageRating, numberOfReviews, status, brand, suitableAge
-            );
-            productList.add(toy);
-            productMap.put(id, toy);
-            productQuantity.put(id, 5 + random.nextInt(20)); // 5-25 bản tồn kho
+        productList.addAll(
+            audiobooks1, audiobooks2, audiobooks3, audiobooks4, audiobooks5,
+            audiobooks6, audiobooks7, audiobooks8, audiobooks9, audiobooks10,
+            ebooks1, ebooks2, ebooks3, ebooks4, ebooks5,
+            ebooks6, ebooks7, ebooks8, ebooks9, ebooks10,
+            printbooks1, printbooks2, printbooks3, printbooks4, printbooks5,
+            printbooks6, printbooks7, printbooks8, printbooks9, printbooks10,
+            stationeries1, stationeries2, stationeries3, stationeries4, stationeries5,
+            stationeries6, stationeries7, stationeries8, stationeries9, stationeries10,
+            toys1, toys2, toys3, toys4, toys5,
+            toys6, toys7, toys8, toys9, toys10,
+            stationeries11, stationeries12, stationeries13, stationeries14, stationeries15,
+            stationeries16, stationeries17, stationeries18, stationeries19, stationeries20,
+            printbooks11, printbooks12, printbooks13, printbooks14, printbooks15,
+            printbooks16, printbooks17, printbooks18, printbooks19, printbooks20,
+            toys11, toys12, toys13, toys14, toys15,
+            toys16, toys17, toys18, toys19, toys20
+        );
+
+        productMap.put(audiobooks1.getId(), audiobooks1);
+        productMap.put(audiobooks2.getId(), audiobooks2);
+        productMap.put(audiobooks3.getId(), audiobooks3);
+        productMap.put(audiobooks4.getId(), audiobooks4);
+        productMap.put(audiobooks5.getId(), audiobooks5);
+        productMap.put(audiobooks6.getId(), audiobooks6);
+        productMap.put(audiobooks7.getId(), audiobooks7);
+        productMap.put(audiobooks8.getId(), audiobooks8);
+        productMap.put(audiobooks9.getId(), audiobooks9);
+        productMap.put(audiobooks10.getId(), audiobooks10);
+        productMap.put(ebooks1.getId(), ebooks1);
+        productMap.put(ebooks2.getId(), ebooks2);
+        productMap.put(ebooks3.getId(), ebooks3);
+        productMap.put(ebooks4.getId(), ebooks4);
+        productMap.put(ebooks5.getId(), ebooks5);
+        productMap.put(ebooks6.getId(), ebooks6);
+        productMap.put(ebooks7.getId(), ebooks7);
+        productMap.put(ebooks8.getId(), ebooks8);
+        productMap.put(ebooks9.getId(), ebooks9);
+        productMap.put(ebooks10.getId(), ebooks10);
+        productMap.put(printbooks1.getId(), printbooks1);
+        productMap.put(printbooks2.getId(), printbooks2);
+        productMap.put(printbooks3.getId(), printbooks3);
+        productMap.put(printbooks4.getId(), printbooks4);
+        productMap.put(printbooks5.getId(), printbooks5);
+        productMap.put(printbooks6.getId(), printbooks6);
+        productMap.put(printbooks7.getId(), printbooks7);
+        productMap.put(printbooks8.getId(), printbooks8);
+        productMap.put(printbooks9.getId(), printbooks9);
+        productMap.put(printbooks10.getId(), printbooks10);
+        productMap.put(stationeries1.getId(), stationeries1);
+        productMap.put(stationeries2.getId(), stationeries2);
+        productMap.put(stationeries3.getId(), stationeries3);
+        productMap.put(stationeries4.getId(), stationeries4);
+        productMap.put(stationeries5.getId(), stationeries5);
+        productMap.put(stationeries6.getId(), stationeries6);
+        productMap.put(stationeries7.getId(), stationeries7);
+        productMap.put(stationeries8.getId(), stationeries8);
+        productMap.put(stationeries9.getId(), stationeries9);
+        productMap.put(stationeries10.getId(), stationeries10);
+        productMap.put(toys1.getId(), toys1);
+        productMap.put(toys2.getId(), toys2);
+        productMap.put(toys3.getId(), toys3);
+        productMap.put(toys4.getId(), toys4);
+        productMap.put(toys5.getId(), toys5);
+        productMap.put(toys6.getId(), toys6);
+        productMap.put(toys7.getId(), toys7);
+        productMap.put(toys8.getId(), toys8);
+        productMap.put(toys9.getId(), toys9);
+        productMap.put(toys10.getId(), toys10);
+        productMap.put(audiobooks11.getId(), audiobooks11);
+        productMap.put(audiobooks12.getId(), audiobooks12);
+        productMap.put(audiobooks13.getId(), audiobooks13);
+        productMap.put(audiobooks14.getId(), audiobooks14);
+        productMap.put(audiobooks15.getId(), audiobooks15);
+        productMap.put(audiobooks16.getId(), audiobooks16);
+        productMap.put(audiobooks17.getId(), audiobooks17);
+        productMap.put(audiobooks18.getId(), audiobooks18);
+        productMap.put(audiobooks19.getId(), audiobooks19);
+        productMap.put(audiobooks20.getId(), audiobooks20);
+        productMap.put(ebooks11.getId(), ebooks11);
+        productMap.put(ebooks12.getId(), ebooks12);
+        productMap.put(ebooks13.getId(), ebooks13);
+        productMap.put(ebooks14.getId(), ebooks14);
+        productMap.put(ebooks15.getId(), ebooks15);
+        productMap.put(ebooks16.getId(), ebooks16);
+        productMap.put(ebooks17.getId(), ebooks17);
+        productMap.put(ebooks18.getId(), ebooks18);
+        productMap.put(ebooks19.getId(), ebooks19);
+        productMap.put(ebooks20.getId(), ebooks20);
+        productMap.put(printbooks11.getId(), printbooks11);
+        productMap.put(printbooks12.getId(), printbooks12);
+        productMap.put(printbooks13.getId(), printbooks13);
+        productMap.put(printbooks14.getId(), printbooks14);
+        productMap.put(printbooks15.getId(), printbooks15);
+        productMap.put(printbooks16.getId(), printbooks16);
+        productMap.put(printbooks17.getId(), printbooks17);
+        productMap.put(printbooks18.getId(), printbooks18);
+        productMap.put(printbooks19.getId(), printbooks19);
+        productMap.put(printbooks20.getId(), printbooks20);
+        productMap.put(stationeries11.getId(), stationeries11);
+        productMap.put(stationeries12.getId(), stationeries12);
+        productMap.put(stationeries13.getId(), stationeries13);
+        productMap.put(stationeries14.getId(), stationeries14);
+        productMap.put(stationeries15.getId(), stationeries15);
+        productMap.put(stationeries16.getId(), stationeries16);
+        productMap.put(stationeries17.getId(), stationeries17);
+        productMap.put(stationeries18.getId(), stationeries18);
+        productMap.put(stationeries19.getId(), stationeries19);
+        productMap.put(stationeries20.getId(), stationeries20);
+        productMap.put(toys11.getId(), toys11);
+        productMap.put(toys12.getId(), toys12);
+        productMap.put(toys13.getId(), toys13);
+        productMap.put(toys14.getId(), toys14);
+        productMap.put(toys15.getId(), toys15);
+        productMap.put(toys16.getId(), toys16);
+        productMap.put(toys17.getId(), toys17);
+        productMap.put(toys18.getId(), toys18);
+        productMap.put(toys19.getId(), toys19);
+        productMap.put(toys20.getId(), toys20);
+
+        Random random = new Random();
+        for(Product product : productList){
+            if(product instanceof PhysicalProduct){
+                productQuantity.put(product.getId(), 10 + random.nextInt(40));
+            }
         }
     }
 }

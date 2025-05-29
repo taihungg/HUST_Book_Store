@@ -8,8 +8,8 @@ public class Stationery extends Product implements PhysicalProduct{
 	private final StringProperty brand;
 	private final StringProperty type;
 	public Stationery(String id, String title, String description, String galleryURL, double sellingPrice,
-			double purchasePrice, double averageRating, int numberOfReviews, String status, String brand, String type) {
-		super(id, title, description, galleryURL, sellingPrice, purchasePrice, averageRating, numberOfReviews, status);
+			double purchasePrice, String status, String brand, String type) {
+		super(id, title, description, galleryURL, sellingPrice, purchasePrice, status);
 		this.brand = new SimpleStringProperty(brand);
 		this.type = new SimpleStringProperty(type);
 	}
