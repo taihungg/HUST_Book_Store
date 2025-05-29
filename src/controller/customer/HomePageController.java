@@ -630,12 +630,6 @@ public class HomePageController {
                 return; 
             case "cartMenuItem":
                 fxmlPath = "/view/customer/Store/SeeCart.fxml";
-                break;
-            case "orderHistoryMenuItem": 
-                fxmlPath = "/view/customer/Account/BookOrderHistoryApp.fxml";
-                break;
-            case "personalInfoMenuItem": 
-                fxmlPath = "/view/customer/Account/SeePersonalInformation.fxml";
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
                 Parent personalInfoView = loader.load();
                 Stage personalInfoStage = new Stage();
@@ -644,15 +638,28 @@ public class HomePageController {
                 personalInfoStage.setScene(new Scene(personalInfoView));
                 personalInfoStage.showAndWait();
                 break;
+            case "orderHistoryMenuItem": 
+                fxmlPath = "/view/customer/Account/BookOrderHistoryApp.fxml";
+                break;
+            case "personalInfoMenuItem": 
+                fxmlPath = "/view/customer/Account/SeePersonalInformation.fxml";
+                FXMLLoader loader1 = new FXMLLoader(getClass().getResource(fxmlPath));
+                Parent personalInfoView1 = loader1.load();
+                Stage personalInfoStage1 = new Stage();
+                personalInfoStage1.setTitle("Personal Information");
+                personalInfoStage1.initModality(Modality.APPLICATION_MODAL);
+                personalInfoStage1.setScene(new Scene(personalInfoView1));
+                personalInfoStage1.showAndWait();
+                break;
             default:
                 System.err.println("Unsupported MenuItem ID: " + menuItem.getId());
                 showAlert("Navigation Error", "The selected menu item is not configured.");
                 return;
         }
 
-        if (fxmlPath != null) {
+        /*if (fxmlPath != null) {
             loadContentView(fxmlPath);
-        }
+        }*/
     }
 
     private void loadContentView(String fxmlPath) {

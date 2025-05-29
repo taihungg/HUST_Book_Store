@@ -3,45 +3,54 @@ package controller.customer;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
+import model.product.Product;
+import model.user.User;
+import model.user.cart.CartItem;
+import model.user.customer.Customer;
+import model.manager.AppServiceManager;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import controller.Main;
+
 public class SeeCartController implements Initializable {
 
-    @FXML private TableView<BrowseProductsController.CartItem> cartTable;
-    @FXML private TableColumn<BrowseProductsController.CartItem, BrowseProductsController.Product> itemColumn;
-    @FXML private TableColumn<BrowseProductsController.CartItem, Double> priceColumn;
-    @FXML private TableColumn<BrowseProductsController.CartItem, Integer> quantityColumn;
-    @FXML private TableColumn<BrowseProductsController.CartItem, Double> totalPriceColumn;
+    @FXML private TableView<CartItem> cartTable;
+    @FXML private TableColumn<CartItem, Product> itemColumn;
+    @FXML private TableColumn<CartItem, Double> priceColumn;
+    @FXML private TableColumn<CartItem, Integer> quantityColumn;
+    @FXML private TableColumn<CartItem, Double> totalPriceColumn;
     @FXML private Label totalLabel;
     @FXML private Button continueShoppingButton;
     @FXML private Button removeCartButton;
     @FXML private Button clearCartButton;
     @FXML private Button checkoutButton;
 
-    private CustomerMainController mainController;
-    private ObservableList<BrowseProductsController.CartItem> cartItems;
+    private AppServiceManager appServiceManager = Main.appServiceManager;
+    private Customer currentUser = (Customer)Main.currentUser;
+    private ObservableList<CartItem> cartItems;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupTableColumns();
         setupEventHandlers();
+        setCartData(currentUser.getCart().getItems());
     }
 
-    @Override
-    public void setMainController(CustomerMainController mainController) {
-        this.mainController = mainController;
-        this.cartItems = mainController.getCartItems();
-        cartTable.setItems(cartItems);
-        updateTotalLabel();
-    }
+    
 
-    public void setCartData(ObservableList<BrowseProductsController.CartItem> items) {
+    public void setCartData(ObservableList<CartItem> items) {
         if (items != null) {
             this.cartItems = items;
             cartTable.setItems(cartItems);
@@ -56,7 +65,7 @@ public class SeeCartController implements Initializable {
             itemColumn.setCellValueFactory(new PropertyValueFactory<>("product"));
             itemColumn.setCellFactory(col -> new TableCell<>() {
                 @Override
-                protected void updateItem(BrowseProductsController.Product item, boolean empty) {
+                protected void updateItem(Product item, boolean empty) {
                     super.updateItem(item, empty);
                     setText(empty || item == null ? null : item.getTitle());
                 }
@@ -66,7 +75,7 @@ public class SeeCartController implements Initializable {
         }
 
         if (priceColumn != null) {
-            priceColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getProduct().getPrice()).asObject());
+            priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
             priceColumn.setCellFactory(col -> new TableCell<>() {
                 @Override
                 protected void updateItem(Double price, boolean empty) {
@@ -74,6 +83,7 @@ public class SeeCartController implements Initializable {
                     setText(empty || price == null ? null : String.format("%.2f USD", price));
                 }
             });
+         
         } else {
             System.err.println("priceColumn is null, check FXML configuration.");
         }
@@ -82,7 +92,7 @@ public class SeeCartController implements Initializable {
             quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
             quantityColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
             quantityColumn.setOnEditCommit(e -> {
-                BrowseProductsController.CartItem item = e.getRowValue();
+                CartItem item = e.getRowValue();
                 int oldQuantity = item.getQuantity();
                 int newQuantity = e.getNewValue();
                 if (newQuantity > 0) {
@@ -120,13 +130,19 @@ public class SeeCartController implements Initializable {
     }
 
     public void handleContinueShopping() {
-        if (mainController != null) {
-            mainController.loadPageWithData("/view/customer/Store/BrowseProducts.fxml", null);
+        Stage currentStage = (Stage) continueShoppingButton.getScene().getWindow();
+        if (currentStage != null) {
+            currentStage.close(); // Đóng cửa sổ giỏ hàng
+        } else {
+            System.err.println("Không thể đóng cửa sổ giỏ hàng: Stage không tìm thấy.");
+            // Có thể hiển thị một Alert ở đây nếu cần thiết,
+            // nhưng trường hợp này hiếm khi xảy ra nếu button được nhấn.
         }
     }
+    
 
     public void handleRemoveCart() {
-        BrowseProductsController.CartItem selectedItem = cartTable.getSelectionModel().getSelectedItem();
+        CartItem selectedItem = cartTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             cartItems.remove(selectedItem);
             updateTotalLabel();
@@ -154,7 +170,7 @@ public class SeeCartController implements Initializable {
 
     private void updateTotalLabel() {
         double total = cartItems.stream()
-            .mapToDouble(BrowseProductsController.CartItem::getTotalPrice)
+            .mapToDouble(item -> appServiceManager.getProductManager().getProductById(item.getProductId()).getSellingPrice() * item.getQuantity())
             .sum();
         totalLabel.setText(String.format("%.2f USD", total));
         cartTable.refresh();
