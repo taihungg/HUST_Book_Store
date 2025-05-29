@@ -41,9 +41,7 @@ public class ViewBookDetailsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         quantitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 99, 1));
-        addToCartButton.setOnAction(e -> handleAddToCart());
-        backButton.setOnAction(e -> handleBackToProducts());
-        readDemoButton.setOnAction(e -> handleReadDemo());
+        
     }
 
     public void setAppServiceManager(AppServiceManager appServiceManager) {
@@ -84,8 +82,8 @@ public class ViewBookDetailsController implements Initializable {
     }
 
    
-
-    private void handleAddToCart() {
+    @FXML
+    private void handleAddtoCart() {
         if (currentUser == null) {
             showAlert("Notification", "Please log in to add products to cart!");
             return;
@@ -105,7 +103,7 @@ public class ViewBookDetailsController implements Initializable {
             showAlert("Error", "Failed to add to cart: " + e.getMessage());
         }
     }
-
+    @FXML
     private void handleBackToProducts() {
       
 
@@ -114,7 +112,7 @@ public class ViewBookDetailsController implements Initializable {
        
         
     }
-
+    @FXML
     private void handleReadDemo() {
         if (currentProduct == null) return;
         showAlert("Notification", "Reading demo for product: " + currentProduct.getTitle());
