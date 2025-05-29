@@ -14,124 +14,125 @@
 <?import javafx.scene.layout.VBox?>
 
 <ScrollPane fitToWidth="true" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.BookController">
-        <content>
-            <VBox prefWidth="650" spacing="20.0">
-                <padding>
-                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                </padding>
-                <children>
-                    <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Add New Book Product" HBox.hgrow="ALWAYS" />
-    
-                    <GridPane hgap="10" prefWidth="700.0" vgap="10">
-                        <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="450.0" />
-                        </columnConstraints>
-    
-                        <Label text="Title:" />
-                        <TextField fx:id="titleField" promptText="Enter book title" GridPane.columnIndex="1" />
-    
-                        <Label text="Description:" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-                        <TextArea fx:id="descriptionArea" prefHeight="60.0" promptText="Enter book description" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    
-                        <Label text="Gallery URL:" GridPane.rowIndex="2" />
-                        <TextField fx:id="galleryUrlField" promptText="Enter image URL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        
-                        <Label text="Selling Price:" GridPane.rowIndex="3" /> <TextField fx:id="sellingPriceField" promptText="Enter selling price (e.g., 19.99)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        
-                        <Label text="Purchase Price:" GridPane.rowIndex="4" /> <TextField fx:id="purchasePriceField" promptText="Enter purchase price (e.g., 10.00)" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-    
-                        <Label text="Status:" GridPane.rowIndex="5" />
-                        <ComboBox fx:id="statusComboBox" prefWidth="Infinity" promptText="-- Select Status --" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-    
-                        <Label text="ISBN:" GridPane.rowIndex="6" />
-                        <TextField fx:id="isbnField" promptText="Enter ISBN" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-    
-                        <Label text="Authors:" GridPane.rowIndex="7" />
-                        <TextField fx:id="authorsField" promptText="Enter author(s), comma-separated" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-    
-                        <Label text="Publisher:" GridPane.rowIndex="8" />
-                        <TextField fx:id="publisherField" promptText="Enter publisher" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-    
-                        <Label text="Category (General):" GridPane.rowIndex="9" />
-                        <ComboBox fx:id="categoryComboBox" prefWidth="Infinity" promptText="-- Select Category --" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-    
-                        <Label text="Language:" GridPane.rowIndex="10" />
-                        <ComboBox fx:id="languageComboBox" prefWidth="Infinity" promptText="-- Select Language --" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-    
-                        <Label text="Publication Year:" GridPane.rowIndex="11" />
-                        <TextField fx:id="publicationYearField" promptText="Enter year (e.g., 2023)" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-    
-                        <Label text="Book Type:" GridPane.rowIndex="12" />
-                        <ComboBox fx:id="bookTypeComboBox" prefWidth="Infinity" promptText="-- Select Book Type --" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-                        <rowConstraints> <RowConstraints /> <RowConstraints /> <RowConstraints />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" /> <RowConstraints minHeight="10.0" prefHeight="30.0" /> <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints />
-                            <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints />
-                        </rowConstraints>
-                    </GridPane>
-    
-                    <GridPane fx:id="printBookSpecificFieldsPane" hgap="10" managed="false" vgap="10" visible="false">
-                        <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="450.0" />
-                        </columnConstraints>
-                        <children>
-                            <Label style="-fx-font-weight: bold;" text="--- Print Book Details ---" GridPane.columnSpan="2" GridPane.rowIndex="0" />
-    
-                            <Label text="Number of Pages:" GridPane.rowIndex="1" />
-                            <TextField fx:id="printBookNumberOfPagesField" promptText="e.g., 350" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    
-                            <Label text="Weight (grams):" GridPane.rowIndex="2" />
-                            <TextField fx:id="printBookWeightField" promptText="e.g., 500" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        </children>
-                        <rowConstraints>
-                            <RowConstraints />
-                            <RowConstraints />
-                            <RowConstraints />
-                        </rowConstraints>
-                    </GridPane>
-                    <GridPane fx:id="ebookSpecificFieldsPane" hgap="10" managed="false" vgap="10" visible="false">
-                        <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="450.0" />
-                        </columnConstraints>
-                        <children>
-                            <Label style="-fx-font-weight: bold;" text="--- Ebook Details ---" GridPane.columnSpan="2" GridPane.rowIndex="0" />
-    
-                            <Label text="Number of Pages (Ebook):" GridPane.rowIndex="1" /> <TextField fx:id="ebookNumberOfPagesField" promptText="e.g., 300" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <content>
+                <VBox prefWidth="650" spacing="20.0">
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
+                    <children>
+                        <Label alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Add New Book Product" HBox.hgrow="ALWAYS" />
+        
+                        <GridPane hgap="10" prefWidth="700.0" vgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="450.0" />
+                            </columnConstraints>
+        
+                            <Label text="Title:" />
+                            <TextField fx:id="titleField" promptText="Enter book title" GridPane.columnIndex="1" />
+        
+                            <Label text="Description:" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                            <TextArea fx:id="descriptionArea" prefHeight="60.0" promptText="Enter book description" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        
+                            <Label text="Gallery URL:" GridPane.rowIndex="2" />
+                            <TextField fx:id="galleryUrlField" promptText="Enter image URL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                             
-                            <Label text="Ebook Download URL:" GridPane.rowIndex="2" />
-                            <TextField fx:id="ebookDownloadUrlField" promptText="Enter download URL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        </children>
-                        <rowConstraints>
-                            <RowConstraints /> <RowConstraints />
-                            <RowConstraints />
-                        </rowConstraints>
-                    </GridPane>
+                            <Label text="Selling Price:" GridPane.rowIndex="3" /> <TextField fx:id="sellingPriceField" promptText="Enter selling price (e.g., 19.99)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                            
+                            <Label text="Purchase Price:" GridPane.rowIndex="4" /> <TextField fx:id="purchasePriceField" promptText="Enter purchase price (e.g., 10.00)" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+        
+                            <Label text="Status:" GridPane.rowIndex="5" />
+                            <ComboBox fx:id="statusComboBox" prefWidth="Infinity" promptText="-- Select Status --" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        
+                            <Label text="ISBN:" GridPane.rowIndex="6" />
+                            <TextField fx:id="isbnField" promptText="Enter ISBN" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+        
+                            <Label text="Authors:" GridPane.rowIndex="7" />
+                            <TextField fx:id="authorsField" promptText="Enter author(s), comma-separated" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+        
+                            <Label text="Publisher:" GridPane.rowIndex="8" />
+                            <TextField fx:id="publisherField" promptText="Enter publisher" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+        
+                            <Label text="Category (General):" GridPane.rowIndex="9" />
+                            <ComboBox fx:id="categoryComboBox" prefWidth="Infinity" promptText="-- Select Category --" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+        
+                            <Label text="Language:" GridPane.rowIndex="10" />
+                            <ComboBox fx:id="languageComboBox" prefWidth="Infinity" promptText="-- Select Language --" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+        
+                            <Label text="Publication Year:" GridPane.rowIndex="11" />
+                            <TextField fx:id="publicationYearField" promptText="Enter year (e.g., 2023)" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+        
+                            <Label text="Book Type:" GridPane.rowIndex="12" />
+                            <ComboBox fx:id="bookTypeComboBox" prefWidth="Infinity" promptText="-- Select Book Type --" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                            <rowConstraints> <RowConstraints /> <RowConstraints /> <RowConstraints />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" /> <RowConstraints minHeight="10.0" prefHeight="30.0" /> <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints />
+                                <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints />
+                            </rowConstraints>
+                        </GridPane>
+        
+                        <GridPane fx:id="printBookSpecificFieldsPane" hgap="10" managed="false" prefWidth="0.0" vgap="10" visible="false">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="450.0" />
+                            </columnConstraints>
+                            <children>
+                                <Label style="-fx-font-weight: bold;" text="--- Print Book Details ---" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+        
+                                <Label text="Number of Pages:" GridPane.rowIndex="1" />
+                                <TextField fx:id="printBookNumberOfPagesField" promptText="e.g., 350" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        
+                                <Label text="Weight (grams):" GridPane.rowIndex="2" />
+                                <TextField fx:id="printBookWeightField" promptText="e.g., 500" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                
+                                <Label text="Quantity:" GridPane.rowIndex="3" />
+                                <TextField fx:id="printBookQuantityField" promptText="e.g., 100" GridPane.columnIndex="1" GridPane.rowIndex="3" />
     
-                    <GridPane fx:id="audiobookSpecificFieldsPane" hgap="10" managed="false" vgap="10" visible="false">
-                        <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="450.0" />
-                        </columnConstraints>
-                        <children>
-                            <Label style="-fx-font-weight: bold;" text="--- Audiobook Details ---" GridPane.columnSpan="2" GridPane.rowIndex="0" />
-    
-                            <Label text="Audiobook Download URL:" GridPane.rowIndex="1" />
-                            <TextField fx:id="audiobookDownloadUrlField" promptText="Enter download URL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        </children>
-                        <rowConstraints>
-                            <RowConstraints /> <RowConstraints />
-                        </rowConstraints>
-                    </GridPane>
-    
-                    <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <children>
-                            <Button fx:id="addProductButton" mnemonicParsing="false" onAction="#handleAddBook" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Add Book" />
-                            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
-                        </children>
-                    </HBox>
-                </children>
-            </VBox>
-        </content>
-    </ScrollPane>
+                            </children>
+                            <rowConstraints>
+                                <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints /> <RowConstraints minHeight="10.0" prefHeight="30.0" /> </rowConstraints>
+                        </GridPane>
+                        <GridPane fx:id="ebookSpecificFieldsPane" hgap="10" managed="false" vgap="10" visible="false">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="450.0" />
+                            </columnConstraints>
+                            <children>
+                                <Label style="-fx-font-weight: bold;" text="--- Ebook Details ---" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+        
+                                <Label text="Number of Pages (Ebook):" GridPane.rowIndex="1" /> <TextField fx:id="ebookNumberOfPagesField" promptText="e.g., 300" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                
+                                <Label text="Ebook Download URL:" GridPane.rowIndex="2" />
+                                <TextField fx:id="ebookDownloadUrlField" promptText="Enter download URL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                            </children>
+                            <rowConstraints>
+                                <RowConstraints /> <RowConstraints />
+                                <RowConstraints />
+                            </rowConstraints>
+                        </GridPane>
+        
+                        <GridPane fx:id="audiobookSpecificFieldsPane" hgap="10" managed="false" vgap="10" visible="false">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="450.0" />
+                            </columnConstraints>
+                            <children>
+                                <Label style="-fx-font-weight: bold;" text="--- Audiobook Details ---" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+        
+                                <Label text="Audiobook Download URL:" GridPane.rowIndex="1" />
+                                <TextField fx:id="audiobookDownloadUrlField" promptText="Enter download URL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                            </children>
+                            <rowConstraints>
+                                <RowConstraints /> <RowConstraints />
+                            </rowConstraints>
+                        </GridPane>
+        
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                            <children>
+                                <Button fx:id="addProductButton" mnemonicParsing="false" onAction="#handleAddBook" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Add Book" />
+                                <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>

@@ -99,6 +99,9 @@ public class BookController {
     private TextField titleField;
     private User currentUser = Main.currentUser;
 
+    @FXML
+    private TextField printBookQuantityField;
+
     //</editor-fold>
 
     private AppServiceManager appServiceManager = Main.appServiceManager;
@@ -181,7 +184,8 @@ public class BookController {
         double purchasePriceDefault = 0.0;
         double averageRatingDefault = 0.0;
         int numberOfReviewsDefault = 0;
-        // int quantityDefault = 0; // Nếu lớp Book của bạn có quantity
+        int quantitydefault;
+        int quantity;
 
         try {
             
@@ -207,6 +211,7 @@ public class BookController {
             String numberOfPagesText = ebookNumberOfPagesField.getText().trim();
             String ebookDownloadURL = ebookDownloadUrlField.getText().trim();
             // Lấy các trường khác của Ebook
+            quantity = 0;
             
 
 
@@ -253,8 +258,8 @@ public class BookController {
 
         } else if ("Audiobook".equals(selectedBookType)) {
             String audiobookDownloadURL = audiobookDownloadUrlField.getText().trim();
+            quantity = 0;
             
-
             if (audiobookDownloadURL.isEmpty()  /*|| các trường Audiobook bắt buộc khác */) {
                  showAlert(AlertType.ERROR, "Thiếu thông tin Audiobook", "Vui lòng điền URL Audiobook.");
                  return;
@@ -271,10 +276,13 @@ public class BookController {
             );
 
         } 
+        
         else if ("Print Book".equals(selectedBookType)) {
             int numberOfPages = Integer.parseInt(printBookNumberOfPagesField.getText().trim());
             int weight = Integer.parseInt(printBookWeightField.getText().trim());
             String id = "PrintBook_" + System.currentTimeMillis();
+             quantity = Integer.parseInt(printBookQuantityField.getText().trim());
+            quantitydefault = quantity;
             productToAdd = new Printbook(id, title, description, galleryURL, sellingPrice, purchasePrice,
             averageRatingDefault, numberOfReviewsDefault, status, isbn, authors, publisher, category, language, numberOfPages, weight);
         }
@@ -283,11 +291,11 @@ public class BookController {
             showAlert(AlertType.WARNING, "Chưa chọn loại", "Vui lòng chọn loại sách cụ thể (Sách thường, Ebook, Audiobook).");
             return;
         }
-        int quantityDefault = 10;
+        
 
         // 4. Thêm sản phẩm vào DataService
         if (productToAdd != null) {
-            appServiceManager.getProductManager().addProduct(productToAdd,quantityDefault,currentUser);
+            appServiceManager.getProductManager().addProduct(productToAdd,quantity,currentUser);
             showAlert(AlertType.INFORMATION, "Thành Công", "Đã thêm sách '" + title + "' vào hệ thống.");
             clearFormFields(); 
             try{
