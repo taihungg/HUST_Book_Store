@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
 import model.manager.AppServiceManager;
@@ -28,6 +29,9 @@ public class ForgotPasswordController {
 
     @FXML
     private TextField confirmNewPasswordTextField;
+    
+    @FXML
+    private Button btnBack;
 
     private AppServiceManager appServiceManager = Main.appServiceManager;
 
@@ -65,7 +69,7 @@ public class ForgotPasswordController {
             Parent root = loader.load();
             Scene scene = new Scene(root);
             Stage stage = new Stage();
-            stage.setTitle("Sign Up");
+            stage.setTitle("Login");
             stage.setScene(scene);
             stage.show();
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -76,7 +80,25 @@ public class ForgotPasswordController {
         }
     }
     
-    // Phương thức chung để chuyển trang
+    @FXML
+    void btnBackclicked(ActionEvent event) {
+    	try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
+            Parent loginView = loader.load();
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Login");
+            loginStage.initModality(Modality.APPLICATION_MODAL); // Quan trọng: Chặn tương tác với cửa sổ khác
+            loginStage.setScene(new Scene(loginView));
+
+            loginStage.show();
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close(); 
+        }
+    	catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Lỗi khi chuyển trang: " + e.getMessage());
+        }
+    }
     
 }
 
