@@ -1,10 +1,8 @@
 package controller.admin;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import controller.Main;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +10,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -20,7 +17,6 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import model.order.Order;
 import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.LocalDateTimeStringConverter;
 import javafx.scene.Parent;
 import javafx.util.converter.LocalDateStringConverter;
 public class OrderManagementController {
@@ -97,7 +93,7 @@ public class OrderManagementController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/SeeOrders/OrderDetail_fixed.fxml"));
                 Parent root = loader.load();
-                OrderDetailsController controller = loader.getController();
+                OrderDetailController controller = loader.getController();
                 controller.setOrder(selectedOrder);
                 Stage stage = new Stage();
                 stage.setTitle("Order Details");

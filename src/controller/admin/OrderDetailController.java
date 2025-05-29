@@ -14,7 +14,7 @@ import model.user.cart.CartItem;
 import model.manager.order.OrderManager;
 
 
-public class OrderDetailsController {
+public class OrderDetailController {
 
     @FXML
     private Label customerUsernameLabel;
@@ -61,6 +61,7 @@ public class OrderDetailsController {
 
     @FXML
     private void handleSearchOrder(ActionEvent event) {
+        System.out.println("Search order.");
         
         // Có thể thêm logic truy xuất DB để load chi tiết vào các field
     }
