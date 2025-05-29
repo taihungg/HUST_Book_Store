@@ -93,16 +93,4 @@ public class Order {
         this.orderStatus = Objects.requireNonNull(orderStatus, "Order status cannot be null.");
     }
 
-    // --- Phương thức toString để dễ dàng in ra thông tin đơn hàng ---
-    @Override
-    public String toString() {
-        return "Order{" +
-               "orderId='" + orderId + '\'' +
-               ", customerUsername='" + customerUsername + '\'' +
-               ", orderDate=" + orderDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + // Định dạng hiển thị
-               ", totalAmount=" + String.format("%.2f", totalAmount) + // Định dạng 2 chữ số thập phân
-               ", orderStatus=" + orderStatus + 
-               ", itemsCount=" + orderItems.size() +
-               '}';
-    }
 }

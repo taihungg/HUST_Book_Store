@@ -20,6 +20,7 @@ import model.manager.AppServiceManager;
 import model.manager.user.UserManager;
 import model.user.User;
 import model.user.customer.Customer;
+import model.user.interfaces.Manager;
 import model.user.manager.Admin;
 import javafx.stage.Stage;
 
@@ -73,7 +74,7 @@ public class LoginController {
             
             // Chuyển trang theo role
             try {
-                if (appServiceManager.getUserManager().authenticateUser(username, password) instanceof Admin) {
+                if (appServiceManager.getUserManager().authenticateUser(username, password) instanceof Manager) {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/HomePageAdmin.fxml"));
                     Parent root = loader.load();
                     Scene scene = new Scene(root);

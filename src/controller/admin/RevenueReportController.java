@@ -1,272 +1,210 @@
 package controller.admin;
 
-import controller.Main; // Giả sử bạn có lớp Main để lấy AppServiceManager
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.manager.AppServiceManager; // Thay thế bằng import đúng của bạn
+import model.manager.AppServiceManager;
+import model.manager.statistics.StatisticsManager;
+import model.user.User;
 
 import java.net.URL;
+import java.text.NumberFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import controller.Main; // Giả sử Main chứa AppServiceManager và currentUser
+
 public class RevenueReportController implements Initializable {
 
-    //<editor-fold desc="FXML Declarations">
-    @FXML private DatePicker startDatePicker;
-    @FXML private DatePicker endDatePicker;
-    @FXML private Button generateReportButton;
-    @FXML private ComboBox<String> predefinedDateRangeComboBox;
 
-    @FXML private Label totalRevenueLabel;
-    @FXML private Label totalOrdersLabel;
-    @FXML private Label averageRevenuePerOrderLabel;
-    @FXML private Label totalCostsLabel;
-    @FXML private Label totalProfitsLabel;
-    @FXML private Label profitMarginLabel;
+@FXML private DatePicker startDatePicker;
+@FXML private DatePicker endDatePicker;
+@FXML private Button generateReportButton;
+@FXML private ComboBox<String> predefinedDateRangeComboBox;
 
-    @FXML private VBox totalCostsContainerVBox;
-    @FXML private VBox detailedCostsPane;
-    @FXML private Label totalSalaryLabel;
-    @FXML private Label totalBookPurchaseCostLabel;
+// Summary Box Labels
+@FXML private Label totalRevenueLabel; // Tổng doanh thu
+@FXML private Label totalProfitsLabel; // Tổng lợi nhuận (Doanh thu - Giá vốn hàng bán)
+@FXML private Label profitMarginLabel; // FXML ghi "Total products sales" -\> Tổng sản phẩm đã bán
+@FXML private Label totalOrdersLabel;  // FXML ghi "Total orders successfull" -\> Tổng đơn hàng thành công
+@FXML private Label totalCostsLabel1; // FXML trong VBox "Total orders cancelled" -\> Tổng đơn hàng bị hủy
+@FXML private Label averageRevenuePerOrderLabel; // FXML ghi "Total products cost" -\> Tổng giá vốn hàng bán
 
-    @FXML private CategoryAxis timeAxis;
-    @FXML private NumberAxis revenueAxis;
+// Monthly Cost Section Labels (Sẽ cần điều chỉnh vì StatisticsManager không cung cấp chi tiết này)
+@FXML private Label profitMarginLabel1; // FXML ghi "Employee salaries" -\> Lương nhân viên
+@FXML private Label totalRevenueLabel1; // FXML ghi "Other" -\> Chi phí khác
+@FXML private Label totalProfitsLabel1; // FXML ghi "Total" -\> Tổng lợi nhuận (hiển thị lại)
 
-    @FXML private Button ExitButton;
-    //</editor-fold>
+@FXML private Button ExitButton;
 
-    private AppServiceManager appServiceManager  = Main.appServiceManager; // Giả sử bạn lấy nó từ Main hoặc được inject
+private StatisticsManager statisticsManager;
+private User currentUser; // Người dùng hiện tại, giả sử là Admin
+private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // Lấy instance của AppServiceManager
-        // Ví dụ: this.appServiceManager = Main.getAppServiceManager();
-        // Hoặc nếu controller này được tạo và quản lý bởi một framework DI,
-        // appServiceManager có thể được inject.
-        // Vì mục đích demo, chúng ta sẽ giả sử nó được set từ bên ngoài hoặc Main
-        if (Main.appServiceManager != null) { // Kiểm tra nếu Main.appServiceManager là static và có thể truy cập
-             this.appServiceManager = Main.appServiceManager;
-        } else {
-            // Xử lý trường hợp appServiceManager không có sẵn, có thể hiển thị lỗi hoặc disable các chức năng
-            System.err.println("AppServiceManager is not available in RevenueReportController.");
-            showAlert(Alert.AlertType.ERROR, "Lỗi Hệ Thống", "Không thể khởi tạo dịch vụ quản lý ứng dụng.");
-        }
+@Override
+public void initialize(URL location, ResourceBundle resources) {
+// Lấy instance từ Main (giả định)
+AppServiceManager appServiceManager = Main.appServiceManager;
+currentUser = Main.currentUser;
 
+if (appServiceManager == null || currentUser == null) {
+showAlert(Alert.AlertType.ERROR, "Lỗi Khởi Tạo", "Không thể tải dịch vụ hoặc thông tin người dùng.");
+// Vô hiệu hóa các nút hoặc xử lý khác
+generateReportButton.setDisable(true);
+return;
+}
 
-        // Thiết lập các giá trị mặc định cho DatePicker
-        endDatePicker.setValue(LocalDate.now());
-        startDatePicker.setValue(LocalDate.now().minusMonths(1)); // Ví dụ: 1 tháng trước
+statisticsManager = new StatisticsManager(appServiceManager.getProductManager(), appServiceManager.getOrderManager());
 
-        // Thiết lập ComboBox chọn nhanh khoảng thời gian
-        ObservableList<String> dateRanges = FXCollections.observableArrayList(
-                "Today",
-                "Yesterday",
-                "7 days ago",
-                "30 days ago",
-                "This month",
-                "Last month",
-                "This year"
-        );
-        predefinedDateRangeComboBox.setItems(dateRanges);
-        predefinedDateRangeComboBox.setOnAction(this::handlePredefinedDateRangeChange);
-
-        // Thiết lập sự kiện click cho phần Tổng Chi Phí để hiển thị/ẩn chi tiết
-        if (totalCostsContainerVBox != null && detailedCostsPane != null) {
-            totalCostsContainerVBox.setOnMouseClicked(this::handleToggleDetailedCosts);
-        } else {
-            System.err.println("totalCostsContainerVBox hoặc detailedCostsPane chưa được inject từ FXML.");
-        }
+populatePredefinedDateRanges();
+setDefaultDateRange(); // Đặt khoảng ngày mặc định và tải báo cáo ban đầu
+updateReport(); // Tải báo cáo ban đầu
 
 
-        // Thiết lập sự kiện cho nút "Xem báo cáo"
-       
+}
 
-        // Thiết lập sự kiện cho nút "Thoát"
-        if (ExitButton != null) {
-            ExitButton.setOnAction(this::handleExit);
-        }
+private void populatePredefinedDateRanges() {
+ObservableList<String> ranges = FXCollections.observableArrayList(
+"Today",
+"Yesterday",
+"7 days ago",
+"30 days ago",
+"This month",
+"Last month"
+);
+predefinedDateRangeComboBox.setItems(ranges);
+predefinedDateRangeComboBox.setOnAction(event -> handlePredefinedDateRangeSelection());
+}
 
-        // Tải dữ liệu báo cáo ban đầu dựa trên ngày mặc định
-        loadReportData();
-    }
+private void setDefaultDateRange() {
+// Mặc định là tháng này
+predefinedDateRangeComboBox.setValue("This month");
+applyPredefinedDateRange("This month");
+}
 
-    @FXML
-    private void handleGenerateReport(ActionEvent event) {
-        loadReportData();
-    }
+@FXML
+void handleGenerateReport(ActionEvent event) {
+updateReport();
+}
 
-    @FXML
-    private void handlePredefinedDateRangeChange(ActionEvent event) {
-        String selectedRange = predefinedDateRangeComboBox.getValue();
-        if (selectedRange == null) return;
+private void updateReport() {
+LocalDate startDate = startDatePicker.getValue();
+LocalDate endDate = endDatePicker.getValue();
 
-        LocalDate today = LocalDate.now();
-        LocalDate start = today;
-        LocalDate end = today;
+if (startDate == null || endDate == null) {
+showAlert(Alert.AlertType.WARNING, "Thiếu thông tin", "Vui lòng chọn ngày bắt đầu và ngày kết thúc.");
+return;
+}
 
-        switch (selectedRange) {
-            case "Today":
-                start = today;
-                end = today;
-                break;
-            case "Yesterday":
-                start = today.minusDays(1);
-                end = today.minusDays(1);
-                break;
-            case "7 days ago":
-                start = today.minusDays(6); // Bao gồm cả hôm nay
-                end = today;
-                break;
-            case "30 days ago":
-                start = today.minusDays(29); // Bao gồm cả hôm nay
-                end = today;
-                break;
-            case "This month":
-                start = today.withDayOfMonth(1);
-                end = today.withDayOfMonth(today.lengthOfMonth());
-                break;
-            case "Last month":
-                LocalDate lastMonth = today.minusMonths(1);
-                start = lastMonth.withDayOfMonth(1);
-                end = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
-                break;
-            case "This year":
-                start = today.withDayOfYear(1);
-                end = today.withDayOfYear(today.lengthOfYear());
-                break;
-        }
-        startDatePicker.setValue(start);
-        endDatePicker.setValue(end);
-        loadReportData(); // Tải lại báo cáo với khoảng thời gian mới
-    }
+if (endDate.isBefore(startDate)) {
+showAlert(Alert.AlertType.WARNING, "Ngày không hợp lệ", "Ngày kết thúc không thể trước ngày bắt đầu.");
+return;
+}
 
-    @FXML
-    private void handleToggleDetailedCosts(MouseEvent event) {
-        if (detailedCostsPane != null) {
-            boolean isVisible = detailedCostsPane.isVisible();
-            detailedCostsPane.setVisible(!isVisible);
-            detailedCostsPane.setManaged(!isVisible); // Quan trọng để layout tự điều chỉnh
+// Tính toán từ StatisticsManager
+double totalRevenue = statisticsManager.calculateTotalRevenue(currentUser, startDate, endDate);
+double totalCostOfSoldProducts = statisticsManager.calculateTotalPurchaseCostOfSoldProducts(currentUser, startDate, endDate);
+double totalProfit = totalRevenue - totalCostOfSoldProducts;
+int totalSuccessfulOrders = statisticsManager.calculateTotalDoneOrDeliveredOrders(currentUser, startDate, endDate);
+int totalProductsSold = statisticsManager.calculateTotalProductsSold(currentUser, startDate, endDate);
+int totalCancelledOrders = statisticsManager.calculateTotalCancelledOrders(currentUser, startDate, endDate);
 
-            if (detailedCostsPane.isVisible()) {
-                // Khi hiển thị, tải dữ liệu chi tiết chi phí
-                loadDetailedCosts();
-            }
-        }
-    }
+// Cập nhật các Label trong ô tổng quan
+totalRevenueLabel.setText(currencyFormatter.format(totalRevenue));
+totalProfitsLabel.setText(currencyFormatter.format(totalProfit));
+profitMarginLabel.setText(String.valueOf(totalProductsSold)); // FXML: Total products sales
+totalOrdersLabel.setText(String.valueOf(totalSuccessfulOrders)); // FXML: Total orders successfull
+totalCostsLabel1.setText(String.valueOf(totalCancelledOrders)); // FXML: Total orders cancelled
+averageRevenuePerOrderLabel.setText(currencyFormatter.format(totalCostOfSoldProducts)); // FXML: Total products cost
 
-    private void loadReportData() {
-        LocalDate startDate = startDatePicker.getValue();
-        LocalDate endDate = endDatePicker.getValue();
-
-        if (startDate == null || endDate == null) {
-            showAlert(Alert.AlertType.WARNING, "Thiếu thông tin", "Vui lòng chọn ngày bắt đầu và ngày kết thúc.");
-            return;
-        }
-        if (startDate.isAfter(endDate)) {
-            showAlert(Alert.AlertType.WARNING, "Ngày không hợp lệ", "Ngày bắt đầu không thể sau ngày kết thúc.");
-            return;
-        }
-
-        System.out.println("Đang tạo báo cáo từ " + startDate + " đến " + endDate);
-
-        // TODO: Gọi các phương thức từ AppServiceManager (hoặc ReportManager) để lấy dữ liệu
-        // Ví dụ:
-        // double revenue = appServiceManager.getReportManager().getTotalRevenue(startDate, endDate);
-        // int orders = appServiceManager.getReportManager().getTotalOrders(startDate, endDate);
-        // double costs = appServiceManager.getReportManager().getTotalCosts(startDate, endDate); // Tổng chi phí chung
-        // double profits = revenue - costs; // Tính toán lợi nhuận
-
-        // Dữ liệu giả để demo
-        
-        double revenue = Math.random() * 50000000 + 10000000; // 10M - 60M
-        int orders = (int) (Math.random() * 500 + 50); // 50 - 550
-        double costs = revenue * (Math.random() * 0.4 + 0.3); // Chi phí từ 30-70% doanh thu
-        double profits = revenue - costs;
-        double avgRevenuePerOrder = (orders > 0) ? revenue / orders : 0;
-        double profitMargin = (revenue > 0) ? (profits / revenue) * 100 : 0;
-         
-        updateSummaryLabels(revenue, orders, avgRevenuePerOrder, costs, profits, profitMargin);
-        
-        // Nếu detailedCostsPane đang hiển thị, cũng cập nhật nó
-        if (detailedCostsPane != null && detailedCostsPane.isVisible()) {
-            loadDetailedCosts();
-        }
-    }
-
-    private void updateSummaryLabels(double totalRevenue, int totalOrders, double avgRevenue, double totalCosts, double totalProfits, double profitMarginVal) {
-        Locale vietnameseLocale = new Locale("vi", "VN");
-        totalRevenueLabel.setText(String.format(vietnameseLocale, "%,.0f VNĐ", totalRevenue));
-        totalOrdersLabel.setText(String.valueOf(totalOrders));
-        averageRevenuePerOrderLabel.setText(String.format(vietnameseLocale, "%,.0f VNĐ", avgRevenue));
-        totalCostsLabel.setText(String.format(vietnameseLocale, "%,.0f VNĐ", totalCosts));
-        totalProfitsLabel.setText(String.format(vietnameseLocale, "%,.0f VNĐ", totalProfits));
-        profitMarginLabel.setText(String.format(vietnameseLocale, "%.1f%%", profitMarginVal));
-    }
-    
-    private void loadDetailedCosts() {
-        LocalDate startDate = startDatePicker.getValue();
-        LocalDate endDate = endDatePicker.getValue();
-        if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
-            // Không tải nếu ngày không hợp lệ hoặc detailedCostsPane không hiển thị
-            totalSalaryLabel.setText("N/A");
-            totalBookPurchaseCostLabel.setText("N/A");
-            return;
-        }
-
-        // TODO: Lấy dữ liệu chi tiết chi phí từ AppServiceManager/ReportManager
-        // double salaryCosts = appServiceManager.getReportManager().getTotalSalaryCosts(startDate, endDate);
-        // double bookPurchaseCosts = appServiceManager.getReportManager().getTotalBookPurchaseCosts(startDate, endDate);
-
-        // Dữ liệu giả để demo
-        double totalCostsVal = Double.parseDouble(totalCostsLabel.getText().replaceAll("[^\\d.]", "")); // Lấy lại tổng chi phí từ label
-        double salaryCosts = totalCostsVal * (Math.random() * 0.3 + 0.4); // Lương chiếm 40-70% tổng chi phí
-        double bookPurchaseCosts = totalCostsVal - salaryCosts; // Phần còn lại là chi phí nhập sách (đơn giản hóa)
+// Cập nhật các Label trong mục "Monthly Cost"
+// StatisticsManager không cung cấp chi phí lương hay "Other" trực tiếp theo khoảng ngày.
+// Tạm thời đặt là "N/A" hoặc 0.
+profitMarginLabel1.setText("N/A"); // Lương nhân viên
+totalRevenueLabel1.setText("N/A");  // Chi phí khác
+totalProfitsLabel1.setText(currencyFormatter.format(totalProfit)); // Tổng lợi nhuận (hiển thị lại)
 
 
-        Locale vietnameseLocale = new Locale("vi", "VN");
-        totalSalaryLabel.setText(String.format(vietnameseLocale, "%,.0f VNĐ", salaryCosts));
-        totalBookPurchaseCostLabel.setText(String.format(vietnameseLocale, "%,.0f VNĐ", bookPurchaseCosts));
-    }
+}
+
+private void handlePredefinedDateRangeSelection() {
+String selectedRange = predefinedDateRangeComboBox.getValue();
+if (selectedRange == null) return;
+applyPredefinedDateRange(selectedRange);
+}
+
+private void applyPredefinedDateRange(String range) {
+LocalDate today = LocalDate.now();
+LocalDate start = today;
+LocalDate end = today;
+
+switch (range) {
+case "Today":
+start = today;
+end = today;
+break;
+case "Yesterday":
+start = today.minusDays(1);
+end = today.minusDays(1);
+break;
+case "7 days ago":
+start = today.minusDays(6); // Bao gồm cả hôm nay, nên là 6 ngày trước đến hôm nay
+end = today;
+break;
+case "30 days ago":
+start = today.minusDays(29);
+end = today;
+break;
+case "This month":
+start = today.with(TemporalAdjusters.firstDayOfMonth());
+end = today.with(TemporalAdjusters.lastDayOfMonth());
+break;
+case "Last month":
+start = today.minusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+end = today.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
+break;
+default:
+return; // Không làm gì nếu không khớp
+}
+startDatePicker.setValue(start);
+endDatePicker.setValue(end);
+updateReport(); // Tự động cập nhật báo cáo khi chọn khoảng thời gian định sẵn
 
 
-    
+}
 
+@FXML
+void handleExit(ActionEvent event) {
+Stage stage = (Stage) ExitButton.getScene().getWindow();
+stage.close();
+// Hoặc điều hướng về trang chủ admin nếu cần
+// try {
+//     Parent root = FXMLLoader.load(getClass().getResource("/view/admin/HomePageAdmin.fxml"));
+//     Scene scene = new Scene(root);
+//     stage.setScene(scene);
+//     stage.show();
+// } catch (IOException e) {
+//     e.printStackTrace();
+// }
+}
 
-    @FXML
-    private void handleExit(ActionEvent event) {
-        Stage stage = (Stage) ExitButton.getScene().getWindow();
-        if (stage != null) {
-            // Thay vì đóng, bạn có thể muốn quay lại màn hình admin chính nếu đây là một phần của nó
-            // Ví dụ: loadSceneContent("/view/admin/HomePageAdmin.fxml", "Admin Dashboard");
-            // Hoặc nếu đây là cửa sổ riêng biệt thì đóng là hợp lý
-            stage.close();
-        }
-    }
+private void showAlert(Alert.AlertType alertType, String title, String message) {
+Alert alert = new Alert(alertType);
+alert.setTitle(title);
+alert.setHeaderText(null);
+alert.setContentText(message);
+alert.showAndWait();
+}
 
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 }

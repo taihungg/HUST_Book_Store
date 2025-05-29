@@ -15,8 +15,12 @@ import model.user.User;
 public class Main extends Application {
 
     public static AppServiceManager appServiceManager = new AppServiceManager();
+
+    public static User currentUser =appServiceManager.getCurrentUser() ;
+
     public static UserManager userManager = appServiceManager.getUserManager();
-    public static User currentUser ;
+    public static User currentUser;
+
     public static void main(String[] args) {
                 launch(args);
             }
