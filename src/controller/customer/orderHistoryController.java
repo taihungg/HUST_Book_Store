@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.NumberFormat; // Để định dạng tiền tệ
 import java.time.LocalDate;
-import java.time.LocalDateTime; // Nếu cột dateCol dùng LocalDateTime
 import java.time.format.DateTimeFormatter; // Để định dạng ngày tháng
 import java.util.List;
 import java.util.Locale;
@@ -50,17 +49,14 @@ public class orderHistoryController implements Initializable {
 
 @FXML private TableView<Order> orderHistoryTable;
 @FXML private TableColumn<Order, String> idCol;
-@FXML private TableColumn<Order, String> productCol; // Sẽ hiển thị tóm tắt sản phẩm
 @FXML private TableColumn<Order, LocalDate> dateCol;  // Hoặc LocalDateTime
-@FXML private TableColumn<Order, Integer> quanCol;   // Tổng số lượng sản phẩm
 @FXML private TableColumn<Order, Double> totalCol;
-@FXML private TableColumn<Order, Void> detailsCol;   // Cột chứa nút "View Details"
 
 private AppServiceManager appServiceManager;
 private Customer currentUser;
 private ObservableList<Order> observableOrderList;
 private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("en", "US"));
 
 @Override
 public void initialize(URL location, ResourceBundle resources) {
@@ -79,9 +75,8 @@ loadOrderHistory();
 
 private void setupTableColumns() {
 idCol.setCellValueFactory(new PropertyValueFactory<>("orderId")); // Giả sử Order có getOrderId()
-productCol.setCellValueFactory(new PropertyValueFactory<>("productSummary")); // Giả sử Order có getProductSummary()
+ // Giả sử Order có getProductSummary()
 dateCol.setCellValueFactory(new PropertyValueFactory<>("orderDate")); // Giả sử Order có getOrderDate() trả về LocalDate
-quanCol.setCellValueFactory(new PropertyValueFactory<>("totalItemsQuantity")); // Giả sử Order có getTotalItemsQuantity()
 totalCol.setCellValueFactory(new PropertyValueFactory<>("totalAmount") ); // Giả sử Order có getTotalAmount()
 
 // Định dạng cột ngày
@@ -111,28 +106,7 @@ totalCol.setCellFactory(column -> new TableCell<Order, Double>() {
 });
 
 // Thiết lập cột "View Details" với Button
-detailsCol.setCellFactory(param -> new TableCell<Order, Void>() {
-    private final Button viewButton = new Button("Xem");
 
-    {
-        viewButton.setOnAction(event -> {
-            Order order = getTableView().getItems().get(getIndex());
-            handleViewOrderDetails(order);
-        });
-        viewButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;"); // Kiểu dáng nút
-    }
-
-    @Override
-    protected void updateItem(Void item, boolean empty) {
-        super.updateItem(item, empty);
-        if (empty) {
-            setGraphic(null);
-        } else {
-            setGraphic(viewButton);
-            setAlignment(Pos.CENTER);
-        }
-    }
-});
 
 orderHistoryTable.setItems(observableOrderList);
 }
