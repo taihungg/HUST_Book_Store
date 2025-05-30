@@ -90,9 +90,9 @@ public class placeOrderController {
         float subTotalPrice = (float) cartItems.stream()
         .mapToDouble(item -> appServiceManager.getProductManager().getProductById(item.getProductId()).getSellingPrice() * item.getQuantity())
         .sum();
-        summarySubtotalLabel.setText(String.format("%.2f", subTotalPrice ));
+        summarySubtotalLabel.setText(String.format("%.2f", subTotalPrice ) + " $");
         float totalPrice = subTotalPrice + shippingFee;
-        orderTotalLabel.setText(String.format("%.2f", totalPrice ));
+        orderTotalLabel.setText(String.format("%.2f", totalPrice ) + " $");
     }
 
     @FXML
