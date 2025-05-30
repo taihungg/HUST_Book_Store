@@ -166,8 +166,8 @@ public class AudioBookDetailController {
         } else {
             quantityLabel.setText("Số lượng: N/A");
         }
-        sellingPriceLabel.setText("Giá bán: " + String.valueOf(audiobook.getSellingPrice()) + " VNĐ"); // Thêm đơn vị tiền tệ
-        purchasePriceLabel.setText("Giá nhập: " + String.valueOf(audiobook.getPurchasePrice()) + " VNĐ");
+        sellingPriceLabel.setText("Giá bán: " + String.valueOf(audiobook.getSellingPrice()) + " $"); // Thêm đơn vị tiền tệ
+        purchasePriceLabel.setText("Giá nhập: " + String.valueOf(audiobook.getPurchasePrice()) + " $");
     }
 
     private void clearDetails() {

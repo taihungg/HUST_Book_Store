@@ -5,6 +5,7 @@ import java.io.InputStream;
 import controller.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -134,13 +135,17 @@ public class EBookDetailController {
         }
 
         quantityLabel.setText(String.valueOf(appServiceManager.getProductManager().getProductQuantity(ebook.getId())));
-        sellingPriceLabel.setText(String.valueOf(ebook.getSellingPrice()));
-        purchasePriceLabel.setText(String.valueOf(ebook.getPurchasePrice()));
+        sellingPriceLabel.setText(String.valueOf(ebook.getSellingPrice()) + " $");
+        purchasePriceLabel.setText(String.valueOf(ebook.getPurchasePrice()) + " $");
     }
 
     @FXML
     void handleRead(ActionEvent event) {
-        System.out.println("Read button clicked");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Read Ebook");
+        alert.setHeaderText("Read Ebook");
+        alert.setContentText("Read Ebook");
+        alert.showAndWait();
         
     }
     private Image getPlaceholderImage() {

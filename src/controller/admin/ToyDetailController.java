@@ -76,9 +76,9 @@ public class ToyDetailController {
             return;
         }
         titleLabel.setText(toy.getTitle());
-        sellingPriceLabel.setText(String.valueOf(toy.getSellingPrice()));
+        sellingPriceLabel.setText(String.valueOf(toy.getSellingPrice()) + " $");
         statusLabel.setText(toy.getStatus());
-        purchasePriceLabel.setText(String.valueOf(toy.getPurchasePrice()));
+        purchasePriceLabel.setText(String.valueOf(toy.getPurchasePrice()) + " $");
         //toyTypeLabel.setText(toy.getT
         ageLabel.setText(String.valueOf(toy.getSuitableAge()));
         //toyMaterialLabel.setText(toy.

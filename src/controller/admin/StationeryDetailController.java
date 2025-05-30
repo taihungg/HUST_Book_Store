@@ -69,9 +69,9 @@ public class StationeryDetailController {
             return;
         }
         titleLabel.setText(newStationery.getTitle());
-        sellingPriceLabel.setText(String.valueOf(newStationery.getSellingPrice()));
+        sellingPriceLabel.setText(String.valueOf(newStationery.getSellingPrice()) + " $");
         statusLabel.setText(newStationery.getStatus());
-        purchasePriceLabel.setText(String.valueOf(newStationery.getPurchasePrice()));
+        purchasePriceLabel.setText(String.valueOf(newStationery.getPurchasePrice()) + " $");
         descriptionArea.setText(newStationery.getDescription());
         quantityLabel.setText(String.valueOf(appServiceManager.getProductManager().getProductQuantity(newStationery.getId())));
         typeLabel.setText(newStationery.getType());

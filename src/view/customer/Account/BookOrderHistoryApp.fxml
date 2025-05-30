@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.orderHistoryController">
    <children>
       <!-- Header Section -->
       <VBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -65,7 +65,7 @@
                                     <Insets left="20.0" top="10.0" />
                                  </HBox.margin>
                               </Label>
-                              <DatePicker prefWidth="120.0">
+                              <DatePicker fx:id="startDate" prefWidth="120.0">
                                  <HBox.margin>
                                     <Insets left="5.0" top="10.0" />
                                  </HBox.margin>
@@ -75,7 +75,7 @@
                                     <Insets left="20.0" top="10.0" />
                                  </HBox.margin>
                               </Label>
-                              <DatePicker prefWidth="120.0">
+                              <DatePicker fx:id="endDate" prefWidth="120.0">
                                  <HBox.margin>
                                     <Insets left="5.0" top="10.0" />
                                  </HBox.margin>
@@ -84,12 +84,12 @@
                         </HBox>
                         <HBox>
                            <children>
-                              <Button style="-fx-background-color: #1E90FF; -fx-text-fill: white;" text="Search">
+                              <Button fx:id="searchButton" onAction="#handleSearch" style="-fx-background-color: #1E90FF; -fx-text-fill: white;" text="Search">
                                  <HBox.margin>
                                     <Insets bottom="20.0" left="20.0" top="10.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button style="-fx-background-color: #A9A9A9; -fx-text-fill: white;" text="Reset">
+                              <Button fx:id="resetButton" onAction="#handleReset" style="-fx-background-color: #A9A9A9; -fx-text-fill: white;" text="Reset">
                                  <HBox.margin>
                                     <Insets bottom="20.0" left="10.0" top="10.0" />
                                  </HBox.margin>
@@ -117,14 +117,11 @@
             </Label>
             <ScrollPane fitToHeight="true" fitToWidth="true">
                <content>
-                  <TableView prefHeight="300.0" prefWidth="800.0">
+                  <TableView fx:id="orderHistoryTable" prefHeight="300.0" prefWidth="800.0">
                      <columns>
-                        <TableColumn minWidth="150.0" prefWidth="-1.0" text="Order ID" />
-                        <TableColumn minWidth="200.0" prefWidth="-1.0" text="Product" />
-                        <TableColumn minWidth="150.0" prefWidth="-1.0" text="Date" />
-                        <TableColumn minWidth="100.0" prefWidth="-1.0" text="Quantity" />
-                        <TableColumn minWidth="100.0" prefWidth="-1.0" text="Total Amount" />
-                        <TableColumn minWidth="100.0" prefWidth="-1.0" text="View Details" />
+                        <TableColumn fx:id="idCol" minWidth="150.0" prefWidth="-1.0" text="Order ID" />
+                        <TableColumn fx:id="dateCol" minWidth="150.0" prefWidth="-1.0" text="Date" />
+                        <TableColumn fx:id="totalCol" minWidth="100.0" prefWidth="-1.0" text="Total Amount" />
                      </columns>
                      <placeholder>
                         <VBox alignment="CENTER">

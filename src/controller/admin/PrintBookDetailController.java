@@ -101,8 +101,8 @@ public class PrintBookDetailController {
         ISBNLabel.setText(printbook.getIsbn());
         numberOfPageLabel.setText(String.valueOf(printbook.getNumberOfPages()));
         weightLabel.setText(String.valueOf(printbook.getWeight()));
-        sellingPriceLabel.setText(String.valueOf(printbook.getSellingPrice()));
-        purchasePriceLabel.setText(String.valueOf(printbook.getPurchasePrice()));
+        sellingPriceLabel.setText(String.valueOf(printbook.getSellingPrice()) + " $");
+        purchasePriceLabel.setText(String.valueOf(printbook.getPurchasePrice()) + " $");
         descriptionArea.setText(printbook.getDescription());
 
         String galleryURL = printbook.getGalleryURL();
