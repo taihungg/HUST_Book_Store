@@ -93,7 +93,7 @@ public class ToyController {
         }
     }catch (NumberFormatException e){
         System.err.println("Price must be a number");
-        return;
+        return;         
 
         }
 

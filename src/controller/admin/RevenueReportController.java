@@ -56,7 +56,7 @@ public class RevenueReportController implements Initializable {
 
 private StatisticsManager statisticsManager ;
 private User currentUser; // Người dùng hiện tại, giả sử là Admin
-private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("en", "US"));
 
 @Override
 public void initialize(URL location, ResourceBundle resources) {
@@ -150,9 +150,9 @@ for (User user : Main.appServiceManager.getUserManager().getAllUsers(Main.curren
         totalSalary += ((Employee) user).getSalary();
     }
 }
-profitMarginLabel1.setText(String.valueOf(totalSalary)); // Lương nhân viên
+profitMarginLabel1.setText(String.valueOf(totalSalary) + "$"); // Lương nhân viên
 totalRevenueLabel1.setText("N/A");  // Chi phí khác
-totalProfitsLabel1.setText(String.valueOf(totalProfit)); // Tổng lợi nhuận (hiển thị lại)
+totalProfitsLabel1.setText(String.valueOf(totalProfit) + "$"); // Tổng lợi nhuận (hiển thị lại)
 
 
 }
