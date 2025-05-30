@@ -83,6 +83,7 @@ public class ToyDetailController {
         ageLabel.setText(String.valueOf(toy.getSuitableAge()));
         //toyMaterialLabel.setText(toy.
         descriptionArea.setText(toy.getDescription());
+        brandLabel.setText(toy.getBrand());
         quantityLabel.setText(String.valueOf(appServiceManager.getProductManager().getProductQuantity(toy.getId())));
         String galleryURL = toy.getGalleryURL();
         System.out.println("Attempting to load image for Toy from: " + galleryURL);
