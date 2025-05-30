@@ -14,6 +14,7 @@ import model.product.Product;
 import model.product.Toy;
 import model.user.User;
 import model.user.customer.Customer;
+import controller.Main;
 import controller.customer.HomePageController;
 import java.io.IOException;
 import java.net.URL;
@@ -32,8 +33,8 @@ public class ViewToyDetailsController implements Initializable {
     @FXML private Button addToCartButton;
     @FXML private Button backButton;
     @FXML private Label priceLabel;
-    private AppServiceManager appServiceManager;
-    private User currentUser;
+    private AppServiceManager appServiceManager = Main.appServiceManager;
+    private User currentUser = Main.currentUser;
     private Toy currentToyInView ; // Local instance variable to hold the toy being viewed
 
     @Override
@@ -91,20 +92,14 @@ public class ViewToyDetailsController implements Initializable {
     
     @FXML
     private void handleAddToCart() {
-        if (currentUser == null) {
-            showAlert("Login Required", "Please log in to add products to cart!");
-            return;
-        }
+        
 
         if (currentToyInView == null) { // Use the local instance variable
             showAlert("Error", "No product selected to add to cart!");
             return;
         }
         
-        if (!(currentUser instanceof Customer)) {
-            showAlert("Access Denied", "Only customers can add products to the cart.");
-            return;
-        }
+        
 
         try {
             int quantity = quantitySpinner.getValue();

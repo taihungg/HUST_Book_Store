@@ -17,6 +17,8 @@ import model.user.User;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import controller.Main;
 import model.user.cart.Cart;
 import model.user.customer.Customer;
 
@@ -34,8 +36,8 @@ public class ViewBookDetailsController implements Initializable {
     @FXML private Button backButton;
     @FXML private Button readDemoButton;
 
-    private AppServiceManager appServiceManager;
-    private User currentUser;
+    private AppServiceManager appServiceManager = Main.appServiceManager;
+    private User currentUser = Main.currentUser;
     private Book currentProduct;
 
     @Override
@@ -96,7 +98,7 @@ public class ViewBookDetailsController implements Initializable {
 
         try {
             int quantity = quantitySpinner.getValue();
-            Customer customer = (Customer) appServiceManager.getCurrentUser();
+            Customer customer = (Customer) currentUser;
             customer.getCart().addItem(currentProduct.getId(), quantity, appServiceManager.getProductManager());
             showAlert("Success", "Added " + quantity + " '" + currentProduct.getTitle() + "' to cart!");
         } catch (Exception e) {

@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import model.manager.AppServiceManager;
 import model.manager.statistics.StatisticsManager;
 import model.user.User;
+import model.user.manager.Employee;
 
 import java.io.IOException;
 import java.net.URL;
@@ -143,7 +144,13 @@ averageRevenuePerOrderLabel.setText(currencyFormatter.format(totalCostOfSoldProd
 // Cập nhật các Label trong mục "Monthly Cost"
 // StatisticsManager không cung cấp chi phí lương hay "Other" trực tiếp theo khoảng ngày.
 // Tạm thời đặt là "N/A" hoặc 0.
-profitMarginLabel1.setText("N/A"); // Lương nhân viên
+int totalSalary = 0;
+for (User user : Main.appServiceManager.getUserManager().getAllUsers(Main.currentUser)) {
+    if (user instanceof Employee) {
+        totalSalary += ((Employee) user).getSalary();
+    }
+}
+profitMarginLabel1.setText(String.valueOf(totalSalary)); // Lương nhân viên
 totalRevenueLabel1.setText("N/A");  // Chi phí khác
 totalProfitsLabel1.setText(String.valueOf(totalProfit)); // Tổng lợi nhuận (hiển thị lại)
 
