@@ -83,7 +83,7 @@ public class ViewBookDetailsController implements Initializable {
 
    
     @FXML
-    private void handleAddtoCart() {
+    private void handleAddToCart() {
         if (currentUser == null) {
             showAlert("Notification", "Please log in to add products to cart!");
             return;

@@ -72,6 +72,7 @@ public class OrderManagementController {
         amoutCol.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         dateCol.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateStringConverter()));
         payCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        statusCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderStatus"));
         statusCol.setCellFactory(TextFieldTableCell.forTableColumn());
         statusCol.setOnEditCommit(event -> {
             Order order = event.getRowValue();
