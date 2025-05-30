@@ -72,7 +72,7 @@ public class ManagePageController {
             System.out.println("You are not authorized to access this page");
             Alert alert = new Alert(AlertType.INFORMATION);
                 alert.setTitle("Error");
-                alert.setHeaderText("Only Admin accesible");
+                alert.setHeaderText("Only Admin accessible");
                 alert.setContentText("You are not authorized to access this page");
                 alert.showAndWait();}
         } catch (Exception e) {
