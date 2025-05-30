@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
@@ -19,7 +25,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #F8F9FA;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.HomePageController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #F8F9FA;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.customer.HomePageController">
     <top>
         <VBox spacing="8" style="-fx-background-color: #FFFFFF; -fx-padding: 10 0 0 0;">
             <children>
@@ -127,148 +133,150 @@
                         </HBox>
 
                         <HBox spacing="15">
-                            <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 3); -fx-padding: 15;">
-                                <children>
-                                    <Label style="-fx-text-fill: #2C3E50; -fx-font-weight: bold;" text="Filter Options">
-                                        <font>
-                                            <Font name="System Bold" size="16.0" />
-                                        </font>
-                                    </Label>
-
-                                    <TitledPane animated="false" expanded="false" style="-fx-background-color: #F2F2F2; -fx-background-radius: 6;" text="Sort Options">
-                                        <content>
-                                            <VBox spacing="6" style="-fx-padding: 8;">
-                                                <children>
-                                                    <RadioButton fx:id="sortByTitle" style="-fx-text-fill: #4A5568;" text="Sort by Title">
-                                                        <toggleGroup>
-                                                            <ToggleGroup fx:id="sortGroup" />
-                                                        </toggleGroup>
-                                                    </RadioButton>
-                                                    <RadioButton fx:id="sortByCost" style="-fx-text-fill: #4A5568;" text="Sort by Cost" toggleGroup="$sortGroup" />
-                                                </children>
-                                            </VBox>
-                                        </content>
-                                        <font>
-                                            <Font name="System Bold" size="12.0" />
-                                        </font>
-                                    </TitledPane>
-
-                                    <TitledPane animated="false" expanded="false" style="-fx-background-color: #F2F2F2; -fx-background-radius: 6;" text="Filter by Price">
-                                        <content>
-                                            <VBox spacing="6" style="-fx-padding: 8;">
-                                                <children>
-                                                    <HBox alignment="CENTER_LEFT" spacing="5">
-                                                        <children>
-                                                            <Label style="-fx-text-fill: #4A5568;" text="Min: " />
-                                                            <TextField fx:id="minPriceField" prefWidth="60" style="-fx-background-color: #F8F9FA; -fx-border-color: #CED4DA; -fx-border-radius: 4; -fx-padding: 4 6;" />
-                                                        </children>
-                                                    </HBox>
-                                                    <HBox alignment="CENTER_LEFT" spacing="5">
-                                                        <children>
-                                                            <Label style="-fx-text-fill: #4A5568;" text="Max:" />
-                                                            <TextField fx:id="maxPriceField" prefWidth="60" style="-fx-background-color: #F8F9FA; -fx-border-color: #CED4DA; -fx-border-radius: 4; -fx-padding: 4 6;" />
-                                                        </children>
-                                                    </HBox>
-                                                    <Button onAction="#handlePriceFilter" style="-fx-background-color: #007BFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 6 12; -fx-cursor: hand;" text="Apply Filter">
-                                                        <effect>
-                                                            <DropShadow color="#007bff40" height="4.0" radius="1.5" width="4.0" />
-                                                        </effect>
-                                                    </Button>
-                                                </children>
-                                            </VBox>
-                                        </content>
-                                        <font>
-                                            <Font name="System Bold" size="12.0" />
-                                        </font>
-                                    </TitledPane>
-
-                                    <TitledPane animated="false" expanded="false" style="-fx-background-color: #F2F2F2; -fx-background-radius: 6;" text="Filter by Products">
-                                        <content>
-                                            <VBox spacing="6" style="-fx-padding: 8;">
-                                                <children>
-                                                    <CheckBox fx:id="printBookCheckBox" style="-fx-text-fill: #4A5568;" text="Printbook" />
-                                                    <CheckBox fx:id="eBookCheckBox" style="-fx-text-fill: #4A5568;" text="Ebook" />
-                                                    <CheckBox fx:id="audioBookCheckBox" style="-fx-text-fill: #4A5568;" text="Audiobook" />
-                                                    <CheckBox fx:id="toyCheckBox" style="-fx-text-fill: #4A5568;" text="Toy" />
-                                                    <CheckBox fx:id="stationeryCheckBox" style="-fx-text-fill: #4A5568;" text="Stationery" />
-                                                </children>
-                                            </VBox>
-                                        </content>
-                                        <font>
-                                            <Font name="System Bold" size="12.0" />
-                                        </font>
-                                    </TitledPane>
-
-                                    <TitledPane animated="false" expanded="false" style="-fx-background-color: #F2F2F2; -fx-background-radius: 6;" text="Filter by Category">
-                                        <content>
-                                            <VBox spacing="6" style="-fx-padding: 8;">
-                                                <children>
-                                                    <CheckBox fx:id="vanHocCheckBox" style="-fx-text-fill: #4A5568;" text="Văn học" />
-                                                    <CheckBox fx:id="khoaHocCheckBox" style="-fx-text-fill: #4A5568;" text="Khoa học" />
-                                                    <CheckBox fx:id="lichSuCheckBox" style="-fx-text-fill: #4A5568;" text="Lịch sử" />
-                                                    <CheckBox fx:id="trinhThamCheckBox" style="-fx-text-fill: #4A5568;" text="Trinh thám" />
-                                                    <CheckBox fx:id="kinhTeCheckBox" style="-fx-text-fill: #4A5568;" text="Kinh tế" />
-                                                    <CheckBox fx:id="thieuNhiCheckBox" style="-fx-text-fill: #4A5568;" text="Thiếu nhi" />
-                                                    <CheckBox fx:id="selfHelpCheckBox" style="-fx-text-fill: #4A5568;" text="Self-help" />
-                                                </children>
-                                            </VBox>
-                                        </content>
-                                        <font>
-                                            <Font name="System Bold" size="12.0" />
-                                        </font>
-                                    </TitledPane>
-
-                                    <TitledPane animated="false" expanded="false" style="-fx-background-color: #F2F2F2; -fx-background-radius: 6;" text="Filter by Brand">
-                                        <content>
-                                            <VBox spacing="6" style="-fx-padding: 8;">
-                                                <children>
-                                                    <CheckBox fx:id="thienLongCheckBox" style="-fx-text-fill: #4A5568;" text="Thiên Long" />
-                                                    <CheckBox fx:id="plusCheckBox" style="-fx-text-fill: #4A5568;" text="Plus" />
-                                                    <CheckBox fx:id="colgateCheckBox" style="-fx-text-fill: #4A5568;" text="Colgate" />
-                                                    <CheckBox fx:id="bitisCheckBox" style="-fx-text-fill: #4A5568;" text="Biti's" />
-                                                    <CheckBox fx:id="legoCheckBox" style="-fx-text-fill: #4A5568;" text="Lego" />
-                                                    <CheckBox fx:id="bandaiCheckBox" style="-fx-text-fill: #4A5568;" text="Bandai" />
-                                                    <CheckBox fx:id="hasbroCheckBox" style="-fx-text-fill: #4A5568;" text="Hasbro" />
-                                                </children>
-                                            </VBox>
-                                        </content>
-                                        <font>
-                                            <Font name="System Bold" size="12.0" />
-                                        </font>
-                                    </TitledPane>
-                                </children>
-                            </VBox>
-
-                            <VBox spacing="10" HBox.hgrow="ALWAYS">
-                                <children>
-                                    <HBox alignment="CENTER_RIGHT" spacing="5" style="-fx-background-color: white; -fx-background-radius: 6; -fx-padding: 8 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 1);">
-                                        <children>
-                                            <Label style="-fx-text-fill: #4A5568; -fx-font-size: 12px;" text="Showing" />
-                                            <Label fx:id="itemCountLabel" style="-fx-font-weight: bold; -fx-text-fill: #2C3E50; -fx-font-size: 12px;" text="0" />
-                                            <Label style="-fx-text-fill: #4A5568; -fx-font-size: 12px;" text="items" />
-                                        </children>
-                                    </HBox>
-                                    <GridPane fx:id="productsGrid" hgap="15" vgap="15" HBox.hgrow="ALWAYS">
-                                        <columnConstraints>
-                                            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="180.0" />
-                                            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="180.0" />
-                                            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="180.0" />
-                                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="180.0" />
-                                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="180.0" />
-                                        </columnConstraints>
-                                        <rowConstraints>
-                                            <RowConstraints vgrow="SOMETIMES" />
-                                            <RowConstraints vgrow="SOMETIMES" />
-                                            <RowConstraints vgrow="SOMETIMES" />
-                                            <RowConstraints vgrow="SOMETIMES" />
-                                            <RowConstraints vgrow="SOMETIMES" />
-                                        </rowConstraints>
-                              <VBox.margin>
-                                 <Insets />
-                              </VBox.margin>
-                                    </GridPane>
-                                </children>
-                            </VBox>
+   <children>
+                               <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 3); -fx-padding: 15;">
+                                   <children>
+                                       <Label style="-fx-text-fill: #2C3E50; -fx-font-weight: bold;" text="Filter Options">
+                                           <font>
+                                               <Font name="System Bold" size="16.0" />
+                                           </font>
+                                       </Label>
+   
+                                       <TitledPane animated="false" expanded="false" style="-fx-background-color: #F2F2F2; -fx-background-radius: 6;" text="Sort Options">
+                                           <content>
+                                               <VBox spacing="6" style="-fx-padding: 8;">
+                                                   <children>
+                                                       <RadioButton fx:id="sortByTitle" style="-fx-text-fill: #4A5568;" text="Sort by Title">
+                                                           <toggleGroup>
+                                                               <ToggleGroup fx:id="sortGroup" />
+                                                           </toggleGroup>
+                                                       </RadioButton>
+                                                       <RadioButton fx:id="sortByCost" style="-fx-text-fill: #4A5568;" text="Sort by Price" toggleGroup="$sortGroup" />
+                                                   </children>
+                                               </VBox>
+                                           </content>
+                                           <font>
+                                               <Font name="System Bold" size="12.0" />
+                                           </font>
+                                       </TitledPane>
+   
+                                       <TitledPane animated="false" expanded="false" style="-fx-background-color: #F2F2F2; -fx-background-radius: 6;" text="Filter by Price">
+                                           <content>
+                                               <VBox spacing="6" style="-fx-padding: 8;">
+                                                   <children>
+                                                       <HBox alignment="CENTER_LEFT" spacing="5">
+                                                           <children>
+                                                               <Label style="-fx-text-fill: #4A5568;" text="Min: " />
+                                                               <TextField fx:id="minPriceField" prefWidth="60" style="-fx-background-color: #F8F9FA; -fx-border-color: #CED4DA; -fx-border-radius: 4; -fx-padding: 4 6;" />
+                                                           </children>
+                                                       </HBox>
+                                                       <HBox alignment="CENTER_LEFT" spacing="5">
+                                                           <children>
+                                                               <Label style="-fx-text-fill: #4A5568;" text="Max:" />
+                                                               <TextField fx:id="maxPriceField" prefWidth="60" style="-fx-background-color: #F8F9FA; -fx-border-color: #CED4DA; -fx-border-radius: 4; -fx-padding: 4 6;" />
+                                                           </children>
+                                                       </HBox>
+                                                       <Button onAction="#handlePriceFilter" style="-fx-background-color: #007BFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 6 12; -fx-cursor: hand;" text="Apply Filter">
+                                                           <effect>
+                                                               <DropShadow color="#007bff40" height="4.0" radius="1.5" width="4.0" />
+                                                           </effect>
+                                                       </Button>
+                                                   </children>
+                                               </VBox>
+                                           </content>
+                                           <font>
+                                               <Font name="System Bold" size="12.0" />
+                                           </font>
+                                       </TitledPane>
+   
+                                       <TitledPane animated="false" expanded="false" style="-fx-background-color: #F2F2F2; -fx-background-radius: 6;" text="Filter by Products">
+                                           <content>
+                                               <VBox spacing="6" style="-fx-padding: 8;">
+                                                   <children>
+                                                       <CheckBox fx:id="printBookCheckBox" style="-fx-text-fill: #4A5568;" text="Printbook" />
+                                                       <CheckBox fx:id="eBookCheckBox" style="-fx-text-fill: #4A5568;" text="Ebook" />
+                                                       <CheckBox fx:id="audioBookCheckBox" style="-fx-text-fill: #4A5568;" text="Audiobook" />
+                                                       <CheckBox fx:id="toyCheckBox" style="-fx-text-fill: #4A5568;" text="Toy" />
+                                                       <CheckBox fx:id="stationeryCheckBox" style="-fx-text-fill: #4A5568;" text="Stationery" />
+                                                   </children>
+                                               </VBox>
+                                           </content>
+                                           <font>
+                                               <Font name="System Bold" size="12.0" />
+                                           </font>
+                                       </TitledPane>
+   
+                                       <TitledPane animated="false" expanded="false" style="-fx-background-color: #F2F2F2; -fx-background-radius: 6;" text="Filter by Category">
+                                           <content>
+                                               <VBox spacing="6" style="-fx-padding: 8;">
+                                                   <children>
+                                                       <CheckBox fx:id="vanHocCheckBox" style="-fx-text-fill: #4A5568;" text="Văn học" />
+                                                       <CheckBox fx:id="khoaHocCheckBox" style="-fx-text-fill: #4A5568;" text="Khoa học" />
+                                                       <CheckBox fx:id="lichSuCheckBox" style="-fx-text-fill: #4A5568;" text="Lịch sử" />
+                                                       <CheckBox fx:id="trinhThamCheckBox" style="-fx-text-fill: #4A5568;" text="Trinh thám" />
+                                                       <CheckBox fx:id="kinhTeCheckBox" style="-fx-text-fill: #4A5568;" text="Kinh tế" />
+                                                       <CheckBox fx:id="thieuNhiCheckBox" style="-fx-text-fill: #4A5568;" text="Thiếu nhi" />
+                                                       <CheckBox fx:id="selfHelpCheckBox" style="-fx-text-fill: #4A5568;" text="Self-help" />
+                                                   </children>
+                                               </VBox>
+                                           </content>
+                                           <font>
+                                               <Font name="System Bold" size="12.0" />
+                                           </font>
+                                       </TitledPane>
+   
+                                       <TitledPane animated="false" expanded="false" style="-fx-background-color: #F2F2F2; -fx-background-radius: 6;" text="Filter by Brand">
+                                           <content>
+                                               <VBox spacing="6" style="-fx-padding: 8;">
+                                                   <children>
+                                                       <CheckBox fx:id="thienLongCheckBox" style="-fx-text-fill: #4A5568;" text="Thiên Long" />
+                                                       <CheckBox fx:id="plusCheckBox" style="-fx-text-fill: #4A5568;" text="Plus" />
+                                                       <CheckBox fx:id="colgateCheckBox" style="-fx-text-fill: #4A5568;" text="Colgate" />
+                                                       <CheckBox fx:id="bitisCheckBox" style="-fx-text-fill: #4A5568;" text="Biti's" />
+                                                       <CheckBox fx:id="legoCheckBox" style="-fx-text-fill: #4A5568;" text="Lego" />
+                                                       <CheckBox fx:id="bandaiCheckBox" style="-fx-text-fill: #4A5568;" text="Bandai" />
+                                                       <CheckBox fx:id="hasbroCheckBox" style="-fx-text-fill: #4A5568;" text="Hasbro" />
+                                                   </children>
+                                               </VBox>
+                                           </content>
+                                           <font>
+                                               <Font name="System Bold" size="12.0" />
+                                           </font>
+                                       </TitledPane>
+                                   </children>
+                               </VBox>
+   
+                               <VBox spacing="10" HBox.hgrow="ALWAYS">
+                                   <children>
+                                       <HBox alignment="CENTER_RIGHT" spacing="5" style="-fx-background-color: white; -fx-background-radius: 6; -fx-padding: 8 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 1);">
+                                           <children>
+                                               <Label style="-fx-text-fill: #4A5568; -fx-font-size: 12px;" text="Showing" />
+                                               <Label fx:id="itemCountLabel" style="-fx-font-weight: bold; -fx-text-fill: #2C3E50; -fx-font-size: 12px;" text="0" />
+                                               <Label style="-fx-text-fill: #4A5568; -fx-font-size: 12px;" text="items" />
+                                           </children>
+                                       </HBox>
+                                       <GridPane fx:id="productsGrid" hgap="15" vgap="15" HBox.hgrow="ALWAYS">
+                                           <columnConstraints>
+                                               <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="180.0" />
+                                               <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="180.0" />
+                                               <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="180.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="180.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="180.0" />
+                                           </columnConstraints>
+                                           <rowConstraints>
+                                               <RowConstraints vgrow="SOMETIMES" />
+                                               <RowConstraints vgrow="SOMETIMES" />
+                                               <RowConstraints vgrow="SOMETIMES" />
+                                               <RowConstraints vgrow="SOMETIMES" />
+                                               <RowConstraints vgrow="SOMETIMES" />
+                                           </rowConstraints>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                                       </GridPane>
+                                   </children>
+                               </VBox>
+   </children>
                         </HBox>
                     </children>
                 </VBox>
