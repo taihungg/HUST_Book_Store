@@ -205,7 +205,7 @@ public class UserManager {
         System.out.println("UserManager: Loading initial admin...");
 
         // --- TẠO ADMIN ĐẦU TIÊN TẠI ĐÂY ---
-        Admin adminUser = new Admin("Trung TT (PHD)", "trung.tt20239999", "0123456789", "admin", "12345678");
+        Admin adminUser = new Admin("Trung TT (PHD)", "trung.tt20239999", "0123456789", "admin", "admin");
         userList.add(adminUser);
         userMap.put(adminUser.getUsername(), adminUser);
         System.out.println("UserManager: Initial Admin user created: " + adminUser.getName());

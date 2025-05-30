@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
@@ -7,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #f0f2f5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.HomePageAdminController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #f0f2f5;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.admin.HomePageAdminController">
     <top>
         <VBox style="-fx-background-color: #2c3e50; -fx-padding: 20;">
             <children>
@@ -29,7 +33,7 @@
                         </VBox>
                         <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
                             <children>
-                                <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" text="🚪 Logout">
+                                <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" text="📊🚪 Logout">
                                     <style>
                                         -fx-background-color: #e74c3c;
                                         -fx-text-fill: white;
@@ -66,7 +70,7 @@
                     <children>
                         <HBox alignment="CENTER" spacing="25">
                             <children>
-                                <Button fx:id="seeOrdersButton" mnemonicParsing="false" onAction="#handleSeeOrders" prefHeight="60.0" prefWidth="180.0" text="📋 Xem Đơn Hàng">
+                                <Button fx:id="seeOrdersButton" mnemonicParsing="false" onAction="#handleSeeOrders" prefHeight="60.0" prefWidth="180.0" text="View Orders">
                                     <style>
                                         -fx-background-color: #27ae60;
                                         -fx-text-fill: white;
@@ -76,7 +80,7 @@
                                         -fx-cursor: hand;
                                     </style>
                                 </Button>
-                                <Button fx:id="manageButton" mnemonicParsing="false" onAction="#handleManage" prefHeight="60.0" prefWidth="180.0" text="⚙️ Quản Lý">
+                                <Button fx:id="manageButton" mnemonicParsing="false" onAction="#handleManage" prefHeight="60.0" prefWidth="180.0" text="Manage">
                                     <style>
                                         -fx-background-color: #3498db;
                                         -fx-text-fill: white;
@@ -90,7 +94,7 @@
                         </HBox>
                         <HBox alignment="CENTER" spacing="25">
                             <children>
-                                <Button fx:id="reportButton" mnemonicParsing="false" onAction="#handleReportButton" prefHeight="60.0" prefWidth="180.0" text="📊 Báo Cáo Doanh Thu">
+                                <Button fx:id="reportButton" mnemonicParsing="false" onAction="#handleReportButton" prefHeight="60.0" prefWidth="180.0" text="Statistics">
                                     <style>
                                         -fx-background-color: #f39c12;
                                         -fx-text-fill: white;
@@ -100,7 +104,7 @@
                                         -fx-cursor: hand;
                                     </style>
                                 </Button>
-                                <Button fx:id="viewStoreButton" mnemonicParsing="false" onAction="#handleViewStoreButton" prefHeight="60.0" prefWidth="180.0" text="🏪 View Store">
+                                <Button fx:id="viewStoreButton" mnemonicParsing="false" onAction="#handleViewStoreButton" prefHeight="60.0" prefWidth="180.0" text="View Store">
                                     <style>
                                         -fx-background-color: #9b59b6;
                                         -fx-text-fill: white;
